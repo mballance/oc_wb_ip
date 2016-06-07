@@ -12,7 +12,7 @@ module wb_dma_w #(
 		parameter int		ch_count = 31
 		) (
 		input				clk,
-		intput				rst_i,
+		input				rst_i,
 		wb_if.slave			wb0s,
 		wb_if.master		wb0m,
 		wb_if.slave			wb1s,
