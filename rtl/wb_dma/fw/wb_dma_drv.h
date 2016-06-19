@@ -3,42 +3,56 @@
 #define INCLUDED_WB_DMA_DRV_H
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#if defined(_WIN32) || defined(__CYGWIN__)
+#define EXPORT __declspec(dllexport)
+#else
+#define EXPORT
+#endif
+
+struct wb_dma_drv_s;
+
 typedef void (*wb_dma_drv_done_f)(
-		wb_dma_drv_t		*drv,
+		struct wb_dma_drv_s	*drv,
 		uint32_t			chan);
 
 typedef struct wb_dma_drv_s {
-	void					*base_addr;
+	uint32_t				base;
 	wb_dma_drv_done_f		done_func_list[31];
-	uint32_t				active[31];
+	uint32_t				status[31];
 	void					*user_data;
 } wb_dma_drv_t;
+
 
 /**
  * Initializes the DMA driver
  */
-void wb_dma_drv_init(
+EXPORT void wb_dma_drv_init(
 		wb_dma_drv_t 	*drv,
-		void			*base,
+		uint32_t		 base,
 		void			*user_data);
 
 /**
  * Begins a transfer. Returns the channel
  * carrying out the transfer, or -1 if setup failed
  */
-int32_t wb_dma_drv_begin_xfer(
+EXPORT int32_t wb_dma_drv_begin_xfer(
 		wb_dma_drv_t		*drv,
-		void				*src,
-		void				*dst,
+		uint32_t			src,
+		uint32_t			dst,
 		uint32_t			num_words,
 		wb_dma_drv_done_f	done_func
 		);
 
 /**
- * Checks whether the transfer on a specific channel
- * is complete.
+ * Checks whether the status of a specific channel:
+ * 0 - channel is inactive without errors
+ * 1 - channel is active
  */
-uint32_t wb_dma_drv_check_complete(
+EXPORT uint32_t wb_dma_drv_check_status(
 		wb_dma_drv_t		*drv,
 		int32_t				chan
 		);
@@ -47,9 +61,10 @@ uint32_t wb_dma_drv_check_complete(
  * Polls all active channels for completion and
  * performs notifications (if requested)
  */
-uint32_t wb_dma_drv_poll(
-		wb_dma_drv_t		*drv
-		);
+EXPORT uint32_t wb_dma_drv_poll(wb_dma_drv_t *drv);
 
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* INCLUDED_WB_DMA_DRV_H */

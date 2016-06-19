@@ -28,12 +28,18 @@ module wb_dma_w #(
 	wire wb0_rty_o, wb0_rty_i;
 	wire wb1_rty_o, wb1_rty_i;
 	
+	wire[31:0] wb0_addr_i;
+	assign wb0_addr_i[31:10] = 0;
+	assign wb0_addr_i[9:0] = wb0s.ADR[9:0];
+	
 	wb_dma_top #(.rf_addr(rf_addr), .ch_count(ch_count)) u_dma (
-		.clk_i        (clk       ), 
-		.rst_i        (rst_i       ), 
-		.wb0s_data_i  (wb0s.DAT_W ), 
-		.wb0s_data_o  (wb0s.DAT_R ), 
-		.wb0_addr_i   (wb0s.ADR  ), 
+		.clk_i        (clk        ), 
+		.rst_i        (rst_i      ), 
+//		.wb0s_data_i  (wb0s.DAT_W ), 
+//		.wb0s_data_o  (wb0s.DAT_R ), 
+		.wb0m_data_i  (wb0s.DAT_W ), 
+		.wb0m_data_o  (wb0s.DAT_R ), 
+		.wb0_addr_i   (wb0_addr_i ),
 		.wb0_sel_i    (wb0s.SEL   ), 
 		.wb0_we_i     (wb0s.WE    ), 
 		.wb0_cyc_i    (wb0s.CYC   ), 
@@ -41,8 +47,10 @@ module wb_dma_w #(
 		.wb0_ack_o    (wb0s.ACK   ), 
 		.wb0_err_o    (wb0s.ERR   ), 
 		.wb0_rty_o    (wb0_rty_o   ), 
-		.wb0m_data_i  (wb0m.DAT_R ), 
-		.wb0m_data_o  (wb0m.DAT_W ), 
+//		.wb0m_data_i  (wb0m.DAT_R ), 
+//		.wb0m_data_o  (wb0m.DAT_W ), 
+		.wb0s_data_i  (wb0m.DAT_W ), 
+		.wb0s_data_o  (wb0m.DAT_R ), 
 		.wb0_addr_o   (wb0m.ADR  ), 
 		.wb0_sel_o    (wb0m.SEL   ), 
 		.wb0_we_o     (wb0m.WE    ), 
