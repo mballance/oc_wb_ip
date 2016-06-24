@@ -8,11 +8,12 @@ static wb_dma_drv_t		drvArr[256];
 EXPORT int _wb_dma_drv_init(
 		uint32_t			*drv_id,
 		uint32_t			base,
+		uint32_t			irq_en,
 		void				*user_data) {
 	*drv_id = drvId;
 	drvId++;
 	wb_dma_drv_t *drv = &drvArr[*drv_id];
-	wb_dma_drv_init(drv, base, user_data);
+	wb_dma_drv_init(drv, base, irq_en, user_data);
 	return 0;
 }
 

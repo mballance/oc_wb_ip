@@ -19,6 +19,7 @@ package wb_dma_fw_pkg;
 	import "DPI-C" context _wb_dma_drv_init=task wb_dma_drv_init(
 			output wb_dma_drv_t	drv_id,
 			input int unsigned	base,
+			input int unsigned	irq_en,
 			input chandle		user_data);
 	
 	import "DPI-C" context task _wb_dma_drv_begin_xfer(

@@ -19,6 +19,13 @@ typedef void (*wb_dma_drv_done_f)(
 		struct wb_dma_drv_s	*drv,
 		uint32_t			chan);
 
+typedef struct wb_dma_drv_ll_s {
+	uint32_t			csr;
+	uint32_t			src;
+	uint32_t			dst;
+	uint32_t			nxt;
+} wb_dma_drv_ll_t;
+
 typedef struct wb_dma_drv_s {
 	uint32_t				base;
 	wb_dma_drv_done_f		done_func_list[31];
@@ -26,13 +33,13 @@ typedef struct wb_dma_drv_s {
 	void					*user_data;
 } wb_dma_drv_t;
 
-
 /**
  * Initializes the DMA driver
  */
 EXPORT void wb_dma_drv_init(
 		wb_dma_drv_t 	*drv,
 		uint32_t		 base,
+		uint32_t         irq_en,
 		void			*user_data);
 
 /**
@@ -46,6 +53,11 @@ EXPORT int32_t wb_dma_drv_begin_xfer(
 		uint32_t			num_words,
 		wb_dma_drv_done_f	done_func
 		);
+
+//EXPORT int32_t wb_dma_drv_init_ll_xfer(
+//		wb_dma_drv_t		*drv,
+//		uint32_t
+//		);
 
 /**
  * Checks whether the status of a specific channel:

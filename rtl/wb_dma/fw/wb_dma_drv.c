@@ -45,10 +45,17 @@
 void wb_dma_drv_init(
 		wb_dma_drv_t 	*drv,
 		uint32_t		base,
+		uint32_t		irq_en,
 		void			*user_data) {
 	memset(drv, 0, sizeof(wb_dma_drv_t));
 	drv->base = base;
 	drv->user_data = user_data;
+
+	// Route enabled channels to INTA
+	if (irq_en) {
+		WB_DMA_WRITE32(drv, drv->base+0x04, 0xFFFFFFFF);
+		WB_DMA_WRITE32(drv, drv->base+0x0C, 0xFFFFFFFF);
+	}
 }
 
 int32_t wb_dma_drv_begin_xfer(
@@ -76,6 +83,8 @@ int32_t wb_dma_drv_begin_xfer(
 	if (ch != -1) {
 		uint32_t csr = WB_DMA_READ_CH_CSR(drv, ch);
 
+		csr |= (1 << 18); // interrupt on done
+		csr |= (1 << 17); // interrupt on error
 		csr |= (1 << 4); // increment source
 		csr |= (1 << 3); // increment destination
 		csr |= (1 << 1); // use interface 1 for destination
@@ -122,19 +131,32 @@ uint32_t wb_dma_drv_check_status(
 }
 
 uint32_t wb_dma_drv_poll(wb_dma_drv_t *drv) {
-	uint32_t i, cnt=0;
+	uint32_t ch, cnt=0;
 
-	for (i=0; i<31; i++) {
-		if (drv->status[i] == 1) {
+	for (ch=0; ch<31; ch++) {
+		if (drv->status[ch] == 1) {
 
-			// TODO: Check whether the channel is actually complete
+			// Check whether it's actually done
+			uint32_t csr = WB_DMA_READ_CH_CSR(drv, ch);
 
-			if (/* TODO: is_done && */ drv->done_func_list[i]) {
-				drv->done_func_list[i](drv, i);
-				drv->done_func_list[i] = 0; // always null out
+			fprintf(stdout, "csr=0x%08x\n", csr);
+			fflush(stdout);
+
+			if ((csr & 1) == 0) {
+				// inactive
+				if ((csr & (1 << 12)) != 0) {
+					drv->status[ch] = 2;
+				} else {
+					drv->status[ch] = 0;
+				}
 			}
 
-			if (/* TODO: is_done */1) {
+			if (drv->status[ch] != 1 && drv->done_func_list[ch]) {
+				drv->done_func_list[ch](drv, ch);
+				drv->done_func_list[ch] = 0; // always null out
+			}
+
+			if (drv->status[ch] != 1) {
 				cnt++;
 			}
 		}
