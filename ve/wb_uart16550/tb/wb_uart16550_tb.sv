@@ -12,6 +12,7 @@ module wb_uart16550_tb;
 	import uvm_pkg::*;
 	import wb_uart16550_tests_pkg::*;
 	import wb_master_agent_pkg::*;
+	import uart_serial_agent_pkg::*;
 	
 	reg clk_i = 0;
 	reg rstn = 0;
@@ -43,11 +44,15 @@ module wb_uart16550_tb;
 	wire uart_tx_o, uart_rx_i;
 	wire cts_pad_i, dsr_pad_i, ri_pad_i, dcd_pad_i;
 	
+	wire bfm_uart_rx_i, bfm_uart_tx_o;
+	
 	assign cts_pad_i = 1;
 	assign dsr_pad_i = 1;
 	assign ri_pad_i = 0;
 	assign dcd_pad_i = 1;
-	assign uart_rx_i = 0;
+	
+	assign bfm_uart_rx_i = uart_tx_o;
+	assign uart_rx_i = bfm_uart_tx_o;
 
 	wb_uart16550_shell #(
 		.u_type     ("RTL"    )
@@ -74,10 +79,10 @@ module wb_uart16550_tb;
 		.master         (bfm2uart.master));
 	
 	uart_serial_bfm u_uart_bfm (
-		.clk_i      (clk_i     ), 
-		.rstn_i     (rstn_i    ), 
-		.stx_pad_o  (bfm_uart_rx_i ), 
-		.srx_pad_i  (bfm_uart_tx_o ), 
+		.clk_i      (clk_i         ), 
+		.rstn_i     (rstn          ), 
+		.stx_pad_o  (bfm_uart_tx_o ), 
+		.srx_pad_i  (bfm_uart_rx_i ), 
 		.rts_pad_o  (bfm_rts_pad_o ), 
 		.cts_pad_i  (bfm_cts_pad_i ), 
 		.dtr_pad_o  (bfm_dtr_pad_o ), 
@@ -89,10 +94,16 @@ module wb_uart16550_tb;
 	
 	initial begin
 		automatic wb_cfg_t wb_cfg = wb_cfg_t::type_id::create("wb_cfg");
+		automatic uart_serial_config serial_cfg = uart_serial_config::type_id::create("serial_cfg");
 		
 		wb_cfg.vif = u_wb_bfm;
 		uvm_config_db #(wb_cfg_t)::set(uvm_top, "*wb_master*",
 				wb_cfg_t::report_id, wb_cfg);
+		
+		serial_cfg.vif = u_uart_bfm;
+		serial_cfg.vif_path = $psprintf("%m.u_uart_bfm");
+		uvm_config_db #(uart_serial_config)::set(uvm_top, "*uart_agent*",
+				uart_serial_config::report_id, serial_cfg);
 		
 		run_test();
 	end

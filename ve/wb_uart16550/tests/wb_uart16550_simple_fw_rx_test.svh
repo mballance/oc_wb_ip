@@ -1,18 +1,7 @@
 
-class wb_uart16550_simple_tx_test extends wb_uart16550_test_base;
-	const int RB  = 0;
-	const int THR = 0;
-	const int IER = 1;
-	const int IIR = 2;
-	const int FCR = 2;
-	const int LCR = 3;
-	const int MCR = 4;
-	const int LSR = 5;
-	const int MSR = 6;
-	const int DLB1 = 0;
-	const int DLB2 = 1;
+class wb_uart16550_simple_fw_rx_test extends wb_uart16550_test_base;
 	
-	`uvm_component_utils(wb_uart16550_simple_tx_test)
+	`uvm_component_utils(wb_uart16550_simple_fw_rx_test)
 	
 	/****************************************************************
 	 * Data Fields
@@ -39,44 +28,50 @@ class wb_uart16550_simple_tx_test extends wb_uart16550_test_base;
 		super.connect_phase(phase);
 	endfunction
 
+	byte unsigned				rx_data[$];
+
 	/****************************************************************
 	 * run_phase()
 	 ****************************************************************/
 	task run_phase(uvm_phase phase);
-		sv_bfms_rw_api_if api;
-		bit[7:0] data;
-		
-		api = m_env.wb_master.get_api();
-		
 		phase.raise_objection(this, "Main");
-		
-		// Clear the FIFOs
-		api.write8(FCR, 'b11000110);
-
-		// Enable access to the counter registers
-		api.read8(LCR, data);
-		data[7] = 1;
-		api.write8(LCR, data);
-		
+		fork
+			begin
+				wb_uart16550_drv_t 	drv;
+				byte unsigned		data[256];
+				int					read_ret;
+				int 				tot_sz = 0;
+				
+				wb_uart16550_drv_init(drv, 0, 162/8);
+				
+				do begin
+					wb_uart16550_drv_read(drv, data, 1, read_ret);
+					
+					for (int i=0; i<read_ret; i++) begin
+						rx_data.push_back(data[i]);
+					end
+					
+					tot_sz += read_ret;
+				end while (tot_sz < 4);
+			end
+			begin
+				uart_serial_tx_seq seq = uart_serial_tx_seq::type_id::create("seq");
+				
+				seq.data.push_back('h55);
+				seq.data.push_back('hAA);
+				seq.data.push_back('h01);
+				seq.data.push_back('h02);
+				
+				seq.start(m_env.uart_agent.m_seqr);
+			end
+		join
 	
-		api.write8(DLB2, 0);
-		api.write8(DLB1, 163);
-//		api.write8(DLB2, 'h128);
-//		api.write8(DLB1, 'hFF);
 		
-		// Disable access to the counter registers
-		api.read8(LCR, data);
-		data[7] = 0;
-		api.write8(LCR, data);
+		for (int i=0; i<rx_data.size(); i++) begin
+			$display("rx_data[%0d] = 'h%02h", i, rx_data[i]);
+		end
 		
-		// Configure the UART
-		api.write8(LCR, 'b0000011); // N81
-		
-		// Write a byte
-		api.write8(THR, 'h55);
-		api.write8(THR, 'hAA);
-		
-//		phase.drop_objection(this, "Main");
+		phase.drop_objection(this, "Main");
 	endtask
 	
 endclass

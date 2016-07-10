@@ -5,6 +5,7 @@ class wb_uart16550_env extends uvm_env;
 	typedef wb_master_agent #(32, 32) wb_master_agent_t;
 	
 	wb_master_agent_t				wb_master;
+	uart_serial_agent				uart_agent;
 
 	function new(string name, uvm_component parent=null);
 		super.new(name, parent);
@@ -19,6 +20,7 @@ class wb_uart16550_env extends uvm_env;
 		super.build_phase(phase);
 		
 		wb_master = wb_master_agent_t::type_id::create("wb_master", this);
+		uart_agent = uart_serial_agent::type_id::create("uart_agent", this);
 	endfunction
 
 	/**

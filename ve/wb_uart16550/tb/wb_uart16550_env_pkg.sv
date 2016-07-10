@@ -5,6 +5,7 @@ package wb_uart16550_env_pkg;
 	import uvm_pkg::*;
 	import wb_master_agent_pkg::*;
 	import sv_bfms_api_pkg::*;
+	import uart_serial_agent_pkg::*;
 
 	`include "wb_uart16550_env.svh"
 	
