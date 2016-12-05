@@ -6,3 +6,7 @@
 	path = ve/sv_bfms
 	url = https://github.com/mballance/sv_bfms.git
 	branch = master
+[submodule "simscripts"]
+	path = simscripts
+	url = https://github.com/mballance/simscripts.git
+	branch = master
