@@ -9,7 +9,7 @@
 
 -F ${SIM_DIR_A}/../tb/tb.F
 
-${SIM_DIR_A}/../tests/wb_dma_tests_pkg.sv
+-F ${SIM_DIR_A}/../tests/tests.F
 
 ${SIM_DIR_A}/../tb/wb_dma_tb.sv
 

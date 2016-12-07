@@ -69,10 +69,6 @@ module wb_dma_tb;
 			.WB_DATA_WIDTH(WB_DATA_WIDTH)
 		) m12bfm ();
 	
-	always @(bfm2s0.ADR) begin
-		$display("bfm2s0.ADR='h%08h", bfm2s0.ADR);
-	end
-	
 	wb_master_stub u_s1stub (.m (stub2s1.master));
 
 	wb_master_bfm #(

@@ -35,9 +35,6 @@ class wb_dma_reg_adapter #(ADDRESS_WIDTH=32, DATA_WIDTH=32) extends uvm_reg_adap
 		rw.data			= bus.data;
 		rw.byte_en		= bus.byte_en;
 		rw.status		= UVM_IS_OK;
-		
-		$display("bus2reg: 'h%08h 'h%08h 'h%02h", 
-				rw.addr, rw.data, rw.byte_en);
 	endfunction
 
 	/**
@@ -50,9 +47,6 @@ class wb_dma_reg_adapter #(ADDRESS_WIDTH=32, DATA_WIDTH=32) extends uvm_reg_adap
 
 		bus = wb_master_seq_item #(ADDRESS_WIDTH,DATA_WIDTH)::type_id::create("rw");
 		
-		$display("reg2bus: 'h%08h 'h%08h 'h%02h", 
-				rw.addr, rw.data, rw.byte_en);
-
 		bus.is_write 	= (rw.kind == UVM_WRITE);
 		bus.addr		= rw.addr;
 		bus.data		= rw.data;

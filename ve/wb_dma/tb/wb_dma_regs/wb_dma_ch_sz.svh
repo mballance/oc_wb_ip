@@ -19,7 +19,7 @@ class wb_dma_ch_sz extends uvm_reg;
 		
 	virtual function void build();
 		CHK_SZ = uvm_reg_field::type_id::create("CHK_SZ");
-		CHK_SZ.configure(this, 8, 16, "RW", 0, 0, 1, 0, 0);
+		CHK_SZ.configure(this, 9, 16, "RW", 0, 0, 1, 0, 0);
 		TOT_SZ = uvm_reg_field::type_id::create("TOT_SZ");
 		TOT_SZ.configure(this, 12, 0, "RW", 0, 0, 1, 0, 0);
 	endfunction
