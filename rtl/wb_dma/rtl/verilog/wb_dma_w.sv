@@ -35,8 +35,6 @@ module wb_dma_w #(
 	wb_dma_top #(.rf_addr(rf_addr), .ch_count(ch_count)) u_dma (
 		.clk_i        (clk        ), 
 		.rst_i        (rst_i      ), 
-//		.wb0s_data_i  (wb0s.DAT_W ), 
-//		.wb0s_data_o  (wb0s.DAT_R ), 
 		.wb0m_data_i  (wb0s.DAT_W ), 
 		.wb0m_data_o  (wb0s.DAT_R ), 
 		.wb0_addr_i   (wb0_addr_i ),
@@ -47,8 +45,6 @@ module wb_dma_w #(
 		.wb0_ack_o    (wb0s.ACK   ), 
 		.wb0_err_o    (wb0s.ERR   ), 
 		.wb0_rty_o    (wb0_rty_o   ), 
-//		.wb0m_data_i  (wb0m.DAT_R ), 
-//		.wb0m_data_o  (wb0m.DAT_W ), 
 		.wb0s_data_i  (wb0m.DAT_R ), 
 		.wb0s_data_o  (wb0m.DAT_W ), 
 		.wb0_addr_o   (wb0m.ADR  ), 

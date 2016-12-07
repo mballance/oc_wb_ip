@@ -61,14 +61,16 @@ class wb_dma_reg_block extends uvm_reg_block;
 		default_map.add_reg(int_src_b, 16'h0010, "RW");
 			
 		for (int i=0; i<=30; i++) begin
-			default_map.add_reg(ch[i].CSR, 16'h0040+(i*'h20)+0, "RW");
-			default_map.add_reg(ch[i].SZ, 16'h0040+(i*'h20)+4, "RW");
-			default_map.add_reg(ch[i].A0, 16'h0040+(i*'h20)+8, "RW");
-			default_map.add_reg(ch[i].AM0, 16'h0040+(i*'h20)+12, "RW");
-			default_map.add_reg(ch[i].A1, 16'h0040+(i*'h20)+16, "RW");
-			default_map.add_reg(ch[i].AM1, 16'h0040+(i*'h20)+20, "RW");
-			default_map.add_reg(ch[i].DESC, 16'h0040+(i*'h20)+24, "RW");
+			default_map.add_reg(ch[i].CSR, ((i+1)*'h20)+0, "RW");
+			default_map.add_reg(ch[i].SZ,  ((i+1)*'h20)+4, "RW");
+			default_map.add_reg(ch[i].A0,  ((i+1)*'h20)+8, "RW");
+			default_map.add_reg(ch[i].AM0, ((i+1)*'h20)+12, "RW");
+			default_map.add_reg(ch[i].A1,  ((i+1)*'h20)+16, "RW");
+			default_map.add_reg(ch[i].AM1, ((i+1)*'h20)+20, "RW");
+			default_map.add_reg(ch[i].DESC,((i+1)*'h20)+24, "RW");
 		end
+		
+		lock_model();
 			
 	endfunction
 		
