@@ -43,7 +43,9 @@ class wb_dma_transfer_test extends wb_dma_test_base;
 		
 		// Now, start slave sequences
 		s0_seq = wb_slave_mem_seq #(32,32)::type_id::create("s0_seq");
+		s0_seq.m_mem_mgr = m_env.m_mem_mgr;
 		s1_seq = wb_slave_mem_seq #(32,32)::type_id::create("s1_seq");
+		s1_seq.m_mem_mgr = m_env.m_mem_mgr;
 		fork
 			s0_seq.start(m_env.m_s0_agent.m_seqr);
 			s1_seq.start(m_env.m_s1_agent.m_seqr);
@@ -55,6 +57,7 @@ class wb_dma_transfer_test extends wb_dma_test_base;
 		transfer_seq.m_regs = m_env.m_dma_regs;
 		transfer_seq.m_start_ap = m_env.m_start_ap;
 		transfer_seq.m_done_ap = m_env.m_done_ap;
+		transfer_seq.m_mem_mgr = m_env.m_mem_mgr;
 		transfer_seq.start(null);
 		
 			

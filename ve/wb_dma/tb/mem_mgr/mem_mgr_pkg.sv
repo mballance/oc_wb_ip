@@ -1,19 +1,10 @@
 /****************************************************************************
- * wb_mem_mgr.svh
+ *  mem_mgr_pkg.sv
  ****************************************************************************/
 
-/**
- * Class: wb_mem_mgr
- * 
- * TODO: Add class documentation
- */
-class wb_mem_mgr;
-
-	function new();
-
-	endfunction
-
-
-endclass
-
-
+`include "uvm_macros.svh"
+package mem_mgr_pkg;
+	import uvm_pkg::*;
+	`include "mem_mgr_ev.svh"
+	`include "mem_mgr.svh"
+endpackage

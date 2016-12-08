@@ -12,6 +12,8 @@ class wb_dma_ll_descriptor extends uvm_object;
 	
 	rand bit[11:0]	tot_sz;
 	
+	bit[31:0]		desc;
+	
 endclass
 
 /**
@@ -30,6 +32,9 @@ class wb_dma_descriptor extends uvm_sequence_item;
 	rand bit					inc_dst;
 	rand bit					src_sel;
 	rand bit					dst_sel;
+	
+	bit[31:0]					src_addr;
+	bit[31:0]					dst_addr;
 
 	rand bit[11:0]				tot_sz;
 	rand bit[8:0]				chk_sz;

@@ -14,6 +14,9 @@ class wb_dma_env extends uvm_env;
 	wb_slave_agent_t							m_s0_agent;
 	wb_slave_agent_t							m_s1_agent;
 	wb_reg_adapter_t							m_reg_adapter;
+	mem_mgr										m_mem_mgr;
+	
+	wb_dma_scoreboard							m_scoreboard;
 	
 	uvm_analysis_port #(wb_dma_descriptor)		m_start_ap;
 	uvm_analysis_port #(wb_dma_descriptor)		m_done_ap;
@@ -41,6 +44,10 @@ class wb_dma_env extends uvm_env;
 		m_s1_agent = wb_slave_agent_t::type_id::create("m_s1_agent", this);
 		
 		m_reg_adapter = wb_reg_adapter_t::type_id::create("m_reg_adapter");
+		
+		m_mem_mgr = mem_mgr::type_id::create("m_mem_mgr", this);
+		
+		m_scoreboard = wb_dma_scoreboard::type_id::create("m_scoreboard", this);
 	endfunction
 
 	/**
@@ -53,6 +60,10 @@ class wb_dma_env extends uvm_env;
 		
 		m_dma_regs.default_map.set_sequencer(m_master_agent.m_seqr, m_reg_adapter);
 		m_dma_regs.default_map.set_auto_predict(1);
+		
+		m_done_ap.connect(m_scoreboard.done_ap);
+		
+		m_scoreboard.m_mem_mgr = m_mem_mgr;
 	endfunction
 	
 endclass

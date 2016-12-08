@@ -12,6 +12,7 @@ package wb_dma_seqs_pkg;
 	import uvm_pkg::*;
 	import wb_dma_regs_pkg::*;
 	import wb_dma_env_pkg::*;
+	import mem_mgr_pkg::*;
 
 	`include "wb_dma_reg_seq.svh"
 	`include "wb_dma_reg_reset_seq.svh"

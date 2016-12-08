@@ -10,6 +10,8 @@
 class wb_slave_mem_seq #(parameter int ADDRESS_WIDTH=32, parameter int DATA_WIDTH=32) extends wb_slave_seq_base;
 	typedef wb_slave_mem_seq #(ADDRESS_WIDTH,DATA_WIDTH) this_t;
 	`uvm_object_param_utils (this_t)
+	
+	mem_mgr						m_mem_mgr;
 
 
 	/**
@@ -26,7 +28,15 @@ class wb_slave_mem_seq #(parameter int ADDRESS_WIDTH=32, parameter int DATA_WIDT
 		forever begin
 			finish_item(item); // finish first item, returning request
 			
-			$display("TODO: handle request");
+			m_mem_mgr.direct_access(
+					item.addr,
+					item.is_write,
+					item.data);
+		
+//			$display("%0t %0s: 'h%08h 'h%08h",
+//					$time,
+//					(item.is_write)?"WRITE":"READ",
+//					item.addr, item.data);
 			
 			start_item(item); // start next item
 		end
