@@ -19,7 +19,7 @@ class wb_dma_csr extends uvm_reg;
 
 	virtual function void build();
 		PAUSE = uvm_reg_field::type_id::create("PAUSE");
-		PAUSE.configure(this, 1, 0, "RW", 0, 0, 1, 0, 0);
+		PAUSE.configure(this, 1, 0, "RW", 1, 0, 1, 0, 0);
 	endfunction
 		
 endclass 

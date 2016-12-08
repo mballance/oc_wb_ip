@@ -55,6 +55,15 @@ class wb_dma_transfer_seq extends wb_dma_reg_seq;
 				desc.dst_addr,
 				desc.tot_sz*4,
 				"Source");
+	
+		// Disable the channel
+		ch.CSR.CH_EN.set(0);
+		ch.CSR.update(status);
+
+		// These registers are volatile. Read-back the content
+		// so the register model knows to re-write them
+		ch.A0.read(status, value);
+		ch.A1.read(status, value);
 		
 		ch.A0.set(desc.src_addr);
 		ch.A1.set(desc.dst_addr);
@@ -67,7 +76,12 @@ class wb_dma_transfer_seq extends wb_dma_reg_seq;
 		
 		// Flush everything except the CSR
 		m_regs.update(status);
-	
+
+		ch.CSR.REST_EN.set(1);
+		ch.CSR.SZ_WB.set(1);
+		ch.CSR.USE_ED.set(0);
+		ch.CSR.ARS.set(0);
+		ch.CSR.MODE.set(0);
 		ch.CSR.INC_SRC.set(desc.inc_src);
 		ch.CSR.INC_DST.set(desc.inc_dst);
 		ch.CSR.SRC_SEL.set(desc.src_sel);
@@ -75,10 +89,11 @@ class wb_dma_transfer_seq extends wb_dma_reg_seq;
 		
 		`uvm_info (get_name(),
 				$psprintf(
-					{"== DMA Transfer ==\n",
+					{"== DMA Transfer %0d ==\n",
 					"  SRC: 'h%08h (%0d) inc=%0d\n",
 					"  DST: 'h%08h (%0d) inc=%0d\n",
 					"  SZ:  %0d\n"}, 
+					desc.channel,
 					desc.src_addr, desc.src_sel, desc.inc_src,
 					desc.dst_addr, desc.dst_sel, desc.inc_dst,
 					desc.tot_sz), UVM_LOW);
@@ -93,12 +108,12 @@ class wb_dma_transfer_seq extends wb_dma_reg_seq;
 		ch.CSR.update(status);
 		
 		// Now, wait completion
-		repeat(16) begin
-			#1us;
+		repeat(1000) begin
+			#10us;
 			ch.CSR.read(status, value);
 			
 			if (ch.CSR.DONE.get()) begin
-				$display("== DONE ==");
+				$display("== DONE  CSR='h%08h ==", value);
 				if (m_done_ap != null) begin
 					m_done_ap.write(desc);
 				end
@@ -110,6 +125,9 @@ class wb_dma_transfer_seq extends wb_dma_reg_seq;
 		if (!ch.CSR.DONE.get()) begin
 			`uvm_fatal(get_name(), "DMA transfer failed to terminate");
 		end
+		
+		ch.CSR.CH_EN.set(0); // disable channel
+		ch.CSR.update(status);
 		
 		m_mem_mgr.free(desc.src_addr);
 		m_mem_mgr.free(desc.dst_addr);

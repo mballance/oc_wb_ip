@@ -1,14 +1,14 @@
 /****************************************************************************
- * wb_dma_rand_single_transfer_seq.svh
+ * wb_dma_rand_single_medium_transfer_seq.svh
  ****************************************************************************/
 
 /**
- * Class: wb_dma_rand_single_transfer_seq
+ * Class: wb_dma_rand_single_medium_transfer_seq
  * 
  * TODO: Add class documentation
  */
-class wb_dma_rand_single_transfer_seq extends wb_dma_transfer_seq;
-	`uvm_object_utils(wb_dma_rand_single_transfer_seq)
+class wb_dma_rand_single_medium_transfer_seq extends wb_dma_transfer_seq;
+	`uvm_object_utils(wb_dma_rand_single_medium_transfer_seq)
 
 
 	/**
@@ -17,10 +17,10 @@ class wb_dma_rand_single_transfer_seq extends wb_dma_transfer_seq;
 	 * Override from class 
 	 */
 	virtual task body();
-		wb_dma_single_transfer_descriptor desc;
+		wb_dma_single_short_transfer_descriptor desc;
 	
-		repeat (64) begin
-			desc = wb_dma_single_transfer_descriptor::type_id::create("desc");
+		repeat (16) begin
+			desc = wb_dma_single_short_transfer_descriptor::type_id::create("desc");
 			
 			start_item(desc);
 			if (!desc.randomize()) begin

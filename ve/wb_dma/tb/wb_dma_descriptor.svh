@@ -49,6 +49,10 @@ class wb_dma_descriptor extends uvm_sequence_item;
 		tot_sz > 0;
 	}
 	
+	constraint chk_sz_c {
+		chk_sz > 0;
+	}
+	
 	function new(string name="wb_dma_descriptor");
 		ll_desc = new[8];
 		foreach (ll_desc[i]) begin

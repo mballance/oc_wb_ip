@@ -6,6 +6,7 @@ class wb_dma_transfer_test extends wb_dma_test_base;
 	/****************************************************************
 	 * Data Fields
 	 ****************************************************************/
+	wb_dma_single_transfer_descriptor_cov			m_single_transfer_descriptor_cov;
 	
 	/****************************************************************
 	 * new()
@@ -19,6 +20,9 @@ class wb_dma_transfer_test extends wb_dma_test_base;
 	 ****************************************************************/
 	function void build_phase(uvm_phase phase);
 		super.build_phase(phase);
+		
+		m_single_transfer_descriptor_cov = wb_dma_single_transfer_descriptor_cov::type_id::create(
+				"m_single_transfer_descriptor_cov", this);
 	endfunction
 
 	/****************************************************************
@@ -26,6 +30,8 @@ class wb_dma_transfer_test extends wb_dma_test_base;
 	 ****************************************************************/
 	function void connect_phase(uvm_phase phase);
 		super.connect_phase(phase);
+		
+		m_env.m_done_ap.connect(m_single_transfer_descriptor_cov.analysis_export);
 	endfunction
 
 	/****************************************************************

@@ -18,7 +18,7 @@ class wb_dma_ch_adr extends uvm_reg;
 		
 	virtual function void build();
 		ADR = uvm_reg_field::type_id::create("ADR");
-		ADR.configure(this, 30, 2, "RW", 0, 0, 1, 0, 0);
+		ADR.configure(this, 30, 2, "RW", 1, 0, 1, 0, 0);
 	endfunction
 		
 endclass 
