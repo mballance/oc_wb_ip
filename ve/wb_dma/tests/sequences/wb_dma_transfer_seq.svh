@@ -9,6 +9,9 @@
  */
 class wb_dma_transfer_seq extends wb_dma_reg_seq;
 	`uvm_object_utils(wb_dma_transfer_seq)
+	
+	uvm_analysis_port #(wb_dma_descriptor)		m_start_ap;
+	uvm_analysis_port #(wb_dma_descriptor)		m_done_ap;
 
 
 	/**
@@ -42,6 +45,11 @@ class wb_dma_transfer_seq extends wb_dma_reg_seq;
 		ch.CSR.SRC_SEL.set(desc.src_sel);
 		ch.CSR.DST_SEL.set(desc.dst_sel);
 		ch.CSR.CH_EN.set(1); // enable channel
+		
+		if (m_start_ap != null) begin
+			m_start_ap.write(desc);
+		end
+		
 		// Flush the CSR write
 		ch.CSR.update(status);
 		
@@ -51,6 +59,10 @@ class wb_dma_transfer_seq extends wb_dma_reg_seq;
 			ch.CSR.read(status, value);
 			
 			if (ch.CSR.DONE.get()) begin
+				$display("== DONE ==");
+				if (m_done_ap != null) begin
+					m_done_ap.write(desc);
+				end
 				break;
 			end
 		end

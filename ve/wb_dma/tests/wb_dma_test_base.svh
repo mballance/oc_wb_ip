@@ -35,7 +35,6 @@ class wb_dma_test_base extends uvm_test;
 		end else begin
 			`uvm_info(get_name(), $psprintf("PASS: %0s", testname), UVM_LOW);
 		end
-
 	endfunction
 
 	

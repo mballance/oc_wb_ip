@@ -12,6 +12,7 @@ module wb_dma_tb;
 	import uvm_pkg::*;
 	import wb_dma_tests_pkg::*;
 	import wb_master_agent_pkg::*;
+	import wb_slave_agent_pkg::*;
 	
 	parameter int WB_ADDR_WIDTH=32;
 	parameter int WB_DATA_WIDTH=32;
@@ -110,13 +111,23 @@ module wb_dma_tb;
 		.intb_o      (intb_o        ));
 	
 	typedef wb_master_config #(WB_ADDR_WIDTH, WB_DATA_WIDTH) cfg_m_t;
+	typedef wb_slave_config #(WB_ADDR_WIDTH, WB_DATA_WIDTH) cfg_s_t;
 	
 	initial begin
 		automatic cfg_m_t cfg_m = cfg_m_t::type_id::create("cfg_m");
+		automatic cfg_s_t cfg_s0 = cfg_s_t::type_id::create("cfg_s0");
+		automatic cfg_s_t cfg_s1 = cfg_s_t::type_id::create("cfg_s1");
 		
 		cfg_m.vif = u_master_bfm.u_core;
 		uvm_config_db #(cfg_m_t)::set(uvm_top, "*m_master_agent*",
 				cfg_m_t::report_id, cfg_m);
+		
+		cfg_s0.vif = u_s0_bfm.u_core;
+		uvm_config_db #(cfg_s_t)::set(uvm_top, "*m_s0_agent*",
+				cfg_s_t::report_id, cfg_s0);
+		cfg_s1.vif = u_s1_bfm.u_core;
+		uvm_config_db #(cfg_s_t)::set(uvm_top, "*m_s1_agent*",
+				cfg_s_t::report_id, cfg_s1);
 		
 		run_test();
 	end
