@@ -20,6 +20,8 @@ class wb_dma_env extends uvm_env;
 	
 	uvm_analysis_port #(wb_dma_descriptor)		m_start_ap;
 	uvm_analysis_port #(wb_dma_descriptor)		m_done_ap;
+	
+	uvm_analysis_port #(wb_dma_config)			m_cfg_ap;
 
 	function new(string name, uvm_component parent=null);
 		super.new(name, parent);
@@ -35,6 +37,7 @@ class wb_dma_env extends uvm_env;
 		
 		m_start_ap = new("m_start_ap", this);
 		m_done_ap = new("m_done_ap", this);
+		m_cfg_ap = new("m_cfg_ap", this);
 		
 		m_dma_regs = wb_dma_reg_block::type_id::create("m_dma_regs");
 		m_dma_regs.build();

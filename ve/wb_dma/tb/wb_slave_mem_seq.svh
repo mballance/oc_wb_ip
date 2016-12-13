@@ -27,11 +27,12 @@ class wb_slave_mem_seq #(parameter int ADDRESS_WIDTH=32, parameter int DATA_WIDT
 		
 		forever begin
 			finish_item(item); // finish first item, returning request
-			
-			m_mem_mgr.direct_access(
-					item.addr,
-					item.is_write,
-					item.data);
+
+			if (item.is_write) begin
+				m_mem_mgr.write32(item.addr, item.data);
+			end else begin
+				m_mem_mgr.read32(item.addr, item.data);
+			end
 		
 			$display("%0t %0s: 'h%08h 'h%08h",
 					$time,

@@ -28,11 +28,21 @@
  * region.
  * 
  ****************************************************************************/
-`ifndef INCLUDED_MEM_MGR_SVH
-`define INCLUDED_MEM_MGR_SVH
 
 `undef DEBUG_MEM_MGR
 `undef DEBUG_MEM_MGR_VERBOSE
+	
+`ifdef DEBUG_MEM_MGR
+`define mm_info(msg) `uvm_info(get_name(), msg, UVM_LOW)
+`else
+`define mm_info(msg)
+`endif
+	
+`ifdef DEBUG_MEM_MGR_VERBOSE
+`define mm_info_v(msg) `uvm_info(get_name(), msg, UVM_LOW)
+`else
+`define mm_info_v(msg)
+`endif
 
 // class used to manage reserved memory
 class mem_mgr_mem_region;
@@ -48,11 +58,6 @@ class mem_mgr extends uvm_component;
 	
 	uvm_analysis_port #(mem_mgr_ev)						mem_ev_ap;
 
-	/*
-	uvm_sequencer #(wb_master_req, wb_master_rsp)		m_m0_sequencer;
-	uvm_sequencer #(wb_master_req, wb_master_rsp)		m_m1_sequencer;
-	 */
-	
 	bit [31:0]											m_mem_base;
 	bit [31:0]											m_mem_size;
 	mem_mgr_mem_region									m_map[$];
@@ -79,16 +84,6 @@ class mem_mgr extends uvm_component;
 		m_mem_ev = mem_mgr_ev::type_id::create("ev");
 	endfunction
 
-	/** TODO:
-	function void init(
-		uvm_sequencer #(wb_master_req, wb_master_rsp) m0_seqr,
-		uvm_sequencer #(wb_master_req, wb_master_rsp) m1_seqr);
-		m_m0_sequencer = m0_seqr;
-		m_m1_sequencer = m1_seqr;
-	endfunction
-	
-	 */
-
 	/*
 	function bit is_direct_mapped(bit[31:0] addr);
 		region = find_mem_region(addr);
@@ -113,10 +108,8 @@ class mem_mgr extends uvm_component;
 		
 		m_access_sem.get(1);
 		
-`ifdef DEBUG_MEM_MGR
-		uvm_report_info("MEM_MGR", $psprintf("malloc(%0d) align=%0d align_mask='h%08h %0s", 
+		`mm_info($psprintf("malloc(%0d) align=%0d align_mask='h%08h %0s", 
 			size, align, align_mask, desc));
-`endif
 		
 		region.addr    = m_mem_base;
 		region.size    = size+4;
@@ -124,57 +117,51 @@ class mem_mgr extends uvm_component;
 		region.storage = new[region.size];
 		
 		if (m_map.size() == 0) begin
-`ifdef DEBUG_MEM_MGR
-			uvm_report_info("MEM_MGR", "    first alloc");
-`endif
+			`mm_info("    first alloc");
 			m_map.push_back(region);
-		end else begin 
+		end else begin
+			
 			for (int i=0; i<m_map.size(); i++) begin
-`ifdef DEBUG_MEM_MGR
-				uvm_report_info("MEM_MGR", 
-					$psprintf("    region 'h%0h .. 'h%0h",
+				`mm_info($psprintf("    region 'h%0h .. 'h%0h",
 						m_map[i].addr, (m_map[i].addr+m_map[i].size-1)));
-`endif
 				// Align the address as specified
-				if (align > 1) begin
-`ifdef DEBUG_MEM_MGR
-					uvm_report_info("MEM_MGR", $psprintf("    pre-align addr='h%08h", region.addr));
-`endif
-					region.addr = (region.addr + (align - (region.addr & align_mask)));
-`ifdef DEBUG_MEM_MGR
-					uvm_report_info("MEM_MGR", $psprintf("    post-align addr='h%08h", region.addr));
-`endif
-				end
+//				if (align > 1) begin
+//					`mm_info($psprintf("    pre-align addr='h%08h", region.addr));
+//					region.addr = (region.addr + (align - (region.addr & align_mask)));
+//					region.size -= (align - (region.addr & align_mask));
+//					`mm_info($psprintf("    post-align addr='h%08h", region.addr));
+//				end
+				
 				/**
-				 * Check whether the requested block fits beneath the
-				 * allocated block
+				 * Check whether the requested block fits ahead of the
+				 * current allocated block (we've initialized region to 
+				 * the base address
 				 */
 				if (m_map[i].addr > region.addr &&
 						(region.addr + region.size) < m_map[i].addr) begin
 					$sformat(region.desc, "%s ('h%08h .. 'h%08h)", desc,
 						region.addr, (region.addr+region.size-1)); 
-					region_t = find_mem_region(region.addr);
-					if (region_t != null) begin
-						uvm_report_error("MEM_MGR", 
-							$psprintf("Allocation fail (1): Address 'h%08h already allocated 'h%08h..'h%08h", 
-								region.addr, region_t.addr, (region_t.addr+region_t.size-1)));
-						foreach (m_map[x]) begin
-							$display("Region %0d: 'h%08h..'h%08h",
-								x, m_map[x].addr, (m_map[x].addr+m_map[x].size-1));
-						end
-					end
-
+//					region_t = find_mem_region(region.addr);
+//					if (region_t != null) begin
+//						`uvm_error(get_name(),
+//							$psprintf("Allocation fail (1): Address 'h%08h already allocated 'h%08h..'h%08h", 
+//								region.addr, region_t.addr, (region_t.addr+region_t.size-1)));
+//						foreach (m_map[x]) begin
+//							$display("Region %0d: 'h%08h..'h%08h",
+//								x, m_map[x].addr, (m_map[x].addr+m_map[x].size-1));
+//						end
+//					end
 					m_map.insert(i, region);
-`ifdef DEBUG_MEM_MGR
-					uvm_report_info("MEM_MGR", "    insert region here");
-`endif
+					`mm_info("    insert region here");
 					break;
 				end else begin
 					// Continue searching for an available space 
 					region.addr = m_map[i].addr + m_map[i].size;
 
 					if (align > 1) begin
+						`mm_info($psprintf("    pre-align addr='h%08h", region.addr));
 						region.addr = (region.addr + (align - (region.addr & align_mask)));
+						`mm_info($psprintf("    post-align addr='h%08h", region.addr));
 					end
 					
 					if (i+1 >= m_map.size()) begin
@@ -185,9 +172,7 @@ class mem_mgr extends uvm_component;
 								$psprintf("Allocation fail (2): Address 'h%0h already allocated", region.addr));
 						end
 						m_map.push_back(region);
-`ifdef DEBUG_MEM_MGR
-						uvm_report_info("MEM_MGR", "    add at end");
-`endif
+						`mm_info("    add at end");
 						break;
 					end
 				end  
@@ -195,7 +180,7 @@ class mem_mgr extends uvm_component;
 		end
 
 `ifdef DEBUG_MEM_MGR
-		uvm_report_info("MEM_MGR", $psprintf("malloc returns 'h%0h", region.addr));
+		`mm_info($psprintf("malloc returns 'h%0h", region.addr));
 		foreach (m_map[x]) begin
 			$display("Region %0d: 'h%08h..'h%08h %s",
 				x, m_map[x].addr, (m_map[x].addr+m_map[x].size-1), m_map[x].desc);
@@ -211,7 +196,9 @@ class mem_mgr extends uvm_component;
 			end
 		end
 				
-		addr = (region.addr + (4-(region.addr%4)));
+//		addr = (region.addr + (4-(region.addr%4)));
+		addr = region.addr;
+		`mm_info($psprintf("malloc: %0d => 'h%08h", size, addr));
 		m_access_sem.put(1);
 	endtask
 	
@@ -328,30 +315,57 @@ class mem_mgr extends uvm_component;
 							(we)?"Write":"Read", addr));
 				end
 				 */
-				addr = (addr - region.addr);
 				if (we) begin
-					region.storage[addr] = data;
+					region.storage[addr-region.addr] = data;
 				end else begin
-					data = region.storage[addr];
+					data = region.storage[addr-region.addr];
 				end
 			end else begin
 				uvm_report_error("MEM_MGR", $psprintf(
 					"%0s to 'h%08h is to an unmapped region", 
 					(we)?"Write":"Read", addr));
-				/*
-				 */
 			end  
 		end else begin
 			uvm_report_error("MEM_MGR", 
 				$psprintf("Direct access to address 'h%h outside the memory space", addr));
 		end
 
-`ifdef DEBUG_MEM_MGR_VERBOSE
-		 uvm_report_info("MEM_MGR", $psprintf("[Direct Access] %0s 'h%08h = 'h%08h", 
-				(we)?"Write":"Read", addr << 2, data));
-`endif
+		 `mm_info_v($psprintf("[Direct Access] %0s 'h%08h = 'h%08h", 
+				(we)?"Write":"Read", addr, data));
 	endfunction
-
+	
+	function void write32(
+		bit [31:0]			addr,
+		bit [31:0]			data,
+		bit 				le=1);
+		bit[7:0] b;
+		
+		for (int i=0; i<4; i++) begin
+			if (le) begin
+				b = (data >> 8*i);
+			end else begin
+				b = (data >> 8*(3-i));
+			end
+			direct_access(addr+i, 1, b);
+		end
+	endfunction
+	
+	function void read32(
+		input  bit [31:0]		addr,
+		output bit [31:0]		data,
+		input  bit 				le=1);
+		bit[7:0] b;
+	
+		data = 0;
+		for (int i=0; i<4; i++) begin
+			direct_access(addr+i, 0, b);
+			if (le) begin
+				data |= (b << 8*i);
+			end else begin
+				data |= (b << 8*(3-i));
+			end
+		end
+	endfunction	
 	
 	
 	/**
@@ -442,4 +456,3 @@ class mem_mgr extends uvm_component;
 	
 endclass 
 
-`endif /* INCLUDED_MEM_MGR_SVH */
