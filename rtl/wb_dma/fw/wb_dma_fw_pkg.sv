@@ -12,34 +12,40 @@ package wb_dma_fw_pkg;
 	class wb_dma_drv_done_f;
 	endclass
 	
-	static wb_dma_drv_done_f			m_done_map[31];
+	static wb_dma_drv_done_f	m_done_map[31];
 	
 	typedef int unsigned		wb_dma_drv_t;
 	
-	import "DPI-C" context _wb_dma_drv_init=task wb_dma_drv_init(
+	import "DPI-C" context _wb_dma_drv_init=task init(
 			output wb_dma_drv_t	drv_id,
 			input int unsigned	base,
 			input int unsigned	irq_en,
 			input chandle		user_data);
 	
-	import "DPI-C" context task _wb_dma_drv_begin_xfer(
+	import "DPI-C" context _wb_dma_drv_init_single_xfer=task init_single_xfer(
+			wb_dma_drv_t		drv_id,
+			int unsigned		chan,
+			int unsigned		src,
+			int unsigned		inc_src,
+			int unsigned		dst,
+			int unsigned		inc_dst,
+			int unsigned		num_words);
+	
+	import "DPI-C" context _wb_dma_drv_init_linklist_desc=task init_linklist_desc(
 			wb_dma_drv_t		drv_id,
 			int unsigned		src,
+			int unsigned		inc_src,
 			int unsigned		dst,
-			int unsigned		num_words,
-			output int			chan);
+			int unsigned		inc_dst,
+			int unsigned		sz,
+			int unsigned		desc,
+			int unsigned		desc_n);
 	
-	task wb_dma_drv_begin_xfer(
-		wb_dma_drv_t			drv_id,
-		int unsigned			src,
-		int unsigned			dst,
-		int unsigned			num_words,
-		wb_dma_drv_done_f		done_func,
-		// TODO: end-transfer function
-		output int				chan
-		);
-		_wb_dma_drv_begin_xfer(drv_id, src, dst, num_words, chan);
-	endtask
+	import "DPI-C" context _wb_dma_drv_init_linklist_xfer=task init_linklist_xfer(
+			wb_dma_drv_t		drv_id,
+			int unsigned		chan,
+			int unsigned		desc);
+			
 	
 	import "DPI-C" context _wb_dma_drv_check_status=task wb_dma_drv_check_status(
 			wb_dma_drv_t		drv,
@@ -49,7 +55,7 @@ package wb_dma_fw_pkg;
 
 	import "DPI-C" context _wb_dma_drv_poll=task wb_dma_drv_poll(
 			wb_dma_drv_t		drv_id,
-			output int unsigned	n_done);
+			output int unsigned	done_mask);
 
 endpackage
 

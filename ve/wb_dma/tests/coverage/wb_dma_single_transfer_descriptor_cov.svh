@@ -52,7 +52,9 @@ class wb_dma_single_transfer_descriptor_cov extends uvm_subscriber #(wb_dma_desc
 	 */
 	virtual function void write(input T t);
 		desc = t;
-		single_desc_cg.sample();
+		if (t.ll_desc_sz == 0) begin
+			single_desc_cg.sample();
+		end
 	endfunction
 
 endclass

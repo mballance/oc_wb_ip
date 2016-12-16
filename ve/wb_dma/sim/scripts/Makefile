@@ -1,6 +1,11 @@
 
 include $(SIMSCRIPTS_DIR)/mkfiles/plusargs.mk
 
+MK_INCLUDES += $(OC_WB_IP)/rtl/wb_dma/fw/rules_defs.mk
+MK_INCLUDES += $(SV_BFMS)/api/rules_defs.mk
+
+CFLAGS += -DUSE_SV_BFMS_RW_API
+
 TB=wb_dma_tb
 TIMEOUT = 100ms
 
@@ -9,6 +14,8 @@ INFACT_RECOMPILE_TARGETS += recompile_tests
 
 INFACT_BUILDDIR_PROJECTS += infact_imp_proj
 INFACT_SRC_PROJECTS += $(SIM_DIR)/../tests/sequences/infact/infact_dma_seqs
+
+DPI_OBJS_LIBS += $(LIBWB_DMA_FW) $(LIBSV_BFMS_DPI)
 
 include $(SIMSCRIPTS_DIR)/mkfiles/common_sim.mk
 

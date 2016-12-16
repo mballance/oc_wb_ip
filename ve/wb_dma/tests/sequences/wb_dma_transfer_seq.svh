@@ -33,6 +33,8 @@ class wb_dma_transfer_seq extends wb_dma_reg_seq;
 		if (!$cast(desc, item)) begin
 			`uvm_fatal(get_name(), "Failed to cast item to wb_dma_descriptor");
 		end
+			
+		$display("--> Finish Item %0d", desc.channel);
 		
 		// Setup appropriate channel
 		ch = m_regs.ch[desc.channel];
@@ -44,19 +46,14 @@ class wb_dma_transfer_seq extends wb_dma_reg_seq;
 			setup_ll_transfer(desc, addresses);
 		end
 		
-		if (m_start_ap != null) begin
-			m_start_ap.write(desc);
-		end
 		
-		// Flush the CSR write
-		ch.CSR.update(status);
 		
 		// Now, wait completion
 		repeat(1000) begin
 			#10us;
 			ch.CSR.read(status, value);
 			
-			if (ch.CSR.DONE.get()) begin
+			if (value[11]) begin
 				$display("== DONE  CSR='h%08h ==", value);
 				if (m_done_ap != null) begin
 					m_done_ap.write(desc);
@@ -65,17 +62,22 @@ class wb_dma_transfer_seq extends wb_dma_reg_seq;
 			end
 		end
 		
+//		m_regs.sem.get(1); // Lock the registers
 		ch.CSR.read(status, value);
-		if (!ch.CSR.DONE.get()) begin
+		if (!value[11]) begin
 			`uvm_fatal(get_name(), "DMA transfer failed to terminate");
 		end
-		
-		ch.CSR.CH_EN.set(0); // disable channel
-		ch.CSR.update(status);
+	
+		ch.CSR.read(status, value);
+		value[0] = 0;
+		ch.CSR.write(status, value);
 
 		foreach (addresses[i]) begin
 			m_mem_mgr.free(addresses[i]);
 		end
+		
+		$display("<-- Finish Item %0d", desc.channel);
+		
 	endtask
 	
 	task setup_single_transfer(
@@ -108,35 +110,37 @@ class wb_dma_transfer_seq extends wb_dma_reg_seq;
 		addresses.push_back(desc.dst_addr);
 
 		// Disable the channel
-		ch.CSR.CH_EN.set(0);
-		ch.CSR.update(status);
+		ch.CSR.read(status, value);
+		value[0] = 0;
+		ch.CSR.write(status, value);
 
 		// These registers are volatile. Read-back the content
 		// so the register model knows to re-write them
 		ch.A0.read(status, value);
 		ch.A1.read(status, value);
 		
-		ch.A0.set(desc.src_addr);
-		ch.A1.set(desc.dst_addr);
+		ch.A0.write(status, desc.src_addr);
+		ch.A1.write(status, desc.dst_addr);
 		
-		ch.AM0.set('hfffffffc);
-		ch.AM1.set('hfffffffc);
-		
-		ch.SZ.CHK_SZ.set(desc.chk_sz);
-		ch.SZ.TOT_SZ.set(desc.tot_sz);
-		
-		// Flush everything except the CSR
-		m_regs.update(status);
+		ch.AM0.write(status, 'hfffffffc);
+		ch.AM1.write(status, 'hfffffffc);
 
-		ch.CSR.REST_EN.set(1);
-		ch.CSR.SZ_WB.set(1);
-		ch.CSR.USE_ED.set(0);
-		ch.CSR.ARS.set(0);
-		ch.CSR.MODE.set(0);
-		ch.CSR.INC_SRC.set(desc.inc_src);
-		ch.CSR.INC_DST.set(desc.inc_dst);
-		ch.CSR.SRC_SEL.set(desc.src_sel);
-		ch.CSR.DST_SEL.set(desc.dst_sel);
+		ch.SZ.read(status, value);
+		value[24:16] = desc.chk_sz;
+		value[11:0] = desc.tot_sz;
+		ch.SZ.write(status, value);
+	
+		ch.CSR.read(status, value);
+		value[16] = 1; // REST_EN
+		value[8] = 1; // SZ_WB
+		value[7] = 0; // USE_ED
+		value[6] = 0; // ARS
+		value[5] = 0; // MODE
+		value[4] = desc.inc_src; // INC_SRC
+		value[3] = desc.inc_dst; // INC_DST
+		value[2] = desc.src_sel; // SRC_SEL
+		value[1] = desc.dst_sel; // DST_SEL
+		value[0] = 1; // EN
 		
 		`uvm_info (get_name(),
 				$psprintf(
@@ -149,7 +153,11 @@ class wb_dma_transfer_seq extends wb_dma_reg_seq;
 					desc.dst_addr, desc.dst_sel, desc.inc_dst,
 					desc.tot_sz), UVM_LOW);
 		
-		ch.CSR.CH_EN.set(1); // enable channel
+		if (m_start_ap != null) begin
+			m_start_ap.write(desc);
+		end
+		
+		ch.CSR.write(status, value);
 	endtask
 	
 	task setup_ll_transfer(
@@ -211,9 +219,7 @@ class wb_dma_transfer_seq extends wb_dma_reg_seq;
 					desc.ll_desc[i].dst_sel, 
 					desc.ll_desc[i].inc_dst,
 					desc.ll_desc[i].tot_sz), UVM_LOW);
-		
-		ch.CSR.CH_EN.set(1); // enable channel
-		
+	
 			// Write CSR
 			m_mem_mgr.write32(desc.ll_desc[i].desc, data);
 		
@@ -244,28 +250,37 @@ class wb_dma_transfer_seq extends wb_dma_reg_seq;
 		// Begin the transfer
 		
 		// Disable the channel
-		ch.CSR.CH_EN.set(0);
-		ch.CSR.update(status);
+		ch.CSR.read(status, value);
+		value[0] = 0;
+		ch.CSR.write(status, value);
 
-		ch.AM0.set('hfffffffc);
-		ch.AM1.set('hfffffffc);
+		ch.AM0.write(status, 'hfffffffc);
+		ch.AM1.write(status, 'hfffffffc);
 	
 		// First descriptor in the chain
-		ch.DESC.set(desc.ll_desc[0].desc);
-		
-		ch.SZ.CHK_SZ.set(desc.chk_sz);
-		ch.SZ.TOT_SZ.set(desc.tot_sz);
-		
-		// Flush everything except the CSR
-		m_regs.update(status);
+		ch.DESC.write(status, desc.ll_desc[0].desc);
 
-		ch.CSR.REST_EN.set(1);
-		ch.CSR.SZ_WB.set(1);
-		ch.CSR.USE_ED.set(1);
-		ch.CSR.ARS.set(0);
-		ch.CSR.MODE.set(0);
+		value[24:16] = desc.chk_sz;
+		value[11:0]  = desc.tot_sz;
+		ch.SZ.write(status, value);
+
+		ch.CSR.read(status, value);
+		value[16] = 1; // REST_EN
+		value[8] = 1; // SZ_WB
+		value[7] = 1; // USE_ED
+		value[6] = 0; // ARS
+		value[5] = 0; // MODE
+		value[4] = desc.inc_src; // INC_SRC
+		value[3] = desc.inc_dst; // INC_DST
+		value[2] = desc.src_sel; // SRC_SEL
+		value[1] = desc.dst_sel; // DST_SEL
+		value[0] = 1; // EN
 		
-		ch.CSR.CH_EN.set(1); // enable channel
+		if (m_start_ap != null) begin
+			m_start_ap.write(desc);
+		end
+		
+		ch.CSR.write(status, value);
 	endtask
 
 	/**

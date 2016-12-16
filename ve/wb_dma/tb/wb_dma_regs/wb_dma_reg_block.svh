@@ -10,7 +10,7 @@
 class wb_dma_reg_block extends uvm_reg_block;
 	`uvm_object_utils(wb_dma_reg_block)
 		
-	semaphore			sem;
+	semaphore			sem = new(1);
 		
 	// Registers
 	wb_dma_csr			csr;
@@ -48,7 +48,7 @@ class wb_dma_reg_block extends uvm_reg_block;
 			
 		for (int i=0; i<=30; i++) begin
 			ch[i] = wb_dma_ch::type_id::create($psprintf("CH%0d", i));
-			ch[i].build();
+			ch[i].build(i);
 			ch[i].configure(this, i);
 		end
 			

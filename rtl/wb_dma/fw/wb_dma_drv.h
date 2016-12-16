@@ -42,22 +42,46 @@ EXPORT void wb_dma_drv_init(
 		uint32_t         irq_en,
 		void			*user_data);
 
-/**
- * Begins a transfer. Returns the channel
- * carrying out the transfer, or -1 if setup failed
- */
-EXPORT int32_t wb_dma_drv_begin_xfer(
+EXPORT void wb_dma_drv_set_channel_priority(
 		wb_dma_drv_t		*drv,
+		uint32_t			channel,
+		uint8_t				pri);
+
+/**
+ * Initializes a channel to perform a single transfer
+ */
+EXPORT void wb_dma_drv_init_single_xfer(
+		wb_dma_drv_t		*drv,
+		uint32_t			channel,
 		uint32_t			src,
+		uint32_t			inc_src,
 		uint32_t			dst,
-		uint32_t			num_words,
-		wb_dma_drv_done_f	done_func
+		uint32_t			inc_dst,
+		uint32_t			sz
 		);
 
-//EXPORT int32_t wb_dma_drv_init_ll_xfer(
-//		wb_dma_drv_t		*drv,
-//		uint32_t
-//		);
+/**
+ * Initializes a linked-list descriptor. The caller
+ * is responsible for allocating the memory for
+ * desc and desc_n
+ */
+EXPORT void wb_dma_drv_init_linklist_desc(
+		wb_dma_drv_t		*drv,
+		uint32_t			src,
+		uint32_t			inc_src,
+		uint32_t			dst,
+		uint32_t			inc_dst,
+		uint32_t			sz,
+		wb_dma_drv_ll_t		*desc,
+		wb_dma_drv_ll_t		*desc_n);
+
+/**
+ * Initializes a channel to perform a linked-list transfer
+ */
+EXPORT void wb_dma_drv_init_linklist_xfer(
+		wb_dma_drv_t		*drv,
+		uint32_t			channel,
+		wb_dma_drv_ll_t		*desc);
 
 /**
  * Checks whether the status of a specific channel:

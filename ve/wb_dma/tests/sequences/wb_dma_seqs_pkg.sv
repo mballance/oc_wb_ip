@@ -29,6 +29,10 @@ package wb_dma_seqs_pkg;
 	`include "wb_dma_rand_single_medium_transfer_seq.svh"
 	
 	`include "wb_dma_rand_ll_transfer_seq.svh"
+	`include "wb_dma_directed_transfer_seq.svh"
+	
+	`include "wb_dma_multixfer_vseq.svh"
+	`include "wb_dma_rand_4par_transfer_seq.svh"
 	
 	// Config sequences
 	`include "wb_dma_config_seq.svh"

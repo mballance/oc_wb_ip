@@ -20,20 +20,20 @@ class wb_dma_ch extends uvm_object;
 		
 	// TODO: SWPTR
 		
-	function void build();
-		CSR = wb_dma_ch_csr::type_id::create("CSR");
+	function void build(int i);
+		CSR = wb_dma_ch_csr::type_id::create($psprintf("CSR_%0d", i));
 		CSR.build();
-		SZ = wb_dma_ch_sz::type_id::create("SZ");
+		SZ = wb_dma_ch_sz::type_id::create($psprintf("SZ_%0d", i));
 		SZ.build();
-		A0 = wb_dma_ch_adr::type_id::create("A0");
+		A0 = wb_dma_ch_adr::type_id::create($psprintf("A0_%0d", i));
 		A0.build();
-		AM0 = wb_dma_ch_adr_mask::type_id::create("AM0");
+		AM0 = wb_dma_ch_adr_mask::type_id::create($psprintf("AM0_%0d", i));
 		AM0.build();
-		A1 = wb_dma_ch_adr::type_id::create("A1");
+		A1 = wb_dma_ch_adr::type_id::create($psprintf("A1_%0d", i));
 		A1.build();
-		AM1 = wb_dma_ch_adr_mask::type_id::create("AM1");
+		AM1 = wb_dma_ch_adr_mask::type_id::create($psprintf("AM1_%0d", i));
 		AM1.build();
-		DESC = wb_dma_ch_adr::type_id::create("DESC");
+		DESC = wb_dma_ch_adr::type_id::create($psprintf("DESC_%0d", i));
 		DESC.build();
 	endfunction
 		

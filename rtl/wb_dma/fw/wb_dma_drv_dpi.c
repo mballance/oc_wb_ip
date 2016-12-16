@@ -17,15 +17,44 @@ EXPORT int _wb_dma_drv_init(
 	return 0;
 }
 
-EXPORT int _wb_dma_drv_begin_xfer(
+EXPORT int _wb_dma_drv_init_single_xfer(
+		uint32_t			drv_id,
+		uint32_t			chan,
+		uint32_t			src,
+		uint32_t			inc_src,
+		uint32_t			dst,
+		uint32_t			inc_dst,
+		uint32_t			num_words) {
+	wb_dma_drv_t *drv = &drvArr[drv_id];
+	wb_dma_drv_init_xfer(drv, chan, src, inc_src, dst, inc_dst, num_words);
+	return 0;
+}
+
+EXPORT int _wb_dma_drv_init_linklist_desc(
 		uint32_t			drv_id,
 		uint32_t			src,
+		uint32_t			inc_src,
 		uint32_t			dst,
-		uint32_t			num_words,
-		int32_t				*chan) {
+		uint32_t			inc_dst,
+		uint32_t			sz,
+		uint32_t			desc,
+		uint32_t			desc_n) {
 	wb_dma_drv_t *drv = &drvArr[drv_id];
-	*chan = wb_dma_drv_begin_xfer(
-			drv, src, dst, num_words, 0);
+	wb_dma_drv_ll_t *desc_p = (wb_dma_drv_ll_t *)((uint64_t)desc);
+	wb_dma_drv_ll_t *desc_n_p = (wb_dma_drv_ll_t *)((uint64_t)desc_n);
+	wb_dma_drv_init_linklist_desc(drv, src, inc_src,
+			dst, inc_dst, sz, desc_p, desc_n_p);
+	return 0;
+}
+
+EXPORT int _wb_dma_drv_init_linklist_xfer(
+		uint32_t			drv_id,
+		uint32_t			chan,
+		uint32_t			desc) {
+	wb_dma_drv_t *drv = &drvArr[drv_id];
+	wb_dma_drv_ll_t *desc_p = (wb_dma_drv_ll_t *)((uint64_t)desc);
+
+	wb_dma_drv_init_linklist_xfer(drv, chan, desc_p);
 	return 0;
 }
 
