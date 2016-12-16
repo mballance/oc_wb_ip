@@ -23,6 +23,9 @@
 #define WB_DMA_WRITE_CH_SZ(drv, ch, data) \
 	WB_DMA_WRITE32(drv, ((drv)->base + 0x24 + (ch)*0x20), data)
 
+#define WB_DMA_READ_CH_SZ(drv, ch) \
+	WB_DMA_READ32(drv, ((drv)->base + 0x24 + (ch)*0x20))
+
 #define WB_DMA_WRITE_CH_A0(drv, ch, data) \
 	WB_DMA_WRITE32(drv, ((drv)->base + 0x28 + (ch)*0x20), data)
 
@@ -47,6 +50,8 @@ void wb_dma_drv_init(
 		uint32_t		base,
 		uint32_t		irq_en,
 		void			*user_data) {
+	uint32_t i;
+
 	memset(drv, 0, sizeof(wb_dma_drv_t));
 	drv->base = base;
 	drv->user_data = user_data;
@@ -56,51 +61,78 @@ void wb_dma_drv_init(
 		WB_DMA_WRITE32(drv, drv->base+0x04, 0xFFFFFFFF);
 		WB_DMA_WRITE32(drv, drv->base+0x0C, 0xFFFFFFFF);
 	}
+
+	for (i=0; i<31; i++) {
+		// Enable for 256-byte chunks
+		uint32_t sz_v = ((256/4) << 16);
+
+		WB_DMA_WRITE_CH_SZ(drv, i, sz_v);
+
+		// Configure mask
+		WB_DMA_WRITE_CH_AM0(drv, i, 0xFFFFFFFC);
+		WB_DMA_WRITE_CH_AM1(drv, i, 0xFFFFFFFC);
+	}
 }
 
-int32_t wb_dma_drv_begin_xfer(
+void wb_dma_drv_init_single_xfer(
 		wb_dma_drv_t		*drv,
+		uint32_t			ch,
 		uint32_t			src,
+		uint32_t			inc_src,
 		uint32_t			dst,
-		uint32_t			num_words,
-		wb_dma_drv_done_f	done_func
+		uint32_t			inc_dst,
+		uint32_t			sz
 		) {
-	int32_t ch = -1;
-	uint32_t i;
-
-
-	// Select a channel
-	for (i=0; i<31; i++) {
-		if (drv->status[i] != 1) {
-			ch = i;
-			break;
-		}
-	}
-
+	uint32_t sz_v, csr;
 	fprintf(stdout, "begin_xfer: drv=%p ch=%d\n", drv, ch);
 	fflush(stdout);
 
-	if (ch != -1) {
-		uint32_t csr = WB_DMA_READ_CH_CSR(drv, ch);
+	csr = WB_DMA_READ_CH_CSR(drv, ch);
 
-		csr |= (1 << 18); // interrupt on done
-		csr |= (1 << 17); // interrupt on error
+	csr |= (1 << 18); // interrupt on done
+	csr |= (1 << 17); // interrupt on error
+	if (inc_src) {
 		csr |= (1 << 4); // increment source
+	} else {
+		csr &= ~(1 << 4);
+	}
+	if (inc_dst) {
 		csr |= (1 << 3); // increment destination
-		csr |= (1 << 1); // use interface 1 for destination
-		csr |= (1 << 0); // enable channel
-		// Setup source and destination addresses
-		WB_DMA_WRITE_CH_A0(drv, ch, src);
-		WB_DMA_WRITE_CH_A1(drv, ch, dst);
-		WB_DMA_WRITE_CH_SZ(drv, ch, num_words);
-
-		// Start the transfer
-		WB_DMA_WRITE_CH_CSR(drv, ch, csr);
-
-		drv->status[ch] = 1;
+	} else {
+		csr &= ~(1 << 3); // increment destination
 	}
 
-	return ch;
+	csr |= (1 << 2); // use interface 0 for source
+	csr |= (1 << 1); // use interface 1 for destination
+
+	csr |= (1 << 0); // enable channel
+
+	// Setup source and destination addresses
+	WB_DMA_WRITE_CH_A0(drv, ch, src);
+	WB_DMA_WRITE_CH_A1(drv, ch, dst);
+
+	sz_v = WB_DMA_READ_CH_SZ(drv, ch);
+	sz_v &= ~(0xFFF); // Clear tot_sz
+	sz_v |= (sz & 0xFFF);
+	WB_DMA_WRITE_CH_SZ(drv, ch, sz_v);
+
+	// Start the transfer
+	WB_DMA_WRITE_CH_CSR(drv, ch, csr);
+
+	drv->status[ch] = 1;
+}
+
+void wb_dma_drv_init_linklist_desc(
+		wb_dma_drv_t		*drv,
+		uint32_t			src,
+		uint32_t			inc_src,
+		uint32_t			dst,
+		uint32_t			inc_dst,
+		uint32_t			sz,
+		wb_dma_drv_ll_t		*desc,
+		wb_dma_drv_ll_t		*desc_n
+		) {
+
 }
 
 uint32_t wb_dma_drv_check_status(
@@ -131,7 +163,7 @@ uint32_t wb_dma_drv_check_status(
 }
 
 uint32_t wb_dma_drv_poll(wb_dma_drv_t *drv) {
-	uint32_t ch, cnt=0;
+	uint32_t ch, mask=0;
 
 	for (ch=0; ch<31; ch++) {
 		if (drv->status[ch] == 1) {
@@ -145,24 +177,16 @@ uint32_t wb_dma_drv_poll(wb_dma_drv_t *drv) {
 			if ((csr & 1) == 0) {
 				// inactive
 				if ((csr & (1 << 12)) != 0) {
-					drv->status[ch] = 2;
+					drv->status[ch] = 2; // Error (?)
 				} else {
-					drv->status[ch] = 0;
+					drv->status[ch] = 0; // Done
 				}
-			}
-
-			if (drv->status[ch] != 1 && drv->done_func_list[ch]) {
-				drv->done_func_list[ch](drv, ch);
-				drv->done_func_list[ch] = 0; // always null out
-			}
-
-			if (drv->status[ch] != 1) {
-				cnt++;
+				mask |= (1 << ch);
 			}
 		}
 	}
 
-	return cnt;
+	return mask;
 }
 
 

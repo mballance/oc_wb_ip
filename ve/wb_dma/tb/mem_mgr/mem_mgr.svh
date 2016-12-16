@@ -1,6 +1,4 @@
 //----------------------------------------------------------------------
-//   Copyright 2007-2012 Mentor Graphics Corporation
-//   All Rights Reserved Worldwide
 //
 //   Licensed under the Apache License, Version 2.0 (the
 //   "License"); you may not use this file except in
@@ -16,18 +14,6 @@
 //   the License for the specific language governing
 //   permissions and limitations under the License.
 //----------------------------------------------------------------------
-/****************************************************************************
- * wb_dma_memory_mgr.svh
- *
- * Copyright 2010 Mentor Graphics Corporation. All Rights Reserved
- * 
- * Memory manager for the testbench. Models the memory used by the 
- * testbench for source and destination memory. Manages allocation of this
- * testbench memory. Channels memory-access requests from the testbench
- * and memory-access requests from the DMA engine to the correct memory
- * region.
- * 
- ****************************************************************************/
 
 `undef DEBUG_MEM_MGR
 `undef DEBUG_MEM_MGR_VERBOSE
@@ -75,8 +61,8 @@ class mem_mgr extends uvm_component;
 		super.new(name, parent);
 		
 		// TODO: parameterize or enable configuration
-		m_mem_base = 'h2000;
-		m_mem_size = 'h200000;
+		m_mem_base = 'h0000_1000;
+		m_mem_size = 'h0020_0000;
 		mem_ev_ap = new("mem_ev_ap", this);
 		
 		m_access_sem = new(1);
@@ -210,6 +196,8 @@ class mem_mgr extends uvm_component;
 		mem_mgr_mem_region region = null;
 		
 		m_access_sem.get(1);
+		
+		$display("NOTE: free('h%08h)", addr);
 		
 		for (int i=0; i<m_map.size(); i++) begin
 			if (addr >= m_map[i].addr && addr < (m_map[i].addr+m_map[i].size)) begin

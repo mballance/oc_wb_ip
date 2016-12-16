@@ -1,7 +1,7 @@
 
-class wb_dma_fw_test extends wb_dma_test_base;
+class wb_dma_sw_test extends wb_dma_test_base;
 	
-	`uvm_component_utils(wb_dma_fw_test)
+	`uvm_component_utils(wb_dma_sw_test)
 	
 	/****************************************************************
 	 * Data Fields
@@ -41,9 +41,11 @@ class wb_dma_fw_test extends wb_dma_test_base;
 	 ****************************************************************/
 	task run_phase(uvm_phase phase);
 		wb_dma_reg_reset_seq rst_seq = wb_dma_reg_reset_seq::type_id::create("rst_seq");
-		wb_dma_transfer_seq transfer_seq;
+		wb_dma_multixfer_sw_seq seq;
 		wb_slave_mem_seq #(32, 32) s0_seq, s1_seq;
 		wb_dma_config_seq cfg_seq;
+		wb_dma_drv_t drv_id;
+		chandle ud = null;
 	
 		phase.raise_objection(this, "Main");
 		// First reset registers
@@ -60,6 +62,8 @@ class wb_dma_fw_test extends wb_dma_test_base;
 			s1_seq.start(m_env.m_s1_agent.m_seqr);
 		join_none
 		
+		wb_dma_drv_init(drv_id, 'h0, 'hFFFF_FFFF, ud);
+		
 		// Run config sequence
 		cfg_seq = wb_dma_config_seq::type_id::create("cfg_seq");
 		cfg_seq.m_regs = m_env.m_dma_regs;
@@ -68,12 +72,13 @@ class wb_dma_fw_test extends wb_dma_test_base;
 		
 		
 		// Now, create and run a transfer sequence
-		transfer_seq = wb_dma_transfer_seq::type_id::create("transfer_seq");
-		transfer_seq.m_regs = m_env.m_dma_regs;
-		transfer_seq.m_start_ap = m_env.m_start_ap;
-		transfer_seq.m_done_ap = m_env.m_done_ap;
-		transfer_seq.m_mem_mgr = m_env.m_mem_mgr;
-		transfer_seq.start(null);
+		seq = wb_dma_multixfer_sw_seq::type_id::create("seq");
+		seq.m_regs = m_env.m_dma_regs;
+		seq.m_start_ap = m_env.m_start_ap;
+		seq.m_done_ap = m_env.m_done_ap;
+		seq.m_mem_mgr = m_env.m_mem_mgr;
+		seq.m_drv_id = drv_id;
+		seq.start(null);
 		
 			
 		phase.drop_objection(this, "Main");

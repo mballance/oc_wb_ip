@@ -26,7 +26,7 @@ EXPORT int _wb_dma_drv_init_single_xfer(
 		uint32_t			inc_dst,
 		uint32_t			num_words) {
 	wb_dma_drv_t *drv = &drvArr[drv_id];
-	wb_dma_drv_init_xfer(drv, chan, src, inc_src, dst, inc_dst, num_words);
+	wb_dma_drv_init_single_xfer(drv, chan, src, inc_src, dst, inc_dst, num_words);
 	return 0;
 }
 

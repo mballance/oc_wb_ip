@@ -25,7 +25,6 @@ TBI_ARGS += -sv_lib work -project infact_imp_proj -unit wb_dma_tests_pkg
 run_tbi :
 	infact cmd import_testbench $(TBI_ARGS) \
 		wb_dma_seqs_pkg::wb_dma_single_transfer_descriptor \
-		-disable_field ll_desc -disable_constraint ll_desc_c \
 		-covergroup wb_dma_coverage_pkg::wb_dma_single_transfer_descriptor_cov::single_desc_cg
 	infact cmd import_testbench $(TBI_ARGS) \
 		wb_dma_env_pkg::wb_dma_config \

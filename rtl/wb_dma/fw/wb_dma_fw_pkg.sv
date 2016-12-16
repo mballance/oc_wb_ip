@@ -16,13 +16,13 @@ package wb_dma_fw_pkg;
 	
 	typedef int unsigned		wb_dma_drv_t;
 	
-	import "DPI-C" context _wb_dma_drv_init=task init(
+	import "DPI-C" context _wb_dma_drv_init=task wb_dma_drv_init(
 			output wb_dma_drv_t	drv_id,
 			input int unsigned	base,
 			input int unsigned	irq_en,
 			input chandle		user_data);
 	
-	import "DPI-C" context _wb_dma_drv_init_single_xfer=task init_single_xfer(
+	import "DPI-C" context _wb_dma_drv_init_single_xfer=task wb_dma_init_single_xfer(
 			wb_dma_drv_t		drv_id,
 			int unsigned		chan,
 			int unsigned		src,
@@ -31,7 +31,7 @@ package wb_dma_fw_pkg;
 			int unsigned		inc_dst,
 			int unsigned		num_words);
 	
-	import "DPI-C" context _wb_dma_drv_init_linklist_desc=task init_linklist_desc(
+	import "DPI-C" context _wb_dma_drv_init_linklist_desc=task wb_dma_init_linklist_desc(
 			wb_dma_drv_t		drv_id,
 			int unsigned		src,
 			int unsigned		inc_src,
@@ -41,7 +41,7 @@ package wb_dma_fw_pkg;
 			int unsigned		desc,
 			int unsigned		desc_n);
 	
-	import "DPI-C" context _wb_dma_drv_init_linklist_xfer=task init_linklist_xfer(
+	import "DPI-C" context _wb_dma_drv_init_linklist_xfer=task wb_dma_init_linklist_xfer(
 			wb_dma_drv_t		drv_id,
 			int unsigned		chan,
 			int unsigned		desc);

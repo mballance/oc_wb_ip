@@ -8,11 +8,17 @@
  * TODO: Add class documentation
  */
 class wb_dma_multixfer_vseq extends wb_dma_transfer_seq;
+	`uvm_object_utils(wb_dma_multixfer_vseq)
+	
 	// Have registers pre-set
 
 	// Method to track available channels
 	wb_dma_directed_transfer_seq	m_active_seqs[$];
 	semaphore						m_done_sem = new(0);
+	
+	function new(string name="wb_dma_multixfer_vseq");
+		super.new(name);
+	endfunction
 	
 	/**
 	 * Task: finish_item

@@ -15,6 +15,9 @@ class wb_dma_transfer_seq extends wb_dma_reg_seq;
 	
 	mem_mgr										m_mem_mgr;
 
+	function new(string name="wb_dma_transfer_seq");
+		super.new(name);
+	endfunction
 
 	/**
 	 * Task: finish_item
@@ -75,6 +78,7 @@ class wb_dma_transfer_seq extends wb_dma_reg_seq;
 		foreach (addresses[i]) begin
 			m_mem_mgr.free(addresses[i]);
 		end
+		addresses = {};
 		
 		$display("<-- Finish Item %0d", desc.channel);
 		
@@ -82,7 +86,7 @@ class wb_dma_transfer_seq extends wb_dma_reg_seq;
 	
 	task setup_single_transfer(
 		wb_dma_descriptor		desc,
-		bit[31:0]				addresses[$]);
+		ref bit[31:0]			addresses[$]);
 		wb_dma_ch ch = m_regs.ch[desc.channel];
 		uvm_status_e status;
 		uvm_reg_data_t value;
@@ -162,7 +166,7 @@ class wb_dma_transfer_seq extends wb_dma_reg_seq;
 	
 	task setup_ll_transfer(
 		wb_dma_descriptor		desc,
-		bit[31:0]				addresses[$]);
+		ref bit[31:0]			addresses[$]);
 		wb_dma_ch ch = m_regs.ch[desc.channel];
 		uvm_status_e status;
 		uvm_reg_data_t value;

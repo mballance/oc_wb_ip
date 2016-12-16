@@ -34,10 +34,10 @@ class wb_slave_mem_seq #(parameter int ADDRESS_WIDTH=32, parameter int DATA_WIDT
 				m_mem_mgr.read32(item.addr, item.data);
 			end
 		
-//			$display("%0t %0s: 'h%08h 'h%08h",
-//					$time,
-//					(item.is_write)?"WRITE":"READ",
-//					item.addr, item.data);
+			$display("%0t %0s: 'h%08h 'h%08h",
+					$time,
+					(item.is_write)?"WRITE":"READ",
+					item.addr, item.data);
 			
 			start_item(item); // start next item
 		end
