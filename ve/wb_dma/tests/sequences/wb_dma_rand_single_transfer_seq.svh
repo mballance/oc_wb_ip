@@ -19,7 +19,7 @@ class wb_dma_rand_single_transfer_seq extends wb_dma_transfer_seq;
 	virtual task body();
 		wb_dma_single_transfer_descriptor desc;
 	
-		repeat (64) begin
+		repeat (200) begin
 			desc = wb_dma_single_transfer_descriptor::type_id::create("desc");
 			
 			start_item(desc);

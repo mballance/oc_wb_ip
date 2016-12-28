@@ -22,10 +22,13 @@ include $(SIMSCRIPTS_DIR)/mkfiles/common_sim.mk
 
 TBI_ARGS += -sv_lib work -project infact_imp_proj -unit wb_dma_tests_pkg
 
+SEQS_PKG := wb_dma_seqs_pkg
+COV_PKG := wb_dma_coverage_pkg
+
 run_tbi :
 	infact cmd import_testbench $(TBI_ARGS) \
-		wb_dma_seqs_pkg::wb_dma_single_transfer_descriptor \
-		-covergroup wb_dma_coverage_pkg::wb_dma_single_transfer_descriptor_cov::single_desc_cg
+		$(SEQS_PKG)::wb_dma_single_transfer_descriptor \
+		-covergroup $(COV_PKG)::wb_dma_single_transfer_descriptor_cov::single_desc_cg
 	infact cmd import_testbench $(TBI_ARGS) \
 		wb_dma_env_pkg::wb_dma_config \
 		-component infact_wb_dma_config_pairwise_gen
