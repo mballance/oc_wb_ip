@@ -10,3 +10,7 @@
 	path = simscripts
 	url = https://github.com/mballance/simscripts.git
 	branch = master
+[submodule "fw/uex"]
+	path = fw/uex
+	url = https://github.com/mballance/uex.git
+	branch = master
