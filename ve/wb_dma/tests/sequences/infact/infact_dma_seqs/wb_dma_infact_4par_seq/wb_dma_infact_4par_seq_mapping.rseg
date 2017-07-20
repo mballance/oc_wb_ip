@@ -1,0 +1,35 @@
+/****************************************************************************
+ *                          wb_dma_infact_4par_seq_mapping.rseg
+ ****************************************************************************/
+
+rule_segment {
+    
+    // TODO: Add segment declarations
+
+    attributes rule_graph {
+    	user_data += "
+    		wb_dma_descriptor m_xfer_4par__t1;
+    		wb_dma_descriptor m_xfer_4par__t2;
+    		wb_dma_descriptor m_xfer_4par__t3;
+    		wb_dma_descriptor m_xfer_4par__t4;";
+    
+    	include += "
+    		class do_4par;
+    			wb_dma_descriptor t1 = new();	
+    			wb_dma_descriptor t2 = new();	
+    			wb_dma_descriptor t3 = new();
+    			wb_dma_descriptor t4 = new();
+    		endclass
+    		";	
+    }
+        
+    attributes init {
+    	action_stmt_post = "
+    		m_xfer_4par = new();
+    		m_xfer_4par__t1 = m_xfer_4par.t1;
+    		m_xfer_4par__t2 = m_xfer_4par.t2;
+    		m_xfer_4par__t3 = m_xfer_4par.t3;
+    		m_xfer_4par__t4 = m_xfer_4par.t4;
+    	";
+    }
+}

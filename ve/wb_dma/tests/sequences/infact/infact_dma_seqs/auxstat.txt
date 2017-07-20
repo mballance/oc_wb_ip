@@ -1,0 +1,10 @@
+Parallel solve sub-system parameters:
+		Max-active ceiling: 128
+		Initial value of max-active for adaptive heuristic: 32
+		Max-inactive: 32
+No jobs requested by the director.
+
+System %CPU Utilization:
+------------------------------
+                                      Min       Max   Average
+              %CPU Utilization:     10.47     10.47     10.47

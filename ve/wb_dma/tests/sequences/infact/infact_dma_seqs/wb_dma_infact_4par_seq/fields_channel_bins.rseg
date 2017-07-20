@@ -1,0 +1,9 @@
+rule_segment {
+  bin_scheme fields_channel_bin_scheme {
+        t4.channel [0..30]:1 ;
+        t3.channel [0..30]:1 ;
+        t2.channel [0..30]:1 ;
+        t1.channel [0..30]:1 ;
+  }
+
+}

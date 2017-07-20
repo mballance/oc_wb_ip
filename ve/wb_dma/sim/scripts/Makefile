@@ -21,11 +21,16 @@ include $(SIMSCRIPTS_DIR)/mkfiles/common_sim.mk
 
 
 TBI_ARGS += -sv_lib work -project infact_imp_proj -unit wb_dma_tests_pkg
+# TBI_ARGS += -sv_lib work -unit wb_dma_tests_pkg
 
 SEQS_PKG := wb_dma_seqs_pkg
 COV_PKG := wb_dma_coverage_pkg
 
-run_tbi :
+SV_SRC_DIRS = $(SIM_DIR)/../tb $(SIM_DIR)/../tests
+
+RUN_TBI_DEPS := $(shell find $(SV_SRC_DIRS) -type f)
+
+run_tbi : $(RUN_TBI_DEPS)
 	infact cmd import_testbench $(TBI_ARGS) \
 		$(SEQS_PKG)::wb_dma_single_transfer_descriptor \
 		-covergroup $(COV_PKG)::wb_dma_single_transfer_descriptor_cov::single_desc_cg
@@ -44,10 +49,13 @@ run_tbi :
 		-exclude wb_dma_config_inst.int_msk_b \
 		infact_imp_proj/infact_wb_dma_config_fields_gen/infact_wb_dma_config_fields_gen.tmd 
 	infact cmd genproject infact_imp_proj
+	@touch $@
 	
-
 recompile_tests : mk_infact_incdir
-	vlog +define+INFACT -f infact_incdir.f -F $(SIM_DIR)/../tests/tests.F
+	vlog +define+INFACT \
+		+incdir+./infact_imp_proj \
+		+incdir+./infact_dma_seqs \
+		-F $(SIM_DIR)/../tests/tests.F
 	
 
 

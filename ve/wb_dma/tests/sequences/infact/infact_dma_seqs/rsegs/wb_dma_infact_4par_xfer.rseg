@@ -1,0 +1,27 @@
+/****************************************************************************
+ *                          wb_dma_infact_4par_xfer.rseg
+ ****************************************************************************/
+
+rule_segment {
+    import "wb_dma_descriptor.rseg";
+    
+	interface init_xfer(wb_dma_descriptor);
+	
+	wb_dma_descriptor t1, t2, t3, t4;
+
+	action wait_done;
+	
+	constraint unique_channel_c {
+		t1.channel != t2.channel; t1.channel != t3.channel; t1.channel != t4.channel;
+		t2.channel != t3.channel; t2.channel != t4.channel;
+		t3.channel != t4.channel;
+	}
+		
+	symbol do_4par = 
+		init_xfer(t1) 
+		init_xfer(t2) 
+		init_xfer(t3) 
+		init_xfer(t4) 
+		wait_done;
+		
+}

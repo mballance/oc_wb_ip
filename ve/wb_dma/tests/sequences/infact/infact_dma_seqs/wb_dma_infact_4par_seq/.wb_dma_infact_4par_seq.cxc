@@ -1,0 +1,720 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<constraint_exploration version="2015.2">
+  <constraint_database>infact_dma_seqs/wb_dma_infact_4par_seq/wb_dma_infact_4par_seq.rules</constraint_database>
+  <targets/>
+  <non-targets>
+    <variable>t3.ll_desc[8].inc_src</variable>
+    <variable>t2.ll_desc_tot_sz[5]</variable>
+    <variable>t2.ll_desc[9].tot_sz</variable>
+    <variable>t4.ll_desc[12].src_sel</variable>
+    <variable>t4.ll_desc[8].dst_sel</variable>
+    <variable>t2.ll_desc[7].inc_src</variable>
+    <variable>t3.ll_desc[5].inc_src</variable>
+    <variable>t3.ll_desc[4].inc_dst</variable>
+    <variable>t2.ll_desc[1].dst_sel</variable>
+    <variable>t2.ll_desc[4].src_sel</variable>
+    <variable>t1.ll_desc[3].tot_sz</variable>
+    <variable>t2.ll_desc[10].src_sel</variable>
+    <variable>t1.ll_desc[11].src_sel</variable>
+    <variable>t1.ll_desc[5].inc_src</variable>
+    <variable>t2.ll_desc[2].inc_dst</variable>
+    <variable>t1.ll_desc[15].dst_sel</variable>
+    <variable>t2.ll_desc[8].inc_dst</variable>
+    <variable>t2.ll_desc_sz</variable>
+    <variable>t4.ll_desc[9].inc_dst</variable>
+    <variable>t2.ll_desc_tot_sz[4]</variable>
+    <variable>t2.ll_desc[13].dst_sel</variable>
+    <variable>t2.ll_desc[7].src_sel</variable>
+    <variable>t1.ll_desc[2].dst_sel</variable>
+    <variable>t3.inc_dst</variable>
+    <variable>t3.ll_desc[8].inc_dst</variable>
+    <variable>t4.transfer_sz</variable>
+    <variable>t3.inc_src</variable>
+    <variable>t3.ll_desc[3].src_sel</variable>
+    <variable>t4.ll_desc[7].tot_sz</variable>
+    <variable>t2.ll_desc_tot_sz[3]</variable>
+    <variable>t4.ll_desc[8].tot_sz</variable>
+    <variable>t3.tot_sz</variable>
+    <variable>t2.ll_desc[0].inc_src</variable>
+    <variable>t1.ll_desc[12].inc_src</variable>
+    <variable>t1.ll_desc[13].tot_sz</variable>
+    <variable>t2.ll_desc[9].inc_dst</variable>
+    <variable>t4.ll_desc[10].inc_src</variable>
+    <variable>t1.ll_desc[10].src_sel</variable>
+    <variable>t4.ll_desc[3].inc_dst</variable>
+    <variable>t2.ll_desc[11].src_sel</variable>
+    <variable>t4.ll_desc[9].src_sel</variable>
+    <variable>t2.ll_desc_tot_sz[2]</variable>
+    <variable>t2.ll_desc[12].src_sel</variable>
+    <variable>t1.ll_desc[5].inc_dst</variable>
+    <variable>t1.ll_desc[10].tot_sz</variable>
+    <variable>t1.ll_desc[7].src_sel</variable>
+    <variable>t1.ll_desc[12].src_sel</variable>
+    <variable>t1.ll_desc[7].tot_sz</variable>
+    <variable>t1.mode</variable>
+    <variable>t4.ll_desc[11].dst_sel</variable>
+    <variable>t4.ll_desc[6].inc_src</variable>
+    <variable>t1.ll_desc[13].src_sel</variable>
+    <variable>t1.ll_desc[15].tot_sz</variable>
+    <variable>t3.ll_desc[10].dst_sel</variable>
+    <variable>t1.ll_desc[0].inc_dst</variable>
+    <variable>t2.ll_desc_tot_sz[1]</variable>
+    <variable>t2.ll_desc[1].inc_dst</variable>
+    <variable>t1.ll_desc[3].inc_dst</variable>
+    <variable>t2.ll_desc[12].tot_sz</variable>
+    <variable>t2.ll_desc[4].tot_sz</variable>
+    <variable>t4.ll_desc[8].inc_dst</variable>
+    <variable>t4.ll_desc[7].inc_dst</variable>
+    <variable>t1.ll_desc[4].inc_src</variable>
+    <variable>t3.ll_desc[15].src_sel</variable>
+    <variable>t2.transfer_sz</variable>
+    <variable>t3.ll_desc[12].tot_sz</variable>
+    <variable>t2.ll_desc_tot_sz[12]</variable>
+    <variable>t2.ll_desc[0].tot_sz</variable>
+    <variable>t2.ll_desc_tot_sz[0]</variable>
+    <variable>t1.ll_desc[15].inc_src</variable>
+    <variable>t3.ll_desc[10].src_sel</variable>
+    <variable>t2.ll_desc[5].src_sel</variable>
+    <variable>t1.ll_desc[0].dst_sel</variable>
+    <variable>t1.ll_desc[4].inc_dst</variable>
+    <variable>t4.ll_desc[5].src_sel</variable>
+    <variable>t3.ll_desc[12].inc_dst</variable>
+    <variable>t1.ll_desc[2].inc_dst</variable>
+    <variable>t2.ll_desc[13].src_sel</variable>
+    <variable>t1.transfer_sz</variable>
+    <variable>t4.mode</variable>
+    <variable>t3.ll_desc[8].dst_sel</variable>
+    <variable>t3.chk_sz</variable>
+    <variable>t1.ll_desc[13].inc_dst</variable>
+    <variable>t4.ll_desc[1].dst_sel</variable>
+    <variable>t2.ll_desc[11].tot_sz</variable>
+    <variable>t4.ll_desc[0].inc_src</variable>
+    <variable>t1.ll_desc[11].inc_src</variable>
+    <variable>t2.ll_desc_tot_sz[13]</variable>
+    <variable>t3.ll_desc[3].inc_src</variable>
+    <variable>t2.ll_desc[7].dst_sel</variable>
+    <variable>t3.ll_desc[14].src_sel</variable>
+    <variable>t1.ll_desc[10].inc_src</variable>
+    <variable>t2.chk_sz</variable>
+    <variable>t3.ll_desc[10].tot_sz</variable>
+    <variable>t2.ll_desc[4].dst_sel</variable>
+    <variable>t4.dst_sel</variable>
+    <variable>t4.ll_desc_tot_sz[14]</variable>
+    <variable>t3.ll_desc[8].src_sel</variable>
+    <variable>t4.ll_desc[6].tot_sz</variable>
+    <variable>t4.ll_desc[2].dst_sel</variable>
+    <variable>t1.ll_desc[1].src_sel</variable>
+    <variable>t2.ll_desc[9].dst_sel</variable>
+    <variable>t2.ll_desc_tot_sz[14]</variable>
+    <variable>t2.ll_desc[3].src_sel</variable>
+    <variable>t2.ll_desc[11].inc_dst</variable>
+    <variable>t1.ll_desc[5].dst_sel</variable>
+    <variable>t4.ll_desc[8].src_sel</variable>
+    <variable>t4.ll_desc[2].inc_src</variable>
+    <variable>t3.ll_desc[4].tot_sz</variable>
+    <variable>t4.ll_desc_tot_sz[15]</variable>
+    <variable>t3.ll_desc[1].src_sel</variable>
+    <variable>t1.ll_desc[10].inc_dst</variable>
+    <variable>t2.ll_desc_tot_sz[15]</variable>
+    <variable>t4.ll_desc[3].tot_sz</variable>
+    <variable>t4.ll_desc[6].src_sel</variable>
+    <variable>t1.ll_desc[7].dst_sel</variable>
+    <variable>t2.ll_desc[15].src_sel</variable>
+    <variable>t4.ll_desc_tot_sz[7]</variable>
+    <variable>t2.ll_desc[2].dst_sel</variable>
+    <variable>t4.ll_desc_tot_sz[12]</variable>
+    <variable>t2.ll_desc[10].inc_dst</variable>
+    <variable>t3.ll_desc[13].inc_dst</variable>
+    <variable>t2.ll_desc[15].tot_sz</variable>
+    <variable>t1.ll_desc[1].dst_sel</variable>
+    <variable>t3.ll_desc[6].src_sel</variable>
+    <variable>t4.src_sel</variable>
+    <variable>t4.ll_desc[13].inc_dst</variable>
+    <variable>t3.ll_desc[4].src_sel</variable>
+    <variable>t2.ll_desc[5].tot_sz</variable>
+    <variable>t4.ll_desc_tot_sz[13]</variable>
+    <variable>t4.ll_desc_tot_sz[6]</variable>
+    <variable>t3.ll_desc[13].inc_src</variable>
+    <variable>t2.channel</variable>
+    <variable>t3.ll_desc[0].inc_dst</variable>
+    <variable>t1.dst_sel</variable>
+    <variable>t4.ll_desc[11].tot_sz</variable>
+    <variable>t4.ll_desc_tot_sz[9]</variable>
+    <variable>t2.ll_desc[14].inc_src</variable>
+    <variable>t4.ll_desc_tot_sz[10]</variable>
+    <variable>t4.ll_desc[12].tot_sz</variable>
+    <variable>t3.ll_desc[2].dst_sel</variable>
+    <variable>t2.ll_desc[7].tot_sz</variable>
+    <variable>t4.ll_desc_tot_sz.sum</variable>
+    <variable>t3.ll_desc[6].tot_sz</variable>
+    <variable>t1.ll_desc[14].dst_sel</variable>
+    <variable>t4.ll_desc[4].src_sel</variable>
+    <variable>t4.channel</variable>
+    <variable>t4.tot_sz</variable>
+    <variable>t4.ll_desc[3].inc_src</variable>
+    <variable>t4.ll_desc[10].inc_dst</variable>
+    <variable>t1.ll_desc_tot_sz[15]</variable>
+    <variable>t4.ll_desc[15].tot_sz</variable>
+    <variable>t2.ll_desc[9].inc_src</variable>
+    <variable>t1.ll_desc[5].tot_sz</variable>
+    <variable>t4.ll_desc_tot_sz[8]</variable>
+    <variable>t3.src_sel</variable>
+    <variable>t2.ll_desc[5].dst_sel</variable>
+    <variable>t1.ll_desc[12].inc_dst</variable>
+    <variable>t1.ll_desc[1].inc_src</variable>
+    <variable>t4.ll_desc_tot_sz[11]</variable>
+    <variable>t4.ll_desc[6].dst_sel</variable>
+    <variable>t4.ll_desc[4].inc_dst</variable>
+    <variable>t4.ll_desc[2].src_sel</variable>
+    <variable>t4.ll_desc[15].inc_src</variable>
+    <variable>t4.ll_desc[10].tot_sz</variable>
+    <variable>t2.ll_desc[2].inc_src</variable>
+    <variable>t3.ll_desc[5].dst_sel</variable>
+    <variable>t4.ll_desc[13].tot_sz</variable>
+    <variable>t2.ll_desc[3].dst_sel</variable>
+    <variable>t3.ll_desc[12].inc_src</variable>
+    <variable>t4.ll_desc[7].inc_src</variable>
+    <variable>t4.ll_desc_tot_sz[3]</variable>
+    <variable>t1.ll_desc[6].dst_sel</variable>
+    <variable>t3.ll_desc[7].dst_sel</variable>
+    <variable>t1.ll_desc[2].inc_src</variable>
+    <variable>t1.ll_desc[6].tot_sz</variable>
+    <variable>t2.ll_desc[1].tot_sz</variable>
+    <variable>t2.ll_desc_tot_sz[9]</variable>
+    <variable>t2.ll_desc[14].dst_sel</variable>
+    <variable>t4.ll_desc[2].tot_sz</variable>
+    <variable>t2.ll_desc[0].inc_dst</variable>
+    <variable>t3.ll_desc[9].src_sel</variable>
+    <variable>t4.ll_desc_tot_sz[2]</variable>
+    <variable>t3.ll_desc[1].tot_sz</variable>
+    <variable>t3.ll_desc[15].inc_dst</variable>
+    <variable>t2.ll_desc[14].src_sel</variable>
+    <variable>t3.ll_desc[6].inc_dst</variable>
+    <variable>t2.ll_desc[4].inc_src</variable>
+    <variable>t2.ll_desc_tot_sz[8]</variable>
+    <variable>t1.ll_desc[0].inc_src</variable>
+    <variable>t3.ll_desc[11].dst_sel</variable>
+    <variable>t2.inc_dst</variable>
+    <variable>t2.ll_desc[11].dst_sel</variable>
+    <variable>t3.ll_desc[15].dst_sel</variable>
+    <variable>t1.ll_desc[8].inc_dst</variable>
+    <variable>t2.ll_desc[13].inc_dst</variable>
+    <variable>t3.ll_desc[3].inc_dst</variable>
+    <variable>t4.ll_desc_tot_sz[5]</variable>
+    <variable>t2.inc_src</variable>
+    <variable>t2.ll_desc[2].tot_sz</variable>
+    <variable>t3.ll_desc[13].tot_sz</variable>
+    <variable>t2.dst_sel</variable>
+    <variable>t2.ll_desc[12].inc_dst</variable>
+    <variable>t4.ll_desc[13].inc_src</variable>
+    <variable>t1.ll_desc[11].tot_sz</variable>
+    <variable>t4.ll_desc[11].inc_src</variable>
+    <variable>t3.ll_desc[15].inc_src</variable>
+    <variable>t2.ll_desc_tot_sz[7]</variable>
+    <variable>t3.ll_desc[14].tot_sz</variable>
+    <variable>t4.ll_desc_tot_sz[4]</variable>
+    <variable>t3.ll_desc[3].dst_sel</variable>
+    <variable>t4.ll_desc[4].dst_sel</variable>
+    <variable>t2.ll_desc[5].inc_dst</variable>
+    <variable>t3.ll_desc[9].inc_dst</variable>
+    <variable>t3.ll_desc[5].inc_dst</variable>
+    <variable>t2.ll_desc[3].inc_src</variable>
+    <variable>t2.ll_desc[2].src_sel</variable>
+    <variable>t1.chk_sz</variable>
+    <variable>t1.ll_desc[5].src_sel</variable>
+    <variable>t2.ll_desc[6].inc_dst</variable>
+    <variable>t2.ll_desc_tot_sz[6]</variable>
+    <variable>t4.inc_src</variable>
+    <variable>t1.src_sel</variable>
+    <variable>t3.ll_desc[11].src_sel</variable>
+    <variable>t1.ll_desc[8].inc_src</variable>
+    <variable>t4.ll_desc[1].tot_sz</variable>
+    <variable>t4.ll_desc[1].inc_dst</variable>
+    <variable>t1.ll_desc_tot_sz[10]</variable>
+    <variable>t1.tot_sz</variable>
+    <variable>t3.ll_desc_tot_sz[11]</variable>
+    <variable>t1.ll_desc[1].tot_sz</variable>
+    <variable>t4.ll_desc[5].inc_src</variable>
+    <variable>t4.ll_desc[5].dst_sel</variable>
+    <variable>t1.ll_desc[1].inc_dst</variable>
+    <variable>t4.ll_desc[9].inc_src</variable>
+    <variable>t3.ll_desc[3].tot_sz</variable>
+    <variable>t4.ll_desc[12].inc_src</variable>
+    <variable>t1.ll_desc[2].src_sel</variable>
+    <variable>t3.ll_desc[9].dst_sel</variable>
+    <variable>t4.ll_desc[14].inc_dst</variable>
+    <variable>t2.ll_desc[10].tot_sz</variable>
+    <variable>t3.ll_desc[0].tot_sz</variable>
+    <variable>t2.ll_desc[5].inc_src</variable>
+    <variable>t3.ll_desc_tot_sz[12]</variable>
+    <variable>t4.ll_desc[5].tot_sz</variable>
+    <variable>t3.ll_desc[1].dst_sel</variable>
+    <variable>t4.ll_desc[9].dst_sel</variable>
+    <variable>t2.ll_desc[7].inc_dst</variable>
+    <variable>t1.ll_desc[15].src_sel</variable>
+    <variable>t3.mode</variable>
+    <variable>t1.ll_desc[6].src_sel</variable>
+    <variable>t4.ll_desc_tot_sz[0]</variable>
+    <variable>t2.ll_desc[1].src_sel</variable>
+    <variable>t4.ll_desc[15].inc_dst</variable>
+    <variable>t4.ll_desc[13].src_sel</variable>
+    <variable>t3.ll_desc[11].inc_dst</variable>
+    <variable>t1.ll_desc[13].inc_src</variable>
+    <variable>t3.ll_desc[11].inc_src</variable>
+    <variable>t3.ll_desc[6].dst_sel</variable>
+    <variable>t4.ll_desc[9].tot_sz</variable>
+    <variable>t3.ll_desc[0].inc_src</variable>
+    <variable>t4.inc_dst</variable>
+    <variable>t3.ll_desc[14].dst_sel</variable>
+    <variable>t1.ll_desc[9].tot_sz</variable>
+    <variable>t4.ll_desc_tot_sz[1]</variable>
+    <variable>t4.ll_desc_sz</variable>
+    <variable>t4.ll_desc[3].dst_sel</variable>
+    <variable>t3.ll_desc_tot_sz[10]</variable>
+    <variable>t1.ll_desc_tot_sz[14]</variable>
+    <variable>t3.ll_desc[2].inc_src</variable>
+    <variable>t3.ll_desc[0].src_sel</variable>
+    <variable>t3.ll_desc[7].src_sel</variable>
+    <variable>t2.ll_desc[10].dst_sel</variable>
+    <variable>t1.ll_desc[0].src_sel</variable>
+    <variable>t4.ll_desc[10].dst_sel</variable>
+    <variable>t4.ll_desc[11].inc_dst</variable>
+    <variable>t1.ll_desc[14].src_sel</variable>
+    <variable>t2.ll_desc[8].tot_sz</variable>
+    <variable>t2.ll_desc[14].inc_dst</variable>
+    <variable>t3.ll_desc[15].tot_sz</variable>
+    <variable>t4.ll_desc[14].src_sel</variable>
+    <variable>t1.ll_desc_tot_sz[2]</variable>
+    <variable>t3.ll_desc_tot_sz[15]</variable>
+    <variable>t1.ll_desc[2].tot_sz</variable>
+    <variable>t3.ll_desc[6].inc_src</variable>
+    <variable>t1.ll_desc_tot_sz[13]</variable>
+    <variable>t3.dst_sel</variable>
+    <variable>t1.ll_desc[9].dst_sel</variable>
+    <variable>t2.ll_desc[3].inc_dst</variable>
+    <variable>t4.ll_desc[13].dst_sel</variable>
+    <variable>t1.ll_desc[11].dst_sel</variable>
+    <variable>t1.ll_desc[3].dst_sel</variable>
+    <variable>t1.ll_desc_tot_sz[3]</variable>
+    <variable>t3.ll_desc[2].inc_dst</variable>
+    <variable>t4.ll_desc[0].src_sel</variable>
+    <variable>t1.ll_desc[0].tot_sz</variable>
+    <variable>t1.ll_desc[8].src_sel</variable>
+    <variable>t2.ll_desc[15].inc_src</variable>
+    <variable>t2.ll_desc[11].inc_src</variable>
+    <variable>t2.ll_desc[8].src_sel</variable>
+    <variable>t2.ll_desc[10].inc_src</variable>
+    <variable>t1.ll_desc_tot_sz[12]</variable>
+    <variable>t3.ll_desc_tot_sz[9]</variable>
+    <variable>t1.ll_desc[12].tot_sz</variable>
+    <variable>t1.ll_desc_tot_sz[0]</variable>
+    <variable>t3.ll_desc_tot_sz[13]</variable>
+    <variable>t3.ll_desc[2].src_sel</variable>
+    <variable>t3.ll_desc[9].tot_sz</variable>
+    <variable>t2.ll_desc[0].src_sel</variable>
+    <variable>t1.ll_desc_tot_sz[11]</variable>
+    <variable>t4.ll_desc[4].inc_src</variable>
+    <variable>t2.mode</variable>
+    <variable>t3.ll_desc_tot_sz[8]</variable>
+    <variable>t1.ll_desc[4].dst_sel</variable>
+    <variable>t1.ll_desc_tot_sz[1]</variable>
+    <variable>t3.ll_desc_tot_sz[14]</variable>
+    <variable>t3.ll_desc[5].src_sel</variable>
+    <variable>t4.ll_desc[6].inc_dst</variable>
+    <variable>t4.chk_sz</variable>
+    <variable>t1.ll_desc[9].src_sel</variable>
+    <variable>t3.ll_desc[11].tot_sz</variable>
+    <variable>t3.ll_desc[9].inc_src</variable>
+    <variable>t1.ll_desc_tot_sz[6]</variable>
+    <variable>t2.ll_desc[13].tot_sz</variable>
+    <variable>t2.ll_desc[13].inc_src</variable>
+    <variable>t1.ll_desc_sz</variable>
+    <variable>t1.ll_desc[9].inc_dst</variable>
+    <variable>t1.ll_desc[4].tot_sz</variable>
+    <variable>t4.ll_desc[5].inc_dst</variable>
+    <variable>t3.ll_desc_tot_sz.sum</variable>
+    <variable>t4.ll_desc[2].inc_dst</variable>
+    <variable>t1.channel</variable>
+    <variable>t3.ll_desc[13].src_sel</variable>
+    <variable>t4.ll_desc[4].tot_sz</variable>
+    <variable>t2.ll_desc[4].inc_dst</variable>
+    <variable>t4.ll_desc[12].inc_dst</variable>
+    <variable>t2.ll_desc[6].tot_sz</variable>
+    <variable>t3.ll_desc_tot_sz[7]</variable>
+    <variable>t4.ll_desc[12].dst_sel</variable>
+    <variable>t3.ll_desc[4].inc_src</variable>
+    <variable>t4.ll_desc[8].inc_src</variable>
+    <variable>t1.ll_desc_tot_sz[7]</variable>
+    <variable>t3.ll_desc[4].dst_sel</variable>
+    <variable>t4.ll_desc[14].inc_src</variable>
+    <variable>t4.ll_desc[1].inc_src</variable>
+    <variable>t1.ll_desc[12].dst_sel</variable>
+    <variable>t1.ll_desc[15].inc_dst</variable>
+    <variable>t3.ll_desc[13].dst_sel</variable>
+    <variable>t3.ll_desc_tot_sz[6]</variable>
+    <variable>t1.ll_desc[14].inc_src</variable>
+    <variable>t1.ll_desc_tot_sz[4]</variable>
+    <variable>t1.ll_desc[13].dst_sel</variable>
+    <variable>t3.ll_desc[7].tot_sz</variable>
+    <variable>t4.ll_desc[7].dst_sel</variable>
+    <variable>t3.ll_desc[14].inc_src</variable>
+    <variable>t1.ll_desc[14].inc_dst</variable>
+    <variable>t2.ll_desc[1].inc_src</variable>
+    <variable>t2.ll_desc[6].dst_sel</variable>
+    <variable>t1.ll_desc[10].dst_sel</variable>
+    <variable>t1.ll_desc[9].inc_src</variable>
+    <variable>t3.ll_desc_tot_sz[5]</variable>
+    <variable>t3.ll_desc[8].tot_sz</variable>
+    <variable>t3.ll_desc[14].inc_dst</variable>
+    <variable>t1.ll_desc_tot_sz[5]</variable>
+    <variable>t3.ll_desc[10].inc_dst</variable>
+    <variable>t3.ll_desc_sz</variable>
+    <variable>t1.ll_desc[7].inc_dst</variable>
+    <variable>t1.ll_desc[8].dst_sel</variable>
+    <variable>t1.ll_desc[3].inc_src</variable>
+    <variable>t2.ll_desc[3].tot_sz</variable>
+    <variable>t3.ll_desc[1].inc_src</variable>
+    <variable>t4.ll_desc[1].src_sel</variable>
+    <variable>t1.ll_desc[14].tot_sz</variable>
+    <variable>t3.ll_desc[10].inc_src</variable>
+    <variable>t4.ll_desc[7].src_sel</variable>
+    <variable>t3.ll_desc_tot_sz[4]</variable>
+    <variable>t4.ll_desc[14].dst_sel</variable>
+    <variable>t3.ll_desc[5].tot_sz</variable>
+    <variable>t3.ll_desc[12].dst_sel</variable>
+    <variable>t1.ll_desc[4].src_sel</variable>
+    <variable>t2.ll_desc[14].tot_sz</variable>
+    <variable>t1.ll_desc[8].tot_sz</variable>
+    <variable>t1.ll_desc[6].inc_src</variable>
+    <variable>t3.ll_desc[0].dst_sel</variable>
+    <variable>t2.ll_desc[12].inc_src</variable>
+    <variable>t3.ll_desc_tot_sz[3]</variable>
+    <variable>t1.inc_dst</variable>
+    <variable>t2.ll_desc[15].inc_dst</variable>
+    <variable>t3.ll_desc[12].src_sel</variable>
+    <variable>t2.ll_desc_tot_sz[11]</variable>
+    <variable>t2.ll_desc[12].dst_sel</variable>
+    <variable>t3.channel</variable>
+    <variable>t1.ll_desc[7].inc_src</variable>
+    <variable>t2.ll_desc[8].dst_sel</variable>
+    <variable>t4.ll_desc[0].tot_sz</variable>
+    <variable>t1.ll_desc_tot_sz.sum</variable>
+    <variable>t4.ll_desc[11].src_sel</variable>
+    <variable>t3.ll_desc_tot_sz[2]</variable>
+    <variable>t3.ll_desc[7].inc_src</variable>
+    <variable>t2.ll_desc[0].dst_sel</variable>
+    <variable>t2.src_sel</variable>
+    <variable>t3.ll_desc[1].inc_dst</variable>
+    <variable>t4.ll_desc[0].dst_sel</variable>
+    <variable>t1.ll_desc[6].inc_dst</variable>
+    <variable>t2.ll_desc[6].inc_src</variable>
+    <variable>t4.ll_desc[15].dst_sel</variable>
+    <variable>t1.ll_desc[3].src_sel</variable>
+    <variable>t2.ll_desc_tot_sz[10]</variable>
+    <variable>t3.ll_desc[7].inc_dst</variable>
+    <variable>t2.ll_desc[6].src_sel</variable>
+    <variable>t4.ll_desc[14].tot_sz</variable>
+    <variable>t3.transfer_sz</variable>
+    <variable>t1.ll_desc_tot_sz[8]</variable>
+    <variable>t2.tot_sz</variable>
+    <variable>t2.ll_desc[9].src_sel</variable>
+    <variable>t3.ll_desc_tot_sz[1]</variable>
+    <variable>t2.ll_desc_tot_sz.sum</variable>
+    <variable>t1.ll_desc[11].inc_dst</variable>
+    <variable>t4.ll_desc[3].src_sel</variable>
+    <variable>t2.ll_desc[8].inc_src</variable>
+    <variable>t1.inc_src</variable>
+    <variable>t1.ll_desc_tot_sz[9]</variable>
+    <variable>t2.ll_desc[15].dst_sel</variable>
+    <variable>t4.ll_desc[10].src_sel</variable>
+    <variable>t3.ll_desc_tot_sz[0]</variable>
+    <variable>t4.ll_desc[0].inc_dst</variable>
+    <variable>t4.ll_desc[15].src_sel</variable>
+    <variable>t3.ll_desc[2].tot_sz</variable>
+  </non-targets>
+  <constraints>
+    <constraint name="t1.ll_desc_tot_sz__element_sum">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t2.ll_desc_tot_sz__element_sum">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t3.ll_desc_tot_sz__element_sum">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t4.ll_desc_tot_sz__element_sum">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t1.ll_desc[0].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t1.ll_desc[1].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t1.ll_desc[2].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t1.ll_desc[3].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t1.ll_desc[4].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t1.ll_desc[5].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t1.ll_desc[6].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t1.ll_desc[7].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t1.ll_desc[8].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t1.ll_desc[9].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t1.ll_desc[10].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t1.ll_desc[11].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t1.ll_desc[12].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t1.ll_desc[13].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t1.ll_desc[14].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t1.ll_desc[15].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t1.ll_desc_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t1.ll_desc_tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t1.transfer_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t1.channel_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t1.tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t1.chk_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t2.ll_desc[0].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t2.ll_desc[1].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t2.ll_desc[2].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t2.ll_desc[3].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t2.ll_desc[4].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t2.ll_desc[5].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t2.ll_desc[6].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t2.ll_desc[7].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t2.ll_desc[8].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t2.ll_desc[9].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t2.ll_desc[10].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t2.ll_desc[11].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t2.ll_desc[12].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t2.ll_desc[13].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t2.ll_desc[14].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t2.ll_desc[15].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t2.ll_desc_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t2.ll_desc_tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t2.transfer_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t2.channel_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t2.tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t2.chk_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t3.ll_desc[0].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t3.ll_desc[1].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t3.ll_desc[2].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t3.ll_desc[3].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t3.ll_desc[4].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t3.ll_desc[5].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t3.ll_desc[6].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t3.ll_desc[7].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t3.ll_desc[8].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t3.ll_desc[9].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t3.ll_desc[10].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t3.ll_desc[11].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t3.ll_desc[12].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t3.ll_desc[13].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t3.ll_desc[14].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t3.ll_desc[15].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t3.ll_desc_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t3.ll_desc_tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t3.transfer_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t3.channel_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t3.tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t3.chk_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t4.ll_desc[0].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t4.ll_desc[1].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t4.ll_desc[2].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t4.ll_desc[3].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t4.ll_desc[4].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t4.ll_desc[5].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t4.ll_desc[6].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t4.ll_desc[7].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t4.ll_desc[8].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t4.ll_desc[9].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t4.ll_desc[10].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t4.ll_desc[11].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t4.ll_desc[12].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t4.ll_desc[13].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t4.ll_desc[14].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t4.ll_desc[15].tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t4.ll_desc_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t4.ll_desc_tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t4.transfer_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t4.channel_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t4.tot_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="t4.chk_sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="unique_channel_c">
+      <enabled>true</enabled>
+    </constraint>
+  </constraints>
+  <hex>false</hex>
+  <enum>true</enum>
+  <bin_scheme>Base</bin_scheme>
+  <collect>count</collect>
+</constraint_exploration>

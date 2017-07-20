@@ -1,0 +1,28 @@
+/****************************************************************************
+ *                          wb_dma_infact_4par_sw_seq.rules
+ ****************************************************************************/
+
+rule_graph wb_dma_infact_4par_sw_seq {
+    action init, infact_checkcov;
+    
+    import "wb_dma_infact_4par_xfer.rseg";
+    
+    attributes rule_graph {
+    	base_class = "wb_dma_multixfer_sw_seq";
+    }
+
+	attributes wait_done {
+		action_stmt = "wait_done();";
+	}
+    
+	attributes init {
+		// Just run 16 times through the graph
+		action_stmt = "m_iterationLimit = 16;";
+	}
+    
+    wb_dma_infact_4par_sw_seq = init repeat {
+    	do_4par
+        infact_checkcov
+    };
+    
+}

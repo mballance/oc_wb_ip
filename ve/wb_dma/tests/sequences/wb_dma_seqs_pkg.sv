@@ -44,16 +44,16 @@ package wb_dma_seqs_pkg;
 	`include "wb_dma_rand_config_seq.svh"
 	
 `ifdef INFACT
-	`include "infact_wb_dma_single_transfer_descriptor_gen.svh"
+	`include "infact_wb_dma_single_transfer_descriptor_gen/infact_wb_dma_single_transfer_descriptor_gen.svh"
 	`include "infact/wb_dma_infact_single_transfer_seq.svh"
 		
-	`include "infact_wb_dma_config_pairwise_gen.svh"
+	`include "infact_wb_dma_config_pairwise_gen/infact_wb_dma_config_pairwise_gen.svh"
 	`include "infact/wb_dma_infact_pairwise_config_seq.svh"
 		
-	`include "infact_wb_dma_config_fields_gen.svh"
+	`include "infact_wb_dma_config_fields_gen/infact_wb_dma_config_fields_gen.svh"
 	`include "infact/wb_dma_infact_fields_config_seq.svh"
 		
-	`include "wb_dma_infact_4par_seq.svh"
+	`include "wb_dma_infact_4par_seq/wb_dma_infact_4par_seq.svh"
 `endif
 
 endpackage

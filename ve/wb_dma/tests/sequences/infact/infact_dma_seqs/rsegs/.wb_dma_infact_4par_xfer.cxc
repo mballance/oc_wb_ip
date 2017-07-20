@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<constraint_exploration version="2015.2">
+  <constraint_database>infact_dma_seqs/rsegs/wb_dma_infact_4par_xfer.rseg</constraint_database>
+  <targets/>
+  <non-targets/>
+  <hex>false</hex>
+  <enum>true</enum>
+  <bin_scheme>Base</bin_scheme>
+  <collect>count</collect>
+</constraint_exploration>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<infact:testModuleDescription xmlns:infact="http://www.mentor.com/XMLSchema/inFact">
+    <infact:name>wb_dma_infact_4par_sw_seq</infact:name>
+    <infact:moduleType>sv.filled.class.uvm.sequence.v2</infact:moduleType>
+    <infact:timescale>
+        <infact:unit>1ns</infact:unit>
+        <infact:precision>1ns</infact:precision>
+    </infact:timescale>
+    <infact:constants/>
+    <infact:engines>
+        <infact:engine>
+            <infact:name>wb_dma_infact_4par_sw_seq</infact:name>
+            <infact:resetevents/>
+            <infact:wakeupevents/>
+            <infact:parameters/>
+            <infact:item_type_name>wb_dma_infact_4par_sw_seq_item_c</infact:item_type_name>
+        </infact:engine>
+    </infact:engines>
+    <infact:parameters/>
+    <infact:ports/>
+    <infact:locals/>
+    <infact:events/>
+    <infact:coverageDefs/>
+    <infact:rules-configurations/>
+</infact:testModuleDescription>
