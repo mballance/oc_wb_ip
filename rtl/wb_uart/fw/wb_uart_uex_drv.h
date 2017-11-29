@@ -4,9 +4,19 @@
 #ifndef INCLUDED_WB_UART_UEX_DRV_H
 #define INCLUDED_WB_UART_UEX_DRV_H
 #include <stdint.h>
+#include "wb_uart_regs.h"
+
+typedef enum {
+	WB_UART_SET_CLK_RATE,
+	WB_UART_GET_CLK_RATE,
+	WB_UART_SET_BAUD_RATE,
+	WB_UART_GET_BAUD_RATE
+};
 
 typedef struct wb_uart_uex_drv_s {
-	uint8_t					*base;
+	wb_uart_regs_t			*regs;
+	uint32_t				clk_hz;
+	uint32_t				baud;
 
 } wb_uart_uex_drv_t;
 

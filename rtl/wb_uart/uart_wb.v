@@ -139,7 +139,7 @@
 // synopsys translate_on
 `include "uart_defines.v"
  
-module uart_wb (clk, wb_rst_i, 
+module uart_wb #(parameter reg LITTLE_ENDIAN=1) (clk, wb_rst_i, 
 	wb_we_i, wb_stb_i, wb_cyc_i, wb_ack_o, wb_adr_i,
 	wb_adr_int, wb_dat_i, wb_dat_o, wb_dat8_i, wb_dat8_o, wb_dat32_o, wb_sel_i,
 	we_o, re_o // Write and read enable output for the core
@@ -271,6 +271,7 @@ always @(posedge clk or posedge wb_rst_i)
 
 reg [1:0] wb_adr_int_lsb;
 
+generate 
 always @(wb_sel_is or wb_dat_is)
 begin
 	case (wb_sel_is)
@@ -281,24 +282,25 @@ begin
 		default : wb_dat8_i = wb_dat_is[7:0];
 	endcase // case(wb_sel_i)
 
-  `ifdef LITLE_ENDIAN
-	case (wb_sel_is)
-		4'b0001 : wb_adr_int_lsb = 2'h0;
-		4'b0010 : wb_adr_int_lsb = 2'h1;
-		4'b0100 : wb_adr_int_lsb = 2'h2;
-		4'b1000 : wb_adr_int_lsb = 2'h3;
-		default : wb_adr_int_lsb = 2'h0;
-	endcase // case(wb_sel_i)
-  `else
-	case (wb_sel_is)
-		4'b0001 : wb_adr_int_lsb = 2'h3;
-		4'b0010 : wb_adr_int_lsb = 2'h2;
-		4'b0100 : wb_adr_int_lsb = 2'h1;
-		4'b1000 : wb_adr_int_lsb = 2'h0;
-		default : wb_adr_int_lsb = 2'h0;
-	endcase // case(wb_sel_i)
-  `endif
+		if (LITTLE_ENDIAN == 1) begin
+			case (wb_sel_is)
+				4'b0001 : wb_adr_int_lsb = 2'h0;
+				4'b0010 : wb_adr_int_lsb = 2'h1;
+				4'b0100 : wb_adr_int_lsb = 2'h2;
+				4'b1000 : wb_adr_int_lsb = 2'h3;
+				default : wb_adr_int_lsb = 2'h0;
+			endcase // case(wb_sel_i)
+		end else begin // Big Endian
+			case (wb_sel_is)
+				4'b0001 : wb_adr_int_lsb = 2'h3;
+				4'b0010 : wb_adr_int_lsb = 2'h2;
+				4'b0100 : wb_adr_int_lsb = 2'h1;
+				4'b1000 : wb_adr_int_lsb = 2'h0;
+				default : wb_adr_int_lsb = 2'h0;
+			endcase // case(wb_sel_i)
+  		end
 end
+endgenerate
 
 assign wb_adr_int = {wb_adr_is[`UART_ADDR_WIDTH-1:2], wb_adr_int_lsb};
 

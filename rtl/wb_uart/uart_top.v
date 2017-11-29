@@ -152,7 +152,7 @@
  *       map: {
  *       - Type: 
  */
-module uart_top	(
+module uart_top	#(parameter reg LITTLE_ENDIAN=1) (
 	wb_clk_i, // Signal: clock
 	wb_rst_i, // Signal: reset
 	
@@ -163,7 +163,7 @@ module uart_top	(
 	 *   - wb_adr_i -> req.ADR
 	 *   - wb_dat_i -> rsp.DAT_I
 	 *   - wb_dat_o -> 
-	 *   - /wb_(+S)_*/$1/
+	 *   - /wb_(+S)_/$1/
 	 * }
 	 */
 	wb_adr_i, wb_dat_i, wb_dat_o, wb_we_i, wb_stb_i, wb_cyc_i, wb_ack_o, wb_sel_i,
@@ -260,7 +260,7 @@ wire	[3:0] rstate;
 
 `ifdef DATA_BUS_WIDTH_8
 ////  WISHBONE interface module
-uart_wb		wb_interface(
+uart_wb #(.LITTLE_ENDIAN(LITTLE_ENDIAN)) wb_interface(
 		.clk(		wb_clk_i		),
 		.wb_rst_i(	wb_rst_i	),
 	.wb_dat_i(wb_dat_i),
@@ -279,7 +279,7 @@ uart_wb		wb_interface(
 		.re_o(re_o)
 		);
 `else
-uart_wb		wb_interface(
+uart_wb	#(.LITTLE_ENDIAN(LITTLE_ENDIAN)) wb_interface(
 		.clk(		wb_clk_i		),
 		.wb_rst_i(	wb_rst_i	),
 	.wb_dat_i(wb_dat_i),
