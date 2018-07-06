@@ -38,9 +38,17 @@ RULES := 1
 ifeq (true,$(PHASE2))
 build : $(BUILD_DEPS)
 	echo "BUILD_DEPS=$(BUILD_DEPS) OC_WB_IP_JAR=$(OC_WB_IP_JAR)"
+
+clean :
+	$(Q)rm -rf $(ROOT_DIR)/build $(ROOT_DIR)/lib
+
 else
 build : $($(PROJECT)_deps)
 	$(Q)$(MAKE) -f $(SCRIPTS_DIR)/ivpm.mk PHASE2=true VERBOSE=$(VERBOSE) build
+
+clean : $($(PROJECT)_clean_deps)
+	$(Q)$(MAKE) -f $(SCRIPTS_DIR)/ivpm.mk PHASE2=true VERBOSE=$(VERBOSE) clean
+
 endif
 
 # TODO: Change Makefile targets
