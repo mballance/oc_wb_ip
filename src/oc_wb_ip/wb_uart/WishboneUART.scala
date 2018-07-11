@@ -24,6 +24,9 @@ class WishboneUART(val p : Wishbone.Parameters = new Wishbone.Parameters()) exte
   io.t.rsp.ACK := core.io.wb_ack_o
   core.io.wb_sel_i := io.t.req.SEL
   
+  io.t.rsp.ERR := Bool(false)
+  io.t.rsp.TGD_R := 0.asUInt()
+  
   io.s.TxD := core.io.stx_pad_o
   core.io.srx_pad_i := io.s.RxD
   io.s.RTS := core.io.rts_pad_o

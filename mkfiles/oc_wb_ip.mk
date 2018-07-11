@@ -2,6 +2,9 @@
 OC_WB_IP_MKFILES_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 OC_WB_IP_DIR := $(abspath $(OC_WB_IP_MKFILES_DIR)/..)
 
+OC_WB_IP := $(OC_WB_IP_DIR)
+export OC_WB_IP
+
 
 ifneq (1,$(RULES))
 
