@@ -1,0 +1,19 @@
+/****************************************************************************
+ *                          mapping_sc.rseg
+ ****************************************************************************/
+
+rule_segment {
+	
+	attributes rule_graph {
+		user_data += "
+			longint unsigned m_values[string];
+		";
+		call_pre_post_randomize = false;
+	}
+	
+	attributes meta_action {
+		action_stmt = "m_values[\"${name}\"] = meta_val;";
+	}
+    
+
+}

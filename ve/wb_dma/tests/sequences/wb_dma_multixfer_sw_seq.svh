@@ -27,7 +27,8 @@ class wb_dma_multixfer_sw_seq extends wb_dma_transfer_seq;
 	virtual task finish_item(
 		input uvm_sequence_item item, 
 		input int set_priority=-1);	
-		wb_dma_descriptor desc;
+		wb_dma_descriptor 		desc;
+		wb_dma_ll_descriptor 	ll_desc;
 		wb_dma_directed_transfer_seq seq = wb_dma_directed_transfer_seq::type_id::create("seq");
 
 		if (!$cast(desc, item)) begin
@@ -35,13 +36,13 @@ class wb_dma_multixfer_sw_seq extends wb_dma_transfer_seq;
 		end
 		
 		m_active_descs[desc.channel] = desc;
-		
-		if (desc.ll_desc_sz == 0) begin
+	
+		if ($cast(ll_desc, desc)) begin
+			// LL transfer
+			setup_ll_transfer(ll_desc);
+		end else begin
 			// Single transfer
 			setup_single_transfer(desc);
-		end else begin
-			// LL transfer
-			setup_ll_transfer(desc);
 		end
 		
 		m_active_channels[desc.channel] = 1;
@@ -78,7 +79,7 @@ class wb_dma_multixfer_sw_seq extends wb_dma_transfer_seq;
 				desc.tot_sz);
 	endtask
 	
-	task setup_ll_transfer(wb_dma_descriptor desc);
+	task setup_ll_transfer(wb_dma_ll_descriptor desc);
 		// Allocate space for the initial descriptor
 		m_mem_mgr.malloc(
 				desc.ll_desc[0].desc,
@@ -127,17 +128,19 @@ class wb_dma_multixfer_sw_seq extends wb_dma_transfer_seq;
 	endtask
 	
 	task free_addresses(wb_dma_descriptor desc);
-		if (desc.ll_desc_sz == 0) begin
+		wb_dma_ll_descriptor ll_desc;
+		
+		if ($cast(ll_desc, desc)) begin
+			// Linked-list descriptor
+			for (int i=0; i<ll_desc.ll_desc_sz; i++) begin
+				m_mem_mgr.free(ll_desc.ll_desc[i].desc);
+				m_mem_mgr.free(ll_desc.ll_desc[i].src_addr);
+				m_mem_mgr.free(ll_desc.ll_desc[i].dst_addr);
+			end
+		end else begin
 			// Single descriptor
 			m_mem_mgr.free(desc.src_addr);
 			m_mem_mgr.free(desc.dst_addr);
-		end else begin
-			// Linked-list descriptor
-			for (int i=0; i<desc.ll_desc_sz; i++) begin
-				m_mem_mgr.free(desc.ll_desc[i].desc);
-				m_mem_mgr.free(desc.ll_desc[i].src_addr);
-				m_mem_mgr.free(desc.ll_desc[i].dst_addr);
-			end
 		end
 	endtask
 

@@ -1,0 +1,19 @@
+/****************************************************************************
+ *                          dma_single_xfer_c_mapping.rseg
+ ****************************************************************************/
+
+rule_segment {
+	import "dma_single_xfer.rseg";
+	
+	attributes dma_single_xfer.body {
+		action_stmt = "queue_dma_single_transfer(
+			${channel},
+			${src},
+			${inc_src},
+			${dst},
+			${inc_dst},
+			${sz});
+		";
+	}
+
+}

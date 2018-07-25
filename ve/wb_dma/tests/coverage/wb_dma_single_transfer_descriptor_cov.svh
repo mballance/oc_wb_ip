@@ -51,8 +51,10 @@ class wb_dma_single_transfer_descriptor_cov extends uvm_subscriber #(wb_dma_desc
 	 * Override from class 
 	 */
 	virtual function void write(input T t);
+		wb_dma_ll_descriptor ll_desc;
+		
 		desc = t;
-		if (t.ll_desc_sz == 0) begin
+		if (!$cast(ll_desc, desc)) begin
 			single_desc_cg.sample();
 		end
 	endfunction

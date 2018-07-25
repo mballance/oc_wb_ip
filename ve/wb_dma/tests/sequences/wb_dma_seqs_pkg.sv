@@ -43,6 +43,11 @@ package wb_dma_seqs_pkg;
 	`include "wb_dma_config_seq.svh"
 	`include "wb_dma_rand_config_seq.svh"
 	
+	`ifdef INFACT
+		`include "dma_single_xfer_seq/dma_single_xfer_seq.svh"
+	`endif
+
+`ifdef UNDEFINED	
 `ifdef INFACT
 	`include "infact_wb_dma_single_transfer_descriptor_gen/infact_wb_dma_single_transfer_descriptor_gen.svh"
 	`include "infact/wb_dma_infact_single_transfer_seq.svh"
@@ -54,6 +59,7 @@ package wb_dma_seqs_pkg;
 	`include "infact/wb_dma_infact_fields_config_seq.svh"
 		
 	`include "wb_dma_infact_4par_seq/wb_dma_infact_4par_seq.svh"
+`endif
 `endif
 
 endpackage

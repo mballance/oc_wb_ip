@@ -19,15 +19,16 @@ class wb_dma_scoreboard extends uvm_component;
 	endfunction
 
 	virtual function void write(wb_dma_descriptor t);
+		wb_dma_ll_descriptor ll_desc;
 		
-		if (t.ll_desc_sz > 0) begin
-			for (int i=0; i<t.ll_desc_sz; i++) begin
+		if ($cast(ll_desc, t)) begin
+			for (int i=0; i<ll_desc.ll_desc_sz; i++) begin
 				check_simple_transfer(
-						t.ll_desc[i].src_addr, 
-						t.ll_desc[i].dst_addr, 
-						t.ll_desc[i].tot_sz,
-						t.ll_desc[i].inc_src, 
-						t.ll_desc[i].inc_dst);
+						ll_desc.ll_desc[i].src_addr, 
+						ll_desc.ll_desc[i].dst_addr, 
+						ll_desc.ll_desc[i].tot_sz,
+						ll_desc.ll_desc[i].inc_src, 
+						ll_desc.ll_desc[i].inc_dst);
 			end
 		end else begin
 			check_simple_transfer(

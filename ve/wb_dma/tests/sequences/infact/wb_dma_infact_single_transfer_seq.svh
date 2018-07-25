@@ -11,7 +11,7 @@ class wb_dma_infact_single_transfer_seq extends wb_dma_transfer_seq;
 
 	virtual task body();
 		wb_dma_single_transfer_descriptor desc;
-		infact_wb_dma_single_transfer_descriptor_gen infact_gen;
+		wb_dma_infact_single_transfer_descriptor_gen infact_gen;
 		
 		infact_gen = new({get_full_name(), ".infact_gen"});
 		

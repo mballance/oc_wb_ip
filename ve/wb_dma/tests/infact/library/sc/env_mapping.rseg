@@ -1,0 +1,22 @@
+/****************************************************************************
+ *                          mapping_sc.rseg
+ ****************************************************************************/
+
+rule_segment {
+	
+	attributes rule_graph {
+		include += "
+		#include <map>
+		#include <string>
+		";
+		user_data += "
+			std::map<std::string,unsigned long long> m_values;
+		";
+	}
+	
+	attributes meta_action {
+		action_stmt = "m_values[\"${name}\"] = meta_val;";
+	}
+    
+
+}

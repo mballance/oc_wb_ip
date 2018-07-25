@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<constraint_exploration version="2015.2">
+  <constraint_database>oc_wb_ip/ve/wb_dma/tests/infact/dma_single_xfer_test.rules</constraint_database>
+  <targets>
+    <variable>xfer.sz</variable>
+    <variable>xfer.inc_dst</variable>
+    <variable>xfer.inc_src</variable>
+  </targets>
+  <non-targets>
+    <variable>alloc.allocations[0].addr</variable>
+    <variable>alloc.allocations[0].sz</variable>
+    <variable>alloc.allocations[1].addr</variable>
+    <variable>xfer.channel</variable>
+    <variable>alloc.allocations[1].sz</variable>
+    <variable>xfer.dst</variable>
+    <variable>xfer.src</variable>
+  </non-targets>
+  <constraints>
+    <constraint name="alloc.allocations[0].sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="alloc.non_overlap_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="alloc.allocations[1].sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="mem_c">
+      <enabled>true</enabled>
+    </constraint>
+  </constraints>
+  <hex>false</hex>
+  <enum>true</enum>
+  <bin_scheme>Base</bin_scheme>
+  <collect>values</collect>
+</constraint_exploration>

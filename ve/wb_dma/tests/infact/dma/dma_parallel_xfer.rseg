@@ -1,0 +1,50 @@
+/****************************************************************************
+ *                          dma_parallel_xfer.rseg
+ ****************************************************************************/
+
+rule_segment {
+	import "mem_allocator.rseg";
+	import "resource_pool.rseg";
+	import "dma_single_xfer.rseg";
+	
+	struct dma_parallel_xfer (N=4, ADDR_BASE='h0000_0000, ADDR_LIMIT='h0000_1000) {
+		mem_allocator (.N(2*N), .ADDR_BASE(ADDR_BASE), .ADDR_LIMIT(ADDR_LIMIT)) alloc;
+		resource_pool (.N(N), .MIN(0), .MAX(30)) channels;
+		
+		dma_single_xfer xfers[N];
+		
+		constraint mem_c {
+			foreach (xfers[i]) {
+				xfers[i].src == alloc.allocations[2*i].addr;
+				xfers[i].dst == alloc.allocations[2*i+1].addr;
+				xfers[i].sz  == alloc.allocations[2*i].sz;
+			};
+			
+			// Ensure source and destination are properly sized
+			foreach (xfers[i]) {
+				if (xfers[i].inc_src == 0) {
+					alloc.allocations[2*i].sz == 4; // Single source address
+				} else {
+					alloc.allocations[2*i].sz < 65536;
+				}
+				if (xfers[i].inc_dst == 0) {
+					alloc.allocations[2*i+1].sz == 4; // Single destination address
+				} else {
+					alloc.allocations[2*i+1].sz < 65536;
+				}
+				
+				// If both source and destination increment, sizes must match
+				if (xfers[i].inc_src && xfers[i].inc_dst) {
+					alloc.allocations[2*i].sz == alloc.allocations[2*i+1].sz;
+				}
+			}
+		}
+		
+		constraint channel_c {
+			foreach (xfers[i]) {
+				xfers[i].channel == channels.resource[i];
+			}
+		}
+	}
+    
+}

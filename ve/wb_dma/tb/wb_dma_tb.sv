@@ -21,10 +21,10 @@ module wb_dma_tb;
 	
 	wire				inta_o;
 	wire				intb_o;
-	wire[30:0]			dma_req_i = '{0};
-	wire[30:0]			dma_nd_i = '{0};
+	wire[30:0]			dma_req_i = '0;
+	wire[30:0]			dma_nd_i = '0;
 	wire[30:0]			dma_ack_o;
-	wire[30:0]			dma_rest_i = '{0};
+	wire[30:0]			dma_rest_i = '0;
 	
 	reg					clk;
 	reg					rst_i;

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<constraint_exploration version="2015.2">
+  <constraint_database>oc_wb_ip/ve/wb_dma/tests/infact/dma_single_xfer_sc_mapping.rseg</constraint_database>
+  <targets/>
+  <non-targets/>
+  <hex>false</hex>
+  <enum>true</enum>
+  <bin_scheme>Base</bin_scheme>
+  <collect>count</collect>
+</constraint_exploration>

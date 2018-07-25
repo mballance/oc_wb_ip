@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<constraint_exploration version="2015.2">
+  <constraint_database>oc_wb_ip/ve/wb_dma/tests/infact/dma_parallel_xfer_test.rules</constraint_database>
+  <targets>
+    <variable>xfers.xfers[0].channel</variable>
+    <variable>xfers.xfers[1].channel</variable>
+  </targets>
+  <non-targets>
+    <variable>xfers.alloc.allocations[3].addr</variable>
+    <variable>xfers.alloc.allocations[3].sz</variable>
+    <variable>xfers.channels.resource.sum</variable>
+    <variable>xfers.xfers[2].channel</variable>
+    <variable>xfers.xfers[2].dst</variable>
+    <variable>xfers.xfers[3].inc_dst</variable>
+    <variable>xfers.xfers[3].src</variable>
+    <variable>xfers.alloc.allocations[5].addr</variable>
+    <variable>xfers.channels.resource[0]</variable>
+    <variable>xfers.xfers[2].inc_src</variable>
+    <variable>xfers.alloc.allocations[1].addr</variable>
+    <variable>xfers.channels.resource[2]</variable>
+    <variable>xfers.xfers[0].src</variable>
+    <variable>xfers.xfers[1].inc_dst</variable>
+    <variable>xfers.xfers[0].sz</variable>
+    <variable>xfers.xfers[3].sz</variable>
+    <variable>xfers.alloc.allocations[6].sz</variable>
+    <variable>xfers.alloc.allocations[7].sz</variable>
+    <variable>xfers.xfers[0].inc_src</variable>
+    <variable>xfers.alloc.allocations[4].addr</variable>
+    <variable>xfers.alloc.allocations[7].addr</variable>
+    <variable>xfers.alloc.allocations[2].sz</variable>
+    <variable>xfers.xfers[1].dst</variable>
+    <variable>xfers.xfers[3].channel</variable>
+    <variable>xfers.alloc.allocations[2].addr</variable>
+    <variable>xfers.alloc.allocations[5].sz</variable>
+    <variable>xfers.xfers[2].src</variable>
+    <variable>xfers.xfers[3].inc_src</variable>
+    <variable>xfers.alloc.allocations[1].sz</variable>
+    <variable>xfers.xfers[2].sz</variable>
+    <variable>xfers.xfers[3].dst</variable>
+    <variable>xfers.channels.resource[1]</variable>
+    <variable>xfers.xfers[0].dst</variable>
+    <variable>xfers.xfers[2].inc_dst</variable>
+    <variable>xfers.alloc.allocations[4].sz</variable>
+    <variable>xfers.channels.resource[3]</variable>
+    <variable>xfers.xfers[1].inc_src</variable>
+    <variable>xfers.alloc.allocations[6].addr</variable>
+    <variable>xfers.alloc.allocations[0].addr</variable>
+    <variable>xfers.xfers[1].sz</variable>
+    <variable>xfers.xfers[1].src</variable>
+    <variable>xfers.alloc.allocations[0].sz</variable>
+    <variable>xfers.xfers[0].inc_dst</variable>
+  </non-targets>
+  <constraints>
+    <constraint name="xfers.channels.resource__element_sum">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="xfers.alloc.allocations[0].sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="xfers.alloc.allocations[1].sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="xfers.alloc.allocations[2].sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="xfers.alloc.allocations[3].sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="xfers.alloc.allocations[4].sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="xfers.alloc.allocations[5].sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="xfers.alloc.allocations[6].sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="xfers.alloc.allocations[7].sz_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="xfers.alloc.non_overlap_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="xfers.channels.unique">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="xfers.mem_c">
+      <enabled>true</enabled>
+    </constraint>
+    <constraint name="xfers.channel_c">
+      <enabled>true</enabled>
+    </constraint>
+  </constraints>
+  <hex>false</hex>
+  <enum>true</enum>
+  <bin_scheme>Base</bin_scheme>
+  <collect>values</collect>
+</constraint_exploration>

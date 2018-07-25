@@ -1,0 +1,17 @@
+
+rule_segment {
+	struct dma_single_xfer {
+		meta_action channel[unsigned 0..30];
+		meta_action src[unsigned 31:0];
+		meta_action inc_src[unsigned 0..1];
+		meta_action dst[unsigned 31:0];
+		meta_action inc_dst[unsigned 0..1];
+		meta_action sz[unsigned 15:0];
+		
+		action body;
+	}
+	
+	attributes dma_single_xfer {
+		type = "int";
+	}
+}

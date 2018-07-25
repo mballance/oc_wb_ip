@@ -1,0 +1,27 @@
+/****************************************************************************
+ *                      dma_single_xfer_mapping.rseg
+ *
+ * Mapping for a UVM environment
+ ****************************************************************************/
+
+rule_segment {
+	import "dma_single_xfer.rseg";
+	import "threads.rseg";
+	
+	attributes dma_single_xfer.body {
+		action_stmt = "queue_dma_single_transfer(
+			0,
+			m_values[\"${inst_parent}.channel\"],
+			m_values[\"${inst_parent}.src\"],
+			m_values[\"${inst_parent}.inc_src\"],
+			m_values[\"${inst_parent}.dst\"],
+			m_values[\"${inst_parent}.inc_dst\"],
+			m_values[\"${inst_parent}.sz\"]);
+		";
+	}
+	
+	attributes join {
+		action_stmt = "wait_threads();";
+	}
+
+}

@@ -1,0 +1,27 @@
+
+rule_segment {
+  struct mem_alloc {
+  	meta_action addr[unsigned 31:0];
+  	meta_action sz[unsigned 31:0];
+  	
+  	constraint sz_c {
+  		sz > 0;
+  	}
+  }
+  
+  struct mem_allocator (N=4, ADDR_BASE='h0000_0000, ADDR_LIMIT='h0000_1000) {
+  	mem_alloc allocations[N];
+  	
+  	constraint non_overlap_c {
+  		foreach (allocations[i]) {
+  			foreach (allocations[j]) {
+  				if (i != j) {
+  					(allocations[i].addr >= (allocations[j].addr+allocations[j].sz)) ||
+  					(allocations[j].addr >= (allocations[i].addr+allocations[i].sz));
+  				}
+  			}
+  		}
+  	}
+  }
+  
+}

@@ -152,7 +152,11 @@
  *       map: {
  *       - Type: 
  */
-module uart_top	#(parameter reg LITTLE_ENDIAN=1) (
+module uart_top	#(
+		parameter reg LITTLE_ENDIAN=1,
+		parameter reg DATA_BUS_WIDTH_8=0,
+		parameter reg WORD_SIZE_REGS=1
+		) (
 	wb_clk_i, // Signal: clock
 	wb_rst_i, // Signal: reset
 	

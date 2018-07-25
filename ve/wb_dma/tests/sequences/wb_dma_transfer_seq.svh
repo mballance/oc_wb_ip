@@ -10,14 +10,54 @@
 class wb_dma_transfer_seq extends wb_dma_reg_seq;
 	`uvm_object_utils(wb_dma_transfer_seq)
 	
+	typedef class closure_base;
+	typedef class dma_single_xfer_closure;
+	
 	uvm_analysis_port #(wb_dma_descriptor)		m_start_ap;
 	uvm_analysis_port #(wb_dma_descriptor)		m_done_ap;
 	
 	mem_mgr										m_mem_mgr;
+	
+	closure_base								m_closures[$];
+	process										m_processes[$];
+	event										m_proc_added_ev;
 
 	function new(string name="wb_dma_transfer_seq");
 		super.new(name);
 	endfunction
+	
+	/**
+	 * Function: queue_dma_single_transfer
+	 */
+	virtual task queue_dma_single_transfer(
+		int unsigned		dma_id,
+		int unsigned		channel,
+		int unsigned		src,
+		int unsigned		inc_src,
+		int unsigned		dst,
+		int unsigned		inc_dst,
+		int unsigned		sz);
+		dma_single_xfer_closure c = new(
+				this, dma_id, channel, src, inc_src, dst, inc_dst, sz);
+		m_closures.push_back(c);
+	endtask
+	
+	virtual task wait_threads();
+		$display("TODO: wait_threads");
+		// Wait for all threads to come alive
+		while (m_processes.size() < m_closures.size()) begin
+			@(m_proc_added_ev);
+		end
+	
+		// Wait for all processes to complete
+		for (int i=0; i<m_processes.size(); i++) begin
+			m_processes[i].await();
+		end
+	
+		m_processes = '{};
+		m_closures = '{};
+		
+	endtask
 
 	/**
 	 * Task: finish_item
@@ -30,6 +70,7 @@ class wb_dma_transfer_seq extends wb_dma_reg_seq;
 		uvm_reg_data_t value;
 		uvm_status_e status;
 		wb_dma_descriptor desc;
+		wb_dma_ll_descriptor ll_desc;
 		wb_dma_ch ch;
 		bit[31:0]		addresses[$];
 		
@@ -42,14 +83,11 @@ class wb_dma_transfer_seq extends wb_dma_reg_seq;
 		// Setup appropriate channel
 		ch = m_regs.ch[desc.channel];
 
-		// Single transfer
-		if (desc.ll_desc_sz == 0) begin
+		if ($cast(ll_desc, desc)) begin
+			setup_ll_transfer(ll_desc, addresses);
+		end else begin
 			setup_single_transfer(desc, addresses);
-		end else begin // Linked-list descriptor
-			setup_ll_transfer(desc, addresses);
 		end
-		
-		
 		
 		// Now, wait completion
 		repeat(1000) begin
@@ -165,7 +203,7 @@ class wb_dma_transfer_seq extends wb_dma_reg_seq;
 	endtask
 	
 	task setup_ll_transfer(
-		wb_dma_descriptor		desc,
+		wb_dma_ll_descriptor	desc,
 		ref bit[31:0]			addresses[$]);
 		wb_dma_ch ch = m_regs.ch[desc.channel];
 		uvm_status_e status;
@@ -299,7 +337,51 @@ class wb_dma_transfer_seq extends wb_dma_reg_seq;
 		// NOP
 	endtask
 
-	
+	class closure_base;
+		virtual task run();
+		endtask
+	endclass
+
+	class dma_single_xfer_closure extends closure_base;
+		wb_dma_transfer_seq	m_seq;
+		int unsigned		m_dma_id;
+		int unsigned		m_channel;
+		int unsigned		m_src;
+		int unsigned		m_inc_src;
+		int unsigned		m_dst;
+		int unsigned		m_inc_dst;
+		int unsigned		m_sz;
+		
+		function new(
+			wb_dma_transfer_seq	seq,
+			int unsigned		dma_id,
+			int unsigned		channel,
+			int unsigned		src,
+			int unsigned		inc_src,
+			int unsigned		dst,
+			int unsigned		inc_dst,
+			int unsigned		sz);
+			m_seq = seq;
+			m_dma_id = dma_id;
+			m_channel = channel;
+			m_src = src;
+			m_inc_src = inc_src;
+			m_dst = dst;
+			m_inc_dst = inc_dst;
+			m_sz = m_sz;
+			
+			fork
+				run();
+			join_none
+		endfunction
+		
+		task run();
+			m_seq.m_processes.push_back(process::self());
+			->m_seq.m_proc_added_ev;
+			$display("run");
+		endtask
+			
+	endclass
 
 endclass
 

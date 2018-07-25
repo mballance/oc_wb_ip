@@ -3,7 +3,7 @@ ifneq (1,$(RULES))
 
 WB_UART16550_FW_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 
-CFLAGS += -I$(WB_DMA_FW_DIR)
+SRC_DIRS += $(WB_UART16550_FW_DIR)
 
 WB_UART16550_FW_SRC = \
   wb_uart16550_drv.c \

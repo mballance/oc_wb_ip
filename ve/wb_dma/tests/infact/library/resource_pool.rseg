@@ -1,0 +1,26 @@
+/****************************************************************************
+ *                          resource_pool.rseg
+ ****************************************************************************/
+
+rule_segment {
+	
+	
+	struct resource_pool (N=4, MIN=0, MAX=N-1) {
+		meta_action resource[unsigned MIN..MAX][N];
+		
+		constraint unique {
+			foreach (resource[i]) {
+				foreach (resource[j]) {
+					if (i != j) {
+						resource[i] != resource[j];
+					}
+				}
+			}
+		}
+	}
+	
+	attributes resource_pool {
+		type = "int";
+	}
+
+}
