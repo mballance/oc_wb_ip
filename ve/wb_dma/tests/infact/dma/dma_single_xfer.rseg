@@ -1,5 +1,6 @@
 
 rule_segment {
+	
 	struct dma_single_xfer {
 		meta_action channel[unsigned 0..30];
 		meta_action src[unsigned 31:0];
@@ -10,6 +11,8 @@ rule_segment {
 		
 		action body;
 	}
+	
+	import "dma_single_xfer_mapping.rseg";
 	
 	attributes dma_single_xfer {
 		type = "int";

@@ -46,5 +46,9 @@ rule_segment {
 			}
 		}
 	}
+	
+	attributes dma_parallel_xfer {
+		type = "int";
+	}
     
 }

@@ -1,0 +1,9 @@
+
+
+rule_segment {
+
+	attributes rule_graph {
+		base_class = "wb_dma_transfer_seq";
+	}
+	
+}

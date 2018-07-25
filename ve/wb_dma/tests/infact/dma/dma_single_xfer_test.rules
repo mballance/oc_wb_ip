@@ -7,13 +7,9 @@
 rule_graph dma_single_xfer_test {
 	import "dma_single_xfer.rseg";
 	import "env_mapping.rseg";
+	import "dma_env_mapping.rseg";
 	import "mem_allocator.rseg";
 	import "threads.rseg";
-	import "dma_single_xfer_mapping.rseg";
-	
-	attributes rule_graph {
-		base_class = "wb_dma_transfer_seq";
-	}
 	
 	dma_single_xfer xfer;
 	mem_allocator (.N(2), .ADDR_BASE('h0000_0000), .ADDR_LIMIT('h1000_0000)) alloc;

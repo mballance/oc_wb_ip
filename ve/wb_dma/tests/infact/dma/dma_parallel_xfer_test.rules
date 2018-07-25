@@ -6,9 +6,9 @@
 
 rule_graph dma_parallel_xfer_test {
 	import "dma_parallel_xfer.rseg";
-	import "mapping_sc.rseg";
+	import "env_mapping.rseg";
+	import "dma_env_mapping.rseg";
 	import "threads.rseg";
-	import "dma_single_xfer_sc_mapping.rseg";
 
 	unsigned const N_PAR = 4;
 	
