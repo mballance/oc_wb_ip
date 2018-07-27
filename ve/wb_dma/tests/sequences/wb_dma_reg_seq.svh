@@ -9,7 +9,7 @@
  */
 class wb_dma_reg_seq extends uvm_sequence;
 	`uvm_object_utils(wb_dma_reg_seq)
-
+	
 	wb_dma_reg_block			m_regs;
 	
 	function new(string name="wb_dma_reg_seq");

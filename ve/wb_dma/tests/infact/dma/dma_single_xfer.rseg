@@ -2,12 +2,26 @@
 rule_segment {
 	
 	struct dma_single_xfer {
+		meta_action device[unsigned 15:0]; // Specifies which device to use
 		meta_action channel[unsigned 0..30];
 		meta_action src[unsigned 31:0];
 		meta_action inc_src[unsigned 0..1];
 		meta_action dst[unsigned 31:0];
 		meta_action inc_dst[unsigned 0..1];
 		meta_action sz[unsigned 15:0];
+	
+		// This DMA only supports one I/O-based source or destination
+		// In other words, can't transfer from I/O to I/O	
+		constraint inc_dec_c {
+			inc_src == 1 || inc_dst == 1;
+		}
+		
+		// DMA can only transfer word-aligned 
+		constraint sz_c {
+			sz >= 4;
+			(sz % 4) == 0;
+		}
+		
 		
 		action body;
 	}

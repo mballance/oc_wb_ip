@@ -12,16 +12,20 @@ rule_graph dma_single_xfer_test {
 	import "threads.rseg";
 	
 	dma_single_xfer xfer;
-	mem_allocator (.N(2), .ADDR_BASE('h0000_0000), .ADDR_LIMIT('h1000_0000)) alloc;
+	mem_allocator (.N(2), .ADDR_BASE('h0000_0000), .ADDR_LIMIT('h0000_FFFF)) alloc;
+	
+	constraint dev_c {
+		xfer.device == 0;
+	}
 	
 	constraint mem_c {
 		if (xfer.inc_src) {
-			alloc.allocations[0].sz < 65536;
+			alloc.allocations[0].sz <= 1024;
 		} else {
 			alloc.allocations[0].sz == 4;
 		}
 		if (xfer.inc_dst) {
-			alloc.allocations[1].sz < 65536;
+			alloc.allocations[1].sz <= 1024;
 		} else {
 			alloc.allocations[1].sz == 4;
 		}
@@ -34,10 +38,10 @@ rule_graph dma_single_xfer_test {
 		xfer.sz == alloc.allocations[0].sz;
 	} 
 	
-	dma_single_xfer_test =
+	dma_single_xfer_test = repeat {
 		alloc
 		xfer
 		join
-	;
+	};
 }
 

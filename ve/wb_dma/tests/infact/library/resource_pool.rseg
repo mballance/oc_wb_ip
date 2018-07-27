@@ -5,14 +5,25 @@
 rule_segment {
 	
 	
-	struct resource_pool (N=4, MIN=0, MAX=N-1) {
+	struct resource_pool (N=4, SPEC_N_DEV=1, MIN=0, MAX=N-1) {
 		meta_action resource[unsigned MIN..MAX][N];
+		meta_action device[unsigned 15:0][N];
 		
-		constraint unique {
+		constraint device_c {
+			if (SPEC_N_DEV > 0) {
+				foreach (device[i]) {
+					device[i] inside [0..SPEC_N_DEV-1];
+				}
+			}
+		}
+		
+		constraint unique_c {
 			foreach (resource[i]) {
 				foreach (resource[j]) {
 					if (i != j) {
-						resource[i] != resource[j];
+						if (device[i] == device[j]) {
+							resource[i] != resource[j];
+						}
 					}
 				}
 			}

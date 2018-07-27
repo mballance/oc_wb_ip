@@ -35,7 +35,7 @@ class mem_mgr_mem_region;
 	string					desc;
 	bit [31:0]				addr;
 	bit [31:0]				size;
-	bit [7:0]				storage[];
+//	bit [7:0]				storage[];
 	bit						freed;
 endclass
 
@@ -46,6 +46,7 @@ class mem_mgr extends uvm_component;
 
 	bit [31:0]											m_mem_base;
 	bit [31:0]											m_mem_size;
+	bit [7:0]											m_storage[];
 	mem_mgr_mem_region									m_map[$];
 	mem_mgr_mem_region									m_free_list[$];
 	
@@ -64,6 +65,8 @@ class mem_mgr extends uvm_component;
 		m_mem_base = 'h0000_1000;
 		m_mem_size = 'h0020_0000;
 		mem_ev_ap = new("mem_ev_ap", this);
+		
+		m_storage = new[m_mem_size];
 		
 		m_access_sem = new(1);
 		
@@ -100,7 +103,7 @@ class mem_mgr extends uvm_component;
 		region.addr    = m_mem_base;
 		region.size    = size+4;
 		region.desc    = desc;
-		region.storage = new[region.size];
+//		region.storage = new[region.size];
 		
 		if (m_map.size() == 0) begin
 			`mm_info("    first alloc");
@@ -293,26 +296,18 @@ class mem_mgr extends uvm_component;
 		mem_mgr_mem_region region;
 
 		if (addr < (m_mem_base + m_mem_size)) begin
-			region = find_mem_region(addr);
+//			region = find_mem_region(addr);
+//			if (region == null) begin
+//				uvm_report_error("MEM_MGR", $psprintf(
+//					"%0s to 'h%08h is to an unmapped region", 
+//					(we)?"Write":"Read", addr));
+//			end
 			
-			if (region != null) begin
-				/*
-				if (region.freed) begin
-					uvm_report_error("MEM_MGR",
-						$psprintf("%0s to 'h%08h is to a freed region",
-							(we)?"Write":"Read", addr));
-				end
-				 */
-				if (we) begin
-					region.storage[addr-region.addr] = data;
-				end else begin
-					data = region.storage[addr-region.addr];
-				end
+			if (we) begin
+				m_storage[addr-m_mem_base] = data;
 			end else begin
-				uvm_report_error("MEM_MGR", $psprintf(
-					"%0s to 'h%08h is to an unmapped region", 
-					(we)?"Write":"Read", addr));
-			end  
+				data = m_storage[addr-m_mem_base];
+			end
 		end else begin
 			uvm_report_error("MEM_MGR", 
 				$psprintf("Direct access to address 'h%h outside the memory space", addr));
@@ -320,6 +315,60 @@ class mem_mgr extends uvm_component;
 
 		 `mm_info_v($psprintf("[Direct Access] %0s 'h%08h = 'h%08h", 
 				(we)?"Write":"Read", addr, data));
+	endfunction
+	
+	function bit map(
+		bit[31:0]			addr,
+		bit[31:0]			sz);
+		bit ret = 0;
+		mem_mgr_mem_region region;
+		
+		region = find_mem_region(addr);
+		
+		if (region == null) begin
+			region = new;
+		
+			`mm_info($psprintf("malloc(%0d) align=%0d align_mask='h%08h %0s", 
+					size, align, align_mask, desc));
+		
+			region.addr    = addr;
+			region.size    = sz+4;
+			region.desc    = "map";
+			
+			if (m_map.size() == 0) begin
+				m_map.push_back(region);
+			end else begin
+				for (int i=0; i<m_map.size(); i++) begin
+					if (m_map[i].addr > region.addr &&
+							(region.addr + region.size) < m_map[i].addr) begin
+						m_map.insert(i, region);
+						break;
+					end else if (i+1 >= m_map.size()) begin
+						m_map.push_back(region);
+						break;
+					end
+				end
+			end
+		end else begin
+			$display("Note: region 'h%08h already mapped", addr);
+		end
+		
+		return ret;
+	endfunction
+	
+	function bit unmap(bit[31:0] addr);
+		bit ret = 1;
+		mem_mgr_mem_region region;
+		
+		region = find_mem_region(addr);
+		
+		if (region == null) begin
+			`uvm_error("MEM_MGR", $sformatf("failed to unmap 'h%08h", addr));
+		end else begin
+			do_free(region);
+		end
+		
+		return ret;
 	endfunction
 	
 	function void write32(

@@ -1,0 +1,9 @@
+
+
+rule_segment {
+
+	attributes rule_graph {
+		include += "#include \"wb_dma_test_sw.h\"";
+	}
+	
+}

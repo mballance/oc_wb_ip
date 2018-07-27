@@ -9,14 +9,22 @@ rule_graph dma_parallel_xfer_test {
 	import "env_mapping.rseg";
 	import "dma_env_mapping.rseg";
 	import "threads.rseg";
+	action infact_checkcov;
 
 	unsigned const N_PAR = 4;
 	
-	dma_parallel_xfer (.N(N_PAR), .ADDR_BASE('h0000_0000), .ADDR_LIMIT('h1000_0000)) xfers; 	
+	dma_parallel_xfer (.N(N_PAR), .ADDR_BASE('h0000_0000), .ADDR_LIMIT('h0000_FFFF)) xfers;
 	
-	dma_parallel_xfer_test =
+	constraint dev_c {
+		foreach (xfers.xfers[i]) {
+			xfers.xfers[i].device == 0;
+		}
+	}
+	
+	dma_parallel_xfer_test = repeat {
 		xfers
 		join
-	;
+		infact_checkcov
+	};
 }
 

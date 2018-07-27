@@ -14,6 +14,7 @@ rule_segment {
 		dma_single_xfer xfers[N];
 		
 		constraint mem_c {
+			// Assign alloations for source a destination
 			foreach (xfers[i]) {
 				xfers[i].src == alloc.allocations[2*i].addr;
 				xfers[i].dst == alloc.allocations[2*i+1].addr;
@@ -25,12 +26,12 @@ rule_segment {
 				if (xfers[i].inc_src == 0) {
 					alloc.allocations[2*i].sz == 4; // Single source address
 				} else {
-					alloc.allocations[2*i].sz < 65536;
+					alloc.allocations[2*i].sz < 1024;
 				}
 				if (xfers[i].inc_dst == 0) {
 					alloc.allocations[2*i+1].sz == 4; // Single destination address
 				} else {
-					alloc.allocations[2*i+1].sz < 65536;
+					alloc.allocations[2*i+1].sz < 1024;
 				}
 				
 				// If both source and destination increment, sizes must match
@@ -43,6 +44,7 @@ rule_segment {
 		constraint channel_c {
 			foreach (xfers[i]) {
 				xfers[i].channel == channels.resource[i];
+				xfers[i].device == channels.device[i];
 			}
 		}
 	}
@@ -50,5 +52,4 @@ rule_segment {
 	attributes dma_parallel_xfer {
 		type = "int";
 	}
-    
 }

@@ -9,13 +9,14 @@ BUILD_POSTCOMPILE_TARGETS += run_qso.d
 BUILD_PRELINK_TARGETS += compile_qso_seqs.d
 TB_MODULES += wb_dma_infact_seqs_pkg
 
-INFACT_SRC += $(wildcard $(WB_DMA_TESTS_INFACT_DIR)/library/*.rseg)
-INFACT_SRC += $(wildcard $(WB_DMA_TESTS_INFACT_DIR)/library/uvm/*.rseg)
-INFACT_SRC += $(wildcard $(WB_DMA_TESTS_INFACT_DIR)/library/sc/*.rseg)
-INFACT_SRC += $(wildcard $(WB_DMA_TESTS_INFACT_DIR)/dma/*.rseg)
-INFACT_SRC += $(wildcard $(WB_DMA_TESTS_INFACT_DIR)/dma/*.rules)
-INFACT_SRC += $(wildcard $(WB_DMA_TESTS_INFACT_DIR)/dma/uvm/*.rseg)
-INFACT_SRC += $(wildcard $(WB_DMA_TESTS_INFACT_DIR)/dma/sc/*.rseg)
+INFACT_SRC += $(wildcard $(WB_DMA_TESTS_INFACT_DIR)/library/*)
+INFACT_SRC += $(wildcard $(WB_DMA_TESTS_INFACT_DIR)/library/uvm/*)
+INFACT_SRC += $(wildcard $(WB_DMA_TESTS_INFACT_DIR)/library/sc/*)
+INFACT_SRC += $(wildcard $(WB_DMA_TESTS_INFACT_DIR)/dma/*)
+INFACT_SRC += $(wildcard $(WB_DMA_TESTS_INFACT_DIR)/dma/uvm/*)
+INFACT_SRC += $(wildcard $(WB_DMA_TESTS_INFACT_DIR)/dma/sc/*)
+
+INFACT_INI_FILES += $(BUILD_DIR)/infact_dma_seqs/infact_dma_seqs.ini
 
 LIBRARY_RSEGS = \
 			$(WB_DMA_TESTS_INFACT_DIR)/library/mem_allocator.rseg \
@@ -26,7 +27,6 @@ LIBRARY_RSEGS = \
 WB_DMA_RSEGS = \
 		$(WB_DMA_TESTS_INFACT_DIR)/dma/dma_single_xfer.rseg \
 		$(WB_DMA_TESTS_INFACT_DIR)/dma/dma_parallel_xfer.rseg \
-		$(WB_DMA_TESTS_INFACT_DIR)/dma/uvm/dma_single_xfer_mapping.rseg
 
 
 else # Rules
@@ -39,6 +39,7 @@ build_infact.d : $(INFACT_SRC) $(INFACT_SCRIPT)
 			$(WB_DMA_TESTS_INFACT_DIR)/dma/dma_single_xfer_test.rules \
 			$(WB_DMA_TESTS_INFACT_DIR)/library/uvm/env_mapping.rseg \
 			$(WB_DMA_TESTS_INFACT_DIR)/dma/uvm/dma_env_mapping.rseg \
+			$(WB_DMA_TESTS_INFACT_DIR)/dma/uvm/dma_single_xfer_mapping.rseg \
 			$(LIBRARY_RSEGS) \
 			$(WB_DMA_RSEGS)
 	$(Q)infact cmd add_component -project infact_dma_seqs \
@@ -46,8 +47,20 @@ build_infact.d : $(INFACT_SRC) $(INFACT_SCRIPT)
 			$(WB_DMA_TESTS_INFACT_DIR)/dma/dma_parallel_xfer_test.rules \
 			$(WB_DMA_TESTS_INFACT_DIR)/library/uvm/env_mapping.rseg \
 			$(WB_DMA_TESTS_INFACT_DIR)/dma/uvm/dma_env_mapping.rseg \
+			$(WB_DMA_TESTS_INFACT_DIR)/dma/uvm/dma_single_xfer_mapping.rseg \
 			$(LIBRARY_RSEGS) \
-			$(WB_DMA_RSEGS)
+			$(WB_DMA_RSEGS) \
+			-cs $(WB_DMA_TESTS_INFACT_DIR)/dma/dma_parallel_xfer_test_cov.cdf
+	$(Q)infact cmd add_component -project infact_dma_seqs \
+		sdv_uvm_sequence wb_dma_pss_parallel_xfer_test -rules \
+			$(WB_DMA_TESTS_INFACT_DIR)/dma/dma_parallel_xfer_test.rules \
+			$(WB_DMA_TESTS_INFACT_DIR)/library/c/env_mapping.rseg \
+			$(WB_DMA_TESTS_INFACT_DIR)/dma/c/dma_env_mapping.rseg \
+			$(WB_DMA_TESTS_INFACT_DIR)/dma/c/dma_single_xfer_mapping.rseg \
+			$(LIBRARY_RSEGS) \
+			$(WB_DMA_RSEGS) \
+			-cs $(WB_DMA_TESTS_INFACT_DIR)/dma/dma_parallel_xfer_test_cov.cdf \
+			-graph-name wb_dma_pss_parallel_xfer_seq
 	$(Q)touch $@
 	
 run_qso.d :

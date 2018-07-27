@@ -1,5 +1,9 @@
 
--F ./wb_uart16550/fw/fw.f
 -F ./wb_dma/fw/fw.F
+-f ./wb_dma/rtl/verilog/rtl.f
+-f ./wb_uart/rtl.f
+./wb_periph_subsys/wb_periph_subsys.sv
 -f ${OC_WB_IP}/rtl/wb_dma/rtl/verilog/rtl.f
--f ${OC_WB_IP}/rtl/std_protocol_if/rtl/rtl.f
+-F ${STD_PROTOCOL_IF}/sve.F
+-F ${WB_SYS_IP}/sve.F
+

@@ -12,7 +12,7 @@ rule_segment {
 	}
 	
 	attributes meta_action {
-		action_stmt = "m_values[\"${name}\"] = meta_val;";
+		action_stmt = "m_values[\"${inst_parent}.${leaf}\"] = meta_val;";
 	}
     
 

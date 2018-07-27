@@ -1,0 +1,4 @@
+Global
+
+Name,Type,Include,BinScheme
+channels,cross,"xfers.xfers[0].channel,xfers.xfers[1].channel,xfers.xfers[2].channel,xfers.xfers[3].channel"

@@ -15,7 +15,7 @@ class wb_dma_infact_single_transfer_seq extends wb_dma_transfer_seq;
 		
 		infact_gen = new({get_full_name(), ".infact_gen"});
 		
-		repeat (200) begin
+		while (!infact_gen.allCoverageGoalsHaveBeenMet()) begin
 			desc = wb_dma_single_transfer_descriptor::type_id::create("desc");
 			
 			start_item(desc);

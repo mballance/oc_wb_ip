@@ -47,5 +47,9 @@
 			<name>SV_BFMS</name>
 			<value>$%7BPACKAGES_DIR%7D/sv_bfms</value>
 		</variable>
+		<variable>
+			<name>WB_SYS_IP</name>
+			<value>$%7BPACKAGES_DIR%7D/wb_sys_ip</value>
+		</variable>
 	</variableList>
 </projectDescription>

@@ -18,6 +18,8 @@ rule_segment {
   	
   	constraint non_overlap_c {
   		foreach (allocations[i]) {
+  			allocations[i].addr >= ADDR_BASE;
+  			(allocations[i].addr+allocations[i].sz-1) <= ADDR_LIMIT; 
   			foreach (allocations[j]) {
   				if (i != j) {
   					(allocations[i].addr >= (allocations[j].addr+allocations[j].sz)) ||

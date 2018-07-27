@@ -25,6 +25,7 @@ module wb_uart (
 	
 	assign s.ERR = 0;
 	
+	
 	uart_top uart_top (
 		.wb_clk_i   (clk  ), 
 		.wb_rst_i   (!rstn  ), 

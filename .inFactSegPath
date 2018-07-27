@@ -1,2 +1,4 @@
 ve/wb_dma/tests/infact/dma
 ve/wb_dma/tests/infact/library
+ve/wb_dma/tests/infact/dma/uvm
+ve/wb_dma/tests/infact/library/uvm

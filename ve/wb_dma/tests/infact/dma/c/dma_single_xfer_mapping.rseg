@@ -1,0 +1,22 @@
+/****************************************************************************
+ *                      dma_single_xfer_mapping.rseg
+ *
+ * Mapping for a C environment
+ ****************************************************************************/
+
+rule_segment {
+	import "dma_single_xfer.rseg";
+	import "threads.rseg";
+	
+	attributes dma_single_xfer.body {
+		action_stmt = "queue_dma_single_transfer(
+			0, ${channel}, ${src}, ${inc_src}, ${dst},
+			${inc_dst}, ${sz});
+		";
+	}
+	
+	attributes join {
+		action_stmt = "wait_threads();";
+	}
+
+}

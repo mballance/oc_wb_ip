@@ -23,6 +23,12 @@ package wb_dma_seqs_pkg;
 	
 	`include "wb_dma_ll_transfer_descriptor.svh"
 	
+	`include "wb_dma_action_mgr_if.svh"
+	`include "wb_dma_dev_api.svh"
+	
+	typedef class wb_dma_transfer_seq;
+	`include "wb_dma_action_single_xfer.svh"
+	
 	// Transfer sequences
 	`include "wb_dma_transfer_seq.svh"
 	`include "wb_dma_rand_single_transfer_seq.svh"
@@ -42,6 +48,9 @@ package wb_dma_seqs_pkg;
 	// Config sequences
 	`include "wb_dma_config_seq.svh"
 	`include "wb_dma_rand_config_seq.svh"
+	
+	// Test sequences
+	`include "wb_dma_single_xfer_action_test_seq.svh"
 	
 `ifdef UNDEFINED	
 `ifdef INFACT

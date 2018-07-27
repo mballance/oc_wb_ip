@@ -1,5 +1,6 @@
 uex@https://github.com/mballance/uex.git
 std_protocol_if@https://github.com/mballance/std_protocol_if.git
+wb_sys_ip@https://github.com/mballance/wb_sys_ip.git
 simscripts@https://github.com/mballance/simscripts.git
 sv_bfms@https://github.com/mballance/sv_bfms.git
 

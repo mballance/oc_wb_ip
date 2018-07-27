@@ -7,45 +7,66 @@
  * 
  * TODO: Add class documentation
  */
-class wb_dma_transfer_seq extends wb_dma_reg_seq;
+class wb_dma_transfer_seq extends wb_dma_reg_seq
+		implements wb_dma_action_mgr_if;
 	`uvm_object_utils(wb_dma_transfer_seq)
-	
-	typedef class closure_base;
-	typedef class dma_single_xfer_closure;
 	
 	uvm_analysis_port #(wb_dma_descriptor)		m_start_ap;
 	uvm_analysis_port #(wb_dma_descriptor)		m_done_ap;
+	uvm_object									m_devices[];
 	
 	mem_mgr										m_mem_mgr;
 	
-	closure_base								m_closures[$];
+	uvm_object									m_actions[$];
 	process										m_processes[$];
 	event										m_proc_added_ev;
 
 	function new(string name="wb_dma_transfer_seq");
 		super.new(name);
+
 	endfunction
+	
+	virtual task pre_body();
+		wb_dma_dev_api dev = new(m_regs);
+		
+		m_devices = new[1];
+		m_devices[0] = dev;
+	endtask
 	
 	/**
 	 * Function: queue_dma_single_transfer
 	 */
 	virtual task queue_dma_single_transfer(
-		int unsigned		dma_id,
+		int unsigned		device_id,
 		int unsigned		channel,
 		int unsigned		src,
 		int unsigned		inc_src,
 		int unsigned		dst,
 		int unsigned		inc_dst,
 		int unsigned		sz);
-		dma_single_xfer_closure c = new(
-				this, dma_id, channel, src, inc_src, dst, inc_dst, sz);
-		m_closures.push_back(c);
+		uvm_object			dev = m_devices[device_id];
+		wb_dma_dev_api		dma_dev;
+		wb_dma_action_single_xfer c;
+		
+		if (!$cast(dma_dev, dev)) begin
+			`uvm_fatal(get_name(), "Failed to cast device to dma_dev");
+		end
+		
+		c = new(this, dma_dev, channel, src, inc_src, dst, inc_dst, sz);
 	endtask
 	
+	virtual function void add_action(uvm_object a);
+		m_actions.push_back(a);
+	endfunction
+	
+	virtual function void add_process(process p);
+		m_processes.push_back(p);
+		->m_proc_added_ev;
+	endfunction
+	
 	virtual task wait_threads();
-		$display("TODO: wait_threads");
 		// Wait for all threads to come alive
-		while (m_processes.size() < m_closures.size()) begin
+		while (m_processes.size() < m_actions.size()) begin
 			@(m_proc_added_ev);
 		end
 	
@@ -55,7 +76,7 @@ class wb_dma_transfer_seq extends wb_dma_reg_seq;
 		end
 	
 		m_processes = '{};
-		m_closures = '{};
+		m_actions = '{};
 		
 	endtask
 
@@ -336,52 +357,6 @@ class wb_dma_transfer_seq extends wb_dma_reg_seq;
 		input uvm_sequencer_base sequencer=null);
 		// NOP
 	endtask
-
-	class closure_base;
-		virtual task run();
-		endtask
-	endclass
-
-	class dma_single_xfer_closure extends closure_base;
-		wb_dma_transfer_seq	m_seq;
-		int unsigned		m_dma_id;
-		int unsigned		m_channel;
-		int unsigned		m_src;
-		int unsigned		m_inc_src;
-		int unsigned		m_dst;
-		int unsigned		m_inc_dst;
-		int unsigned		m_sz;
-		
-		function new(
-			wb_dma_transfer_seq	seq,
-			int unsigned		dma_id,
-			int unsigned		channel,
-			int unsigned		src,
-			int unsigned		inc_src,
-			int unsigned		dst,
-			int unsigned		inc_dst,
-			int unsigned		sz);
-			m_seq = seq;
-			m_dma_id = dma_id;
-			m_channel = channel;
-			m_src = src;
-			m_inc_src = inc_src;
-			m_dst = dst;
-			m_inc_dst = inc_dst;
-			m_sz = m_sz;
-			
-			fork
-				run();
-			join_none
-		endfunction
-		
-		task run();
-			m_seq.m_processes.push_back(process::self());
-			->m_seq.m_proc_added_ev;
-			$display("run");
-		endtask
-			
-	endclass
 
 endclass
 
