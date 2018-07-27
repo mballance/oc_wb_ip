@@ -1,9 +1,12 @@
 
-include $(SIMSCRIPTS_DIR)/mkfiles/plusargs.mk
+include $(PACKAGES_DIR)/packages.mk
+include $(PACKAGES_DIR)/simscripts/mkfiles/plusargs.mk
 
 TB=wb_uart_tb
+TB_MODULES_HDL=wb_uart_tb
+# TB_MODULES_HDL=wb_if
 
-include $(SIMSCRIPTS_DIR)/mkfiles/common_sim.mk
+include $(PACKAGES_DIR)/simscripts/mkfiles/common_sim.mk
 
 
 	
