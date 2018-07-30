@@ -14,6 +14,8 @@ VL_TB_OBJS_LIBS += libvl_tb.o
 
 include $(PACKAGES_DIR)/simscripts/mkfiles/common_sim.mk
 
+$(VL_TB_SRC) : vl_translate.d
+
 libvl_tb.o : $(VL_TB_SRC:.cpp=.o)
 	$(Q)$(LD) -r -o $@ $(VL_TB_SRC:.cpp=.o)
 
