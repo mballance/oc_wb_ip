@@ -37,23 +37,33 @@ module wb_periph_subsys #(
 		.WB_ADDR_WIDTH  (WB_ADDR_WIDTH     ), 
 		.WB_DATA_WIDTH  (WB_DATA_WIDTH     )
 		) reg_ic2dma ();
+	
+	wb_if #(
+		.WB_ADDR_WIDTH  (WB_ADDR_WIDTH     ), 
+		.WB_DATA_WIDTH  (WB_DATA_WIDTH     )
+		) reg_ic2uart ();
+	
+	wb_if #(
+		.WB_ADDR_WIDTH  (WB_ADDR_WIDTH     ), 
+		.WB_DATA_WIDTH  (WB_DATA_WIDTH     )
+		) reg_ic2intc ();
 
 	wb_interconnect_1x3 #(
 		.WB_ADDR_WIDTH      (SUBSYS_ADDR_WIDTH ),
 		.WB_DATA_WIDTH      (WB_DATA_WIDTH     ),
-		.SLAVE0_ADDR_BASE   (SLAVE0_ADDR_BASE  ),
-		.SLAVE0_ADDR_LIMIT  (SLAVE0_ADDR_LIMIT ),
-		.SLAVE1_ADDR_BASE   (SLAVE1_ADDR_BASE  ),
-		.SLAVE1_ADDR_LIMIT  (SLAVE1_ADDR_LIMIT ),
-		.SLAVE2_ADDR_BASE   (SLAVE2_ADDR_BASE  ),
-		.SLAVE2_ADDR_LIMIT  (SLAVE2_ADDR_LIMIT )
+		.SLAVE0_ADDR_BASE   ('h0000_0000       ), // 1KB for DMA
+		.SLAVE0_ADDR_LIMIT  ('h0000_03FF       ),
+		.SLAVE1_ADDR_BASE   ('h0000_0400       ), // 64B for UART
+		.SLAVE1_ADDR_LIMIT  ('h0000_043F       ),
+		.SLAVE2_ADDR_BASE   ('h0000_0440       ), // 16B for PIC
+		.SLAVE2_ADDR_LIMIT  ('h0000_044F       )
 		) u_reg_ic (
 		.clk                (clk               ), 
 		.rstn               (~rst              ), 
 		.m0                 (trunc2reg_ic.slave), 
 		.s0                 (reg_ic2dma.master ), 
-		.s1                 (s1                ), 
-		.s2                 (s2                ));
+		.s1                 (reg_ic2uart.master), 
+		.s2                 (reg_ic2intc.master));
 
 
 	// Interface to stub out second register interface
@@ -83,8 +93,14 @@ module wb_periph_subsys #(
 	wire[DMA_N_CHANNELS-1:0] dma_ack_o;
 	wire[DMA_N_CHANNELS-1:0] dma_rest_i = 0;
 	
-	wire inta_o;
-	wire intb_o;
+	wire dma_inta_o;
+	wire dma_intb_o;
+	wire uart_irq;
+	
+	wire [1:0]			int_req;
+	
+	assign int_req[0] = dma_inta_o;
+	assign int_req[1] = uart_irq;
 	
 	wb_dma_w #(
 			.rf_addr(0),
@@ -96,13 +112,41 @@ module wb_periph_subsys #(
 		.wb0m        (dma2out0.master  ), 
 		.wb1s        (stub2dma.slave   ), 
 		.wb1m        (dma2out1.master  ), 
-		.dma_req_i   (dma_req_i  ), 
-		.dma_nd_i    (dma_nd_i   ), 
-		.dma_ack_o   (dma_ack_o  ), 
-		.dma_rest_i  (dma_rest_i ), 
-		.inta_o      (inta_o     ), 
-		.intb_o      (intb_o     ));
-			
+		.dma_req_i   (dma_req_i        ), 
+		.dma_nd_i    (dma_nd_i         ), 
+		.dma_ack_o   (dma_ack_o        ), 
+		.dma_rest_i  (dma_rest_i       ), 
+		.inta_o      (dma_inta_o       ), 
+		.intb_o      (dma_intb_o       ));
+	
+	
+	wb_uart #(
+		.DATA_BUS_WIDTH_8  (0 ), 
+		.WORD_SIZE_REGS    (1 )
+		) u_uart (
+		.clk               (clk              ), 
+		.rstn              (~rst             ), 
+		.s                 (reg_ic2uart.slave), 
+		.int_o             (int_o            ), 
+		.stx_pad_o         (stx_pad_o        ), 
+		.srx_pad_i         (srx_pad_i        ), 
+		.rts_pad_o         (rts_pad_o        ), 
+		.cts_pad_i         (cts_pad_i        ), 
+		.dtr_pad_o         (dtr_pad_o        ), 
+		.dsr_pad_i         (dsr_pad_i        ), 
+		.ri_pad_i          (ri_pad_i         ), 
+		.dcd_pad_i         (dcd_pad_i        ), 
+		.tx_ready          (tx_ready         ), 
+		.rx_ready          (rx_ready         ));
+	
+	simple_pic_w #(
+		.NUM_IRQ  (2 )
+		) u_pic (
+		.clk_i    (clk               ), 
+		.rst_i    (rst               ), 
+		.s        (reg_ic2intc.slave ), 
+		.irq_i    (irq_i             ), 
+		.int_o    (int_req           ));
 
 	/**
 	 * Output interconnect that routes DMA accesses

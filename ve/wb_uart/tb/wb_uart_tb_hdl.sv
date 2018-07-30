@@ -1,21 +1,13 @@
 /****************************************************************************
- * wb_uart_tb.sv
+ * wb_uart_tb_hdl.sv
  ****************************************************************************/
 
 /**
- * Module: wb_uart_tb
+ * Module: wb_uart_tb_hdl
  * 
  * TODO: Add module documentation
  */
-`ifdef HAVE_UVM
-`include "uvm_macros.svh"
-`endif
-module wb_uart_tb(input clk);
-`ifdef HAVE_UVM
-	import uvm_pkg::*;
-	import wb_uart_tests_pkg::*;
-`endif
-	
+module wb_uart_tb_hdl(input clk);
 `ifdef HAVE_HDL_CLKGEN
 		reg clk_r = 0;
 		initial begin
@@ -52,10 +44,17 @@ module wb_uart_tb(input clk);
 		.WB_DATA_WIDTH  (WB_DATA_WIDTH )
 		) u_wb_bfm (
 		.clk            (clk              ), 
-		.rstn           (rstn             ), 
+		.rstn           (~rst             ), 
 		.master         (u_bfm2uart.master));
 
-	wb_uart u_uart (
+	wire stx_pad_o, srx_pad_i;
+	wire rts_pad_o, cts_pad_i, dtr_pad_o, dsr_pad_i;
+	wire ri_pad_i, dcd_pad_i, tx_ready, rx_ready;
+	
+	wb_uart #(
+			.DATA_BUS_WIDTH_8(0),
+			.WORD_SIZE_REGS(1)
+		) u_uart (
 		.clk        (clk             ), 
 		.rstn       (~rst            ), 
 		.s          (u_bfm2uart.slave), 
@@ -67,13 +66,15 @@ module wb_uart_tb(input clk);
 		.dtr_pad_o  (dtr_pad_o ), 
 		.dsr_pad_i  (dsr_pad_i ), 
 		.ri_pad_i   (ri_pad_i  ), 
-		.dcd_pad_i  (dcd_pad_i ));
-
-`ifdef HAVE_UVM
-	initial begin
-		run_test();
-	end
-	`endif
+		.dcd_pad_i  (dcd_pad_i ),
+		.tx_ready	(tx_ready),
+		.rx_ready	(rx_ready) );
+	
+	assign srx_pad_i = 1;
+	assign cts_pad_i = 1;
+	assign dsr_pad_i = 1;
+	assign ri_pad_i = 1;
+	assign dcd_pad_i = 1;
 
 endmodule
 

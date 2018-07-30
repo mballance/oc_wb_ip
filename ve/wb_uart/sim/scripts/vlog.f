@@ -1,11 +1,5 @@
 
-+incdir+${SIM_DIR_A}/../tb
-+incdir+${SIM_DIR_A}/../tests
-
-${SIM_DIR_A}/../tb/wb_uart_env_pkg.sv
-
-${SIM_DIR_A}/../tests/wb_uart_tests_pkg.sv
-
-${SIM_DIR_A}/../tb/wb_uart_tb.sv
+-f ${OC_WB_IP}/ve/wb_uart/sim/scripts/vlog_hdl.f
+-f ${OC_WB_IP}/ve/wb_uart/sim/scripts/vlog_hvl.f
 
 

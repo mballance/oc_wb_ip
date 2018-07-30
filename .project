@@ -36,8 +36,16 @@
 	</linkedResources>
 	<variableList>
 		<variable>
+			<name>MEMORY_PRIMITIVES</name>
+			<value>$%7BPACKAGES_DIR%7D/memory_primitives</value>
+		</variable>
+		<variable>
 			<name>OC_WB_IP</name>
 			<value>$%7BPROJECT_LOC%7D</value>
+		</variable>
+		<variable>
+			<name>SIMSCRIPTS</name>
+			<value>$%7BPACKAGES_DIR%7D/simscripts</value>
 		</variable>
 		<variable>
 			<name>STD_PROTOCOL_IF</name>

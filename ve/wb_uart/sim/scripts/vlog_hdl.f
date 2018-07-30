@@ -10,6 +10,6 @@
 -f ${OC_WB_IP}/rtl/wb_uart/rtl.f
 -f ${SV_BFMS}/wb/wb.f
 
-${OC_WB_IP}/ve/wb_uart/tb/wb_uart_tb.sv
+${OC_WB_IP}/ve/wb_uart/tb/wb_uart_tb_hdl.sv
 
 

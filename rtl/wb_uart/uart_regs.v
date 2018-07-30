@@ -240,7 +240,9 @@ module uart_regs (clk,
 // debug interface signals	enabled
 ier, iir, fcr, mcr, lcr, msr, lsr, rf_count, tf_count, tstate, rstate,
 `endif				
-	rts_pad_o, dtr_pad_o, int_o
+	rts_pad_o, dtr_pad_o, int_o,
+	tx_ready,
+	rx_ready
 `ifdef UART_HAS_BAUDRATE_OUTPUT
 	, baud_o
 `endif
@@ -249,7 +251,7 @@ ier, iir, fcr, mcr, lcr, msr, lsr, rf_count, tf_count, tstate, rstate,
 
 input 									clk;
 input 									wb_rst_i;
-input [`UART_ADDR_WIDTH-1:0] 		wb_addr_i;
+input [`UART_ADDR_WIDTH-1:0] 			wb_addr_i;
 input [7:0] 							wb_dat_i;
 output [7:0] 							wb_dat_o;
 input 									wb_we_i;
@@ -262,6 +264,8 @@ input [3:0] 							modem_inputs;
 output 									rts_pad_o;
 output 									dtr_pad_o;
 output 									int_o;
+output									tx_ready;
+output									rx_ready;
 `ifdef UART_HAS_BAUDRATE_OUTPUT
 output	baud_o;
 `endif
@@ -296,7 +300,7 @@ wire 										srx_pad;
 
 reg [7:0] 								wb_dat_o;
 
-wire [`UART_ADDR_WIDTH-1:0] 		wb_addr_i;
+wire [`UART_ADDR_WIDTH-1:0] 			wb_addr_i;
 wire [7:0] 								wb_dat_i;
 
 
@@ -598,6 +602,23 @@ assign lsr4 = rf_data_out[2]; // break error in the character
 assign lsr5 = (tf_count==5'b0 && thre_set_en);  // transmitter fifo is empty
 assign lsr6 = (tf_count==5'b0 && thre_set_en && (tstate == /*`S_IDLE */ 0)); // transmitter empty
 assign lsr7 = rf_error_bit | rf_overrun;
+
+reg [3:0] tf_full;
+always @(posedge clk or posedge wb_rst_i) begin
+	if (wb_rst_i) begin
+		tf_full <= 0;
+	end else begin
+	case (tf_full) 
+		2'b11: tf_full <= 15;
+		2'b10: tf_full <= 7;
+		2'b01: tf_full <= 3;
+		2'b00: tf_full <= 1;
+	endcase
+	end
+end
+
+assign rx_ready = (rf_count==0 && rf_push_pulse);
+assign tx_ready = (tf_count != tf_full);
 
 // lsr bit0 (receiver data available)
 reg 	 lsr0_d;
