@@ -14,6 +14,7 @@ ${OC_WB_IP}/rtl/wb_periph_subsys/wb_periph_subsys.sv
 -f ${STD_PROTOCOL_IF}/rtl/wb/wb.f
 -f ${SV_BFMS}/wb/wb.f
 -f ${SV_BFMS}/uart/sv.f
+-f ${SV_BFMS}/event/event.f
 
 +define+GENERIC_SRAM_BYTE_EN_BFM_NAME=generic_sram_byte_en
 -f ${SV_BFMS}/generic_sram_byte_en/sv.f

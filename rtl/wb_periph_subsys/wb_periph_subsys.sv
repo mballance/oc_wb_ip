@@ -15,7 +15,10 @@ module wb_periph_subsys #(
 		input				rst,
 		output				irq,
 		wb_if.slave			s,
-		wb_if.master		m
+		wb_if.master		m,
+		// UART I/O signals
+		output			uart0_tx,
+		input			uart0_rx 
 		);
 
 	parameter SUBSYS_ADDR_WIDTH=12;
@@ -86,9 +89,16 @@ module wb_periph_subsys #(
 		.WB_ADDR_WIDTH  (WB_ADDR_WIDTH ), 
 		.WB_DATA_WIDTH  (WB_DATA_WIDTH )
 		) dma2out1 ();
+	
+	wire				uart_tx_ready;
+	wire				uart_rx_ready;
 
 	parameter DMA_N_CHANNELS = 8;
-	wire[DMA_N_CHANNELS-1:0] dma_req_i = 0;
+	wire[DMA_N_CHANNELS-1:0] dma_req_i = {
+			{6{0}},
+			uart_tx_ready,
+			uart_rx_ready
+		};
 	wire[DMA_N_CHANNELS-1:0] dma_nd_i = 0;
 	wire[DMA_N_CHANNELS-1:0] dma_ack_o;
 	wire[DMA_N_CHANNELS-1:0] dma_rest_i = 0;
@@ -118,7 +128,13 @@ module wb_periph_subsys #(
 		.dma_rest_i  (dma_rest_i       ), 
 		.inta_o      (dma_inta_o       ), 
 		.intb_o      (dma_intb_o       ));
-	
+
+	wire uart0_rts_pad_o;
+	wire uart0_cts_pad_i = 1;
+	wire uart0_dtr_pad_o;
+	wire uart0_dsr_pad_i = 0;
+	wire uart0_ri_pad_i = 1;
+	wire uart0_dcd_pad_i = 1;
 	
 	wb_uart #(
 		.DATA_BUS_WIDTH_8  (0 ), 
@@ -127,17 +143,17 @@ module wb_periph_subsys #(
 		.clk               (clk              ), 
 		.rstn              (~rst             ), 
 		.s                 (reg_ic2uart.slave), 
-		.int_o             (int_o            ), 
-		.stx_pad_o         (stx_pad_o        ), 
-		.srx_pad_i         (srx_pad_i        ), 
-		.rts_pad_o         (rts_pad_o        ), 
-		.cts_pad_i         (cts_pad_i        ), 
-		.dtr_pad_o         (dtr_pad_o        ), 
-		.dsr_pad_i         (dsr_pad_i        ), 
-		.ri_pad_i          (ri_pad_i         ), 
-		.dcd_pad_i         (dcd_pad_i        ), 
-		.tx_ready          (tx_ready         ), 
-		.rx_ready          (rx_ready         ));
+		.int_o             (uart_irq         ), 
+		.stx_pad_o         (uart0_tx         ), 
+		.srx_pad_i         (uart0_rx         ), 
+		.rts_pad_o         (uart0_rts_pad_o  ), 
+		.cts_pad_i         (uart0_cts_pad_i  ), 
+		.dtr_pad_o         (uart0_dtr_pad_o  ), 
+		.dsr_pad_i         (uart0_dsr_pad_i  ), 
+		.ri_pad_i          (uart0_ri_pad_i   ), 
+		.dcd_pad_i         (uart0_dcd_pad_i  ), 
+		.tx_ready          (uart0_tx_ready   ), 
+		.rx_ready          (uart0_rx_ready   ));
 	
 	simple_pic_w #(
 		.NUM_IRQ  (2 )
@@ -145,8 +161,8 @@ module wb_periph_subsys #(
 		.clk_i    (clk               ), 
 		.rst_i    (rst               ), 
 		.s        (reg_ic2intc.slave ), 
-		.irq_i    (irq_i             ), 
-		.int_o    (int_req           ));
+		.irq_i    (int_req           ), 
+		.int_o    (irq               ));
 
 	/**
 	 * Output interconnect that routes DMA accesses

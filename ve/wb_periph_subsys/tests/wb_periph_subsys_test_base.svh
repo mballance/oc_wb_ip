@@ -14,6 +14,10 @@ class wb_periph_subsys_test_base extends uvm_test;
 	
 		m_env = wb_periph_subsys_env::type_id::create("m_env", this);
 	endfunction
+	
+	task run_phase(uvm_phase phase);
+		phase.raise_objection(this, "Main");
+	endtask
 
 	/**
 	 * Function: report_phase

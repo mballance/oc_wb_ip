@@ -17,9 +17,11 @@ module wb_periph_subsys_tb(input clk);
 			clk_r <= ~clk_r;
 		end
 	end
+	
+	assign clk = clk_r;
 `endif
 	
-	reg[7:0]		rst_cnt;
+	reg[7:0]		rst_cnt = 0;
 	reg				rst = 1;
 	
 	always @(posedge clk) begin
@@ -57,8 +59,8 @@ module wb_periph_subsys_tb(input clk);
 		.WB_ADDR_WIDTH  (WB_ADDR_WIDTH ), 
 		.WB_DATA_WIDTH  (WB_DATA_WIDTH )
 		) u_wb_bfm (
-		.clk            (clk           		), 
-		.rstn           (~rstn         		), 
+		.clk            (clk           	), 
+		.rstn           (~rstn         	), 
 		.master         (bfm2ic.master	));
 	
 	wb_interconnect_2x2 #(
@@ -76,6 +78,9 @@ module wb_periph_subsys_tb(input clk);
 		.s0                 (ic2mem.master     	), 
 		.s1                 (ic2subsys.master  	));
 	
+	wire uart0_tx, uart0_rx;
+	
+	
 	wb_periph_subsys #(
 		.WB_ADDR_WIDTH  (WB_ADDR_WIDTH ), 
 		.WB_DATA_WIDTH  (WB_DATA_WIDTH )
@@ -84,7 +89,28 @@ module wb_periph_subsys_tb(input clk);
 		.rst            (rst           		), 
 		.irq            (irq           		), 
 		.s              (ic2subsys.slave	), 
-		.m              (subsys2ic.master	));
+		.m              (subsys2ic.master	),
+		.uart0_tx		(uart0_tx),
+		.uart0_rx		(uart0_rx)
+		);
+
+	wire uart0_rts;
+	wire uart0_cts = 1;
+	wire uart0_dtr;
+	wire uart0_dsr = 1;
+	wire uart0_ri = 1;
+	wire uart0_dcd = 1;
+	uart_serial_bfm u_uart0_bfm (
+		.clk_i      (clk     ), 
+		.rst_i      (rst     ), 
+		.stx_pad_o  (uart0_rx ), 
+		.srx_pad_i  (uart0_tx ), 
+		.rts_pad_o  (uart0_rts ), 
+		.cts_pad_i  (uart0_cts ), 
+		.dtr_pad_o  (uart0_dtr ), 
+		.dsr_pad_i  (uart0_dsr ), 
+		.ri_pad_i   (uart0_ri  ), 
+		.dcd_pad_i  (uart0_dcd ));
 	
 	wb_sram #(
 		.MEM_ADDR_BITS     (18    ), 

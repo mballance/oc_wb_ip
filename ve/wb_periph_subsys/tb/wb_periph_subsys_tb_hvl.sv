@@ -14,10 +14,12 @@ module wb_periph_subsys_tb_hvl;
 `ifdef HAVE_UVM
 	import uvm_pkg::*;
 `endif
-	
+
+`ifdef HAVE_UVM
 	initial begin
 		run_test();
 	end
+`endif
 
 endmodule
 
