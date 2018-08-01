@@ -2,6 +2,7 @@
  * wb_dma_seqs_pkg.sv
  ****************************************************************************/
 `include "uvm_macros.svh"
+`include "uvmdev_macros.svh"
 
 /**
  * Package: wb_dma_seqs_pkg
@@ -14,6 +15,7 @@ package wb_dma_seqs_pkg;
 	import wb_dma_env_pkg::*;
 	import mem_mgr_pkg::*;
 	import wb_dma_fw_pkg::*;
+	import uvmdev_pkg::*;
 
 	`include "wb_dma_reg_seq.svh"
 	`include "wb_dma_reg_reset_seq.svh"
@@ -23,11 +25,7 @@ package wb_dma_seqs_pkg;
 	
 	`include "wb_dma_ll_transfer_descriptor.svh"
 	
-	`include "wb_dma_action_mgr_if.svh"
 	`include "wb_dma_dev_api.svh"
-	
-	typedef class wb_dma_transfer_seq;
-	`include "wb_dma_action_single_xfer.svh"
 	
 	// Transfer sequences
 	`include "wb_dma_transfer_seq.svh"

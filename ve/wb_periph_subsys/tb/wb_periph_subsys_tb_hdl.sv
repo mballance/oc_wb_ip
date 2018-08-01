@@ -3,11 +3,11 @@
  ****************************************************************************/
 
 /**
- * Module: wb_periph_subsys_tb
+ * Module: wb_periph_subsys_tb_hdl
  * 
  * TODO: Add module documentation
  */
-module wb_periph_subsys_tb(input clk);
+module wb_periph_subsys_tb_hdl(input clk);
 `ifdef HAVE_HDL_CLKGEN
 	reg clk_r = 0;
 	

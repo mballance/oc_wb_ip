@@ -1,11 +1,16 @@
 
-+incdir+${SIM_DIR_A}/../tb
-+incdir+${SIM_DIR_A}/../tests
++incdir+${OC_WB_IP}/ve/wb_periph_subsys/tb
++incdir+${OC_WB_IP}/ve/wb_periph_subsys/tests
 
-${SIM_DIR_A}/../tb/wb_periph_subsys_env_pkg.sv
+-f ${SV_BFMS}/api/sv/sv.f
+-f ${SV_BFMS}/wb/uvm/uvm.f
+-f ${SV_BFMS}/uart/uvm/uvm.f
+-f ${SV_BFMS}/event/uvm/uvm.f
 
-${SIM_DIR_A}/../tests/wb_periph_subsys_tests_pkg.sv
+${OC_WB_IP}/ve/wb_periph_subsys/tb/wb_periph_subsys_env_pkg.sv
 
-${SIM_DIR_A}/../tb/wb_periph_subsys_tb_hvl.sv
+${OC_WB_IP}/ve/wb_periph_subsys/tests/wb_periph_subsys_tests_pkg.sv
+
+${OC_WB_IP}/ve/wb_periph_subsys/tb/wb_periph_subsys_tb_hvl.sv
 
 

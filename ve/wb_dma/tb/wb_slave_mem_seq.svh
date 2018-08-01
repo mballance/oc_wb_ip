@@ -27,7 +27,7 @@ class wb_slave_mem_seq #(parameter int ADDRESS_WIDTH=32, parameter int DATA_WIDT
 		
 		forever begin
 			finish_item(item); // finish first item, returning request
-
+			
 			if (item.is_write) begin
 				m_mem_mgr.write32(item.addr, item.data);
 			end else begin

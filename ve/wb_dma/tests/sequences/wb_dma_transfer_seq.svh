@@ -7,19 +7,15 @@
  * 
  * TODO: Add class documentation
  */
-class wb_dma_transfer_seq extends wb_dma_reg_seq
-		implements wb_dma_action_mgr_if;
+class wb_dma_transfer_seq extends wb_dma_reg_seq;
 	`uvm_object_utils(wb_dma_transfer_seq)
 	
 	uvm_analysis_port #(wb_dma_descriptor)		m_start_ap;
 	uvm_analysis_port #(wb_dma_descriptor)		m_done_ap;
-	uvm_object									m_devices[];
 	
 	mem_mgr										m_mem_mgr;
 	
-	uvm_object									m_actions[$];
-	process										m_processes[$];
-	event										m_proc_added_ev;
+	uvmdev_action_mgr							m_action_mgr;
 
 	function new(string name="wb_dma_transfer_seq");
 		super.new(name);
@@ -28,58 +24,12 @@ class wb_dma_transfer_seq extends wb_dma_reg_seq
 	
 	virtual task pre_body();
 		wb_dma_dev_api dev = new(m_regs);
+	
+		uvmdev_mgr::inst().add_device(0, dev);
 		
-		m_devices = new[1];
-		m_devices[0] = dev;
+		m_action_mgr = new();
 	endtask
 	
-	/**
-	 * Function: queue_dma_single_transfer
-	 */
-	virtual task queue_dma_single_transfer(
-		int unsigned		device_id,
-		int unsigned		channel,
-		int unsigned		src,
-		int unsigned		inc_src,
-		int unsigned		dst,
-		int unsigned		inc_dst,
-		int unsigned		sz);
-		uvm_object			dev = m_devices[device_id];
-		wb_dma_dev_api		dma_dev;
-		wb_dma_action_single_xfer c;
-		
-		if (!$cast(dma_dev, dev)) begin
-			`uvm_fatal(get_name(), "Failed to cast device to dma_dev");
-		end
-		
-		c = new(this, dma_dev, channel, src, inc_src, dst, inc_dst, sz);
-	endtask
-	
-	virtual function void add_action(uvm_object a);
-		m_actions.push_back(a);
-	endfunction
-	
-	virtual function void add_process(process p);
-		m_processes.push_back(p);
-		->m_proc_added_ev;
-	endfunction
-	
-	virtual task wait_threads();
-		// Wait for all threads to come alive
-		while (m_processes.size() < m_actions.size()) begin
-			@(m_proc_added_ev);
-		end
-	
-		// Wait for all processes to complete
-		for (int i=0; i<m_processes.size(); i++) begin
-			m_processes[i].await();
-		end
-	
-		m_processes = '{};
-		m_actions = '{};
-		
-	endtask
-
 	/**
 	 * Task: finish_item
 	 *

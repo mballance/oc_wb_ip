@@ -1,0 +1,47 @@
+/****************************************************************************
+ * dma_single_xfer_test.rules
+ * 
+ * Performs a single DMA transfer at a time
+ ****************************************************************************/
+
+rule_graph dma_single_xfer_test {
+	import "dma_single_xfer.rseg";
+	import "env_mapping.rseg";
+	import "dma_env_mapping.rseg";
+	import "mem_allocator.rseg";
+	import "threads.rseg";
+	
+	dma_single_xfer xfer;
+	mem_allocator (.N(2), .ADDR_BASE('h0000_0000), .ADDR_LIMIT('h0000_FFFF)) alloc;
+	
+	constraint dev_c {
+		xfer.device == 0;
+	}
+	
+	constraint mem_c {
+		if (xfer.inc_src) {
+			alloc.allocations[0].sz <= 1024;
+		} else {
+			alloc.allocations[0].sz == 4;
+		}
+		if (xfer.inc_dst) {
+			alloc.allocations[1].sz <= 1024;
+		} else {
+			alloc.allocations[1].sz == 4;
+		}
+		if (xfer.inc_src && xfer.inc_dst) {
+			alloc.allocations[0].sz == alloc.allocations[1].sz;
+		}
+		
+		xfer.src == alloc.allocations[0].addr;
+		xfer.dst == alloc.allocations[1].addr;
+		xfer.sz == alloc.allocations[0].sz;
+	} 
+	
+	dma_single_xfer_test = repeat {
+		alloc
+		xfer
+		join
+	};
+}
+

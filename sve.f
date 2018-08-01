@@ -4,6 +4,7 @@
 -F ./rtl/sve.F
 -f ${SV_BFMS}/sve.f
 -F ${WB_SYS_IP}/sve.F
+-F ${UVMDEV}/sve.F
 -F ./ve/wb_dma/sve.F
 -F ./ve/wb_uart/sve.F
 -F ./ve/wb_periph_subsys/sve.F

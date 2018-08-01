@@ -11,21 +11,23 @@ class wb_dma_single_xfer_action_test_seq extends wb_dma_transfer_seq;
 	`uvm_object_utils(wb_dma_single_xfer_action_test_seq)
 
 	virtual task body();
+	
+		$display("--> body");
 		$display("--> queue");
-		
-		queue_dma_single_transfer(
-				0,
+		`uvmdev_closure_spawn(wb_dma_dev_api, single_transfer,
+			(m_action_mgr, 0, 
 				0,
 				'h0000_1000,
 				1,
 				'h0000_2000,
 				1,
-				'h100);
+				'h100));
 		$display("<-- queue");
 		
 		$display("--> wait_threads");
-		wait_threads();
+		m_action_mgr.await();
 		$display("<-- wait_threads");
+		$display("<-- body");
 		
 	endtask
 

@@ -76,6 +76,7 @@ compile_qso_seqs.d :
 		+incdir+$(WB_DMA_TESTS_DIR)/sequences/infact \
 		+incdir+$(BUILD_DIR)/qso \
 		+incdir+$(BUILD_DIR)/infact_dma_seqs \
+		+incdir+$(UVMDEV)/src \
 		$(WB_DMA_TESTS_DIR)/sequences/infact/wb_dma_infact_seqs_pkg.sv
 
 endif

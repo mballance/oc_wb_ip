@@ -1,0 +1,25 @@
+
+rule_segment {
+	
+	struct dma_mem2mem_xfer {
+		meta_action device[unsigned 15:0]; // Specifies which device to use
+		meta_action channel[unsigned 0..30];
+		meta_action src[unsigned 31:0];
+		meta_action dst[unsigned 31:0];
+		meta_action sz[unsigned 15:0];
+	
+		// DMA can only transfer word-aligned 
+		constraint sz_c {
+			sz >= 4;
+			(sz % 4) == 0;
+		}
+		
+		action body;
+	}
+	
+	import "dma_mem2mem_xfer_mapping.rseg";
+	
+	attributes dma_single_xfer {
+		type = "int";
+	}
+}

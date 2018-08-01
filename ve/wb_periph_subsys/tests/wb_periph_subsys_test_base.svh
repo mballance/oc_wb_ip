@@ -16,7 +16,7 @@ class wb_periph_subsys_test_base extends uvm_test;
 	endfunction
 	
 	task run_phase(uvm_phase phase);
-		phase.raise_objection(this, "Main");
+//		phase.raise_objection(this, "Main");
 	endtask
 
 	/**

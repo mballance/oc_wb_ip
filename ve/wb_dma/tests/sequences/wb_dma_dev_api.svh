@@ -7,7 +7,7 @@
  * 
  * TODO: Add class documentation
  */
-class wb_dma_dev_api extends uvm_object;
+class wb_dma_dev_api extends uvm_object implements uvmdev_if;
 	`uvm_object_utils(wb_dma_dev_api);
 	wb_dma_reg_block			m_regs;
 	
@@ -64,6 +64,44 @@ class wb_dma_dev_api extends uvm_object;
 		ch.CSR.write(status, value);
 	endtask
 	
+	task single_transfer(
+		int unsigned			channel,
+		int unsigned			src,
+		int unsigned			inc_src,
+		int unsigned			dst,
+		int unsigned			inc_dst,
+		int unsigned			sz);
+		init_single_transfer(channel, src, inc_src, dst, inc_dst, sz);
+		wait_complete_poll(channel);
+	endtask
+	
+	task mem2mem_transfer(
+		int unsigned			channel,
+		int unsigned			src,
+		int unsigned			dst,
+		int unsigned			sz);
+		init_single_transfer(channel, src, 1, dst, 1, sz);
+		wait_complete_poll(channel);
+	endtask
+	
+	task mem2dev_transfer(
+		int unsigned			channel,
+		int unsigned			src,
+		int unsigned			dst,
+		int unsigned			sz);
+		init_single_transfer(channel, src, 1, dst, 0, sz);
+		wait_complete_poll(channel);
+	endtask
+	
+	task dev2mem_transfer(
+		int unsigned			channel,
+		int unsigned			src,
+		int unsigned			dst,
+		int unsigned			sz);
+		init_single_transfer(channel, src, 0, dst, 1, sz);
+		wait_complete_poll(channel);
+	endtask
+	
 	task wait_complete_poll(
 		int unsigned			channel);
 		wb_dma_ch ch = m_regs.ch[channel];
@@ -93,7 +131,10 @@ class wb_dma_dev_api extends uvm_object;
 		value[0] = 0;
 		ch.CSR.write(status, value);
 	endtask
-
 endclass
 
+`uvmdev_closure_decl_6(wb_dma_dev_api, single_transfer, uint32_t, uint32_t, uint32_t, uint32_t, uint32_t, uint32_t)
+`uvmdev_closure_decl_4(wb_dma_dev_api, mem2mem_transfer, uint32_t, uint32_t, uint32_t, uint32_t)
+`uvmdev_closure_decl_4(wb_dma_dev_api, mem2dev_transfer, uint32_t, uint32_t, uint32_t, uint32_t)
+`uvmdev_closure_decl_4(wb_dma_dev_api, dev2mem_transfer, uint32_t, uint32_t, uint32_t, uint32_t)
 
