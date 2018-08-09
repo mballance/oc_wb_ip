@@ -18,7 +18,7 @@ endif
 
 TB=wb_dma_tb
 TB_MODULES=wb_dma_tb 
-TIMEOUT = 100ms
+TIMEOUT = 200ms
 
 
 DPI_OBJS_LIBS += $(LIBWB_DMA_FW) $(LIBSV_BFMS_DPI)

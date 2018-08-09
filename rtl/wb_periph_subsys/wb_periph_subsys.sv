@@ -90,14 +90,14 @@ module wb_periph_subsys #(
 		.WB_DATA_WIDTH  (WB_DATA_WIDTH )
 		) dma2out1 ();
 	
-	wire				uart_tx_ready;
-	wire				uart_rx_ready;
+	wire				uart0_tx_ready;
+	wire				uart0_rx_ready;
 
 	parameter DMA_N_CHANNELS = 8;
 	wire[DMA_N_CHANNELS-1:0] dma_req_i = {
 			{6{0}},
-			uart_tx_ready,
-			uart_rx_ready
+			uart0_tx_ready,
+			uart0_rx_ready
 		};
 	wire[DMA_N_CHANNELS-1:0] dma_nd_i = 0;
 	wire[DMA_N_CHANNELS-1:0] dma_ack_o;
@@ -159,7 +159,7 @@ module wb_periph_subsys #(
 		.NUM_IRQ  (2 )
 		) u_pic (
 		.clk_i    (clk               ), 
-		.rst_i    (rst               ), 
+		.rst_i    (~rst              ),  // Active low
 		.s        (reg_ic2intc.slave ), 
 		.irq_i    (int_req           ), 
 		.int_o    (irq               ));

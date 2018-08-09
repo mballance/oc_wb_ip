@@ -16,7 +16,51 @@ class wb_periph_subsys_test_base extends uvm_test;
 	endfunction
 	
 	task run_phase(uvm_phase phase);
-//		phase.raise_objection(this, "Main");
+		phase.raise_objection(this, "Initialization");
+		// Initialize all devices
+		uvmdev_mgr::init();
+		
+		// Initialize the ISR
+		m_env.m_dev_isr.init_isr();
+		
+		// Run a simple DMA test
+		begin
+			wb_dma_dev dma;
+			uvmdev_if dma_dev = uvmdev_mgr::get(0);
+			
+			if (!$cast(dma, dma_dev)) begin
+				`uvm_fatal(get_name(), "Failed to cast to dma");
+			end
+			
+			dma.set_channel_mode(0, 1, 0); // Configure Rx channel
+			dma.set_channel_mode(1, 1, 0); // Configure Tx channel
+
+			// Transfer 16 bytes to the UART
+			dma.mem2dev_transfer(1, 
+					'h1000_0000,
+					'h0000_0400,
+					128);
+			
+//			dma.mem2mem_transfer(
+//					0,
+//					'h1000_0000, 
+//					'h1000_1000, 
+//					64);
+//			
+//			fork
+//			dma.mem2mem_transfer(
+//					0,
+//					'h1000_0000, 
+//					'h1000_0100, 
+//					64);
+//			dma.mem2mem_transfer(
+//					1,
+//					'h1000_0200, 
+//					'h1000_0300, 
+//					64);
+//			join
+		end
+		phase.drop_objection(this, "Initialization");
 	endtask
 
 	/**

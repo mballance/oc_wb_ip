@@ -8,3 +8,5 @@
 -F ./ve/wb_dma/sve.F
 -F ./ve/wb_uart/sve.F
 -F ./ve/wb_periph_subsys/sve.F
+-F ./ve/wb_simple_pic/sve.F
+-F ./ve/oc_wb_ip_vip/sve.F

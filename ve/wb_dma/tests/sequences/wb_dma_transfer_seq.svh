@@ -23,7 +23,7 @@ class wb_dma_transfer_seq extends wb_dma_reg_seq;
 	endfunction
 	
 	virtual task pre_body();
-		wb_dma_dev_api dev = new(m_regs);
+		wb_dma_dev dev = new(m_regs);
 	
 		uvmdev_mgr::inst().add_device(0, dev);
 		

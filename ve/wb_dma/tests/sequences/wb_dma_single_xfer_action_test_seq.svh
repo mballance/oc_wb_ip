@@ -14,7 +14,7 @@ class wb_dma_single_xfer_action_test_seq extends wb_dma_transfer_seq;
 	
 		$display("--> body");
 		$display("--> queue");
-		`uvmdev_closure_spawn(wb_dma_dev_api, single_transfer,
+		`uvmdev_closure_spawn(wb_dma_dev, single_transfer,
 			(m_action_mgr, 0, 
 				0,
 				'h0000_1000,

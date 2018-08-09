@@ -618,7 +618,7 @@ always @(posedge clk or posedge wb_rst_i) begin
 end
 
 assign rx_ready = (rf_count==0 && rf_push_pulse);
-assign tx_ready = (tf_count != tf_full);
+assign tx_ready = (tf_count < tf_full);
 
 // lsr bit0 (receiver data available)
 reg 	 lsr0_d;

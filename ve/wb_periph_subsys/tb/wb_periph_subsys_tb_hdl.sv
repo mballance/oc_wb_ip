@@ -60,7 +60,7 @@ module wb_periph_subsys_tb_hdl(input clk);
 		.WB_DATA_WIDTH  (WB_DATA_WIDTH )
 		) u_wb_bfm (
 		.clk            (clk           	), 
-		.rstn           (~rstn         	), 
+		.rstn           (~rst         	), 
 		.master         (bfm2ic.master	));
 	
 	wb_interconnect_2x2 #(
@@ -75,8 +75,8 @@ module wb_periph_subsys_tb_hdl(input clk);
 		.rstn               (~rst              	), 
 		.m0                 (bfm2ic.slave		), 
 		.m1                 (subsys2ic.slave   	), 
-		.s0                 (ic2mem.master     	), 
-		.s1                 (ic2subsys.master  	));
+		.s0                 (ic2subsys.master  	), 
+		.s1                 (ic2mem.master  	));
 	
 	wire uart0_tx, uart0_rx;
 	
@@ -120,6 +120,17 @@ module wb_periph_subsys_tb_hdl(input clk);
 		.clk               (clk              ), 
 		.rstn              (~rst             ), 
 		.s                 (ic2mem           ));
+
+	wire[0:0] ev;
+	
+	assign ev[0] = irq;
+	
+	event_bfm #(
+		.WIDTH  (1 )
+		) u_event_bfm (
+		.clk    (clk   ), 
+		.rst    (rst   ), 
+		.ev     (ev    ));
 
 endmodule
 
