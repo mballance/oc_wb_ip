@@ -250,7 +250,10 @@ class wb_dma_dev extends uvm_report_object
 endclass
 
 `uvmdev_closure_decl_6(wb_dma_dev, single_transfer, uint32_t, uint32_t, uint32_t, uint32_t, uint32_t, uint32_t)
+`uvmdev_task_decl_4(wb_dma_dev, mem2mem_transfer, uint32_t, uint32_t, uint32_t, uint32_t)
 `uvmdev_closure_decl_4(wb_dma_dev, mem2mem_transfer, uint32_t, uint32_t, uint32_t, uint32_t)
+`uvmdev_task_decl_4(wb_dma_dev, mem2dev_transfer, uint32_t, uint32_t, uint32_t, uint32_t)
 `uvmdev_closure_decl_4(wb_dma_dev, mem2dev_transfer, uint32_t, uint32_t, uint32_t, uint32_t)
+`uvmdev_task_decl_4(wb_dma_dev, dev2mem_transfer, uint32_t, uint32_t, uint32_t, uint32_t)
 `uvmdev_closure_decl_4(wb_dma_dev, dev2mem_transfer, uint32_t, uint32_t, uint32_t, uint32_t)
 

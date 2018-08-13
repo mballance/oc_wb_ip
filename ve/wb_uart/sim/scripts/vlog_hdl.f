@@ -1,10 +1,10 @@
 
-+incdir+${SIM_DIR_A}/../tb
-+incdir+${SIM_DIR_A}/../tests
++incdir+${OC_WB_IP}/ve/wb_uart/tb
++incdir+${OC_WB_IP}/ve/wb_uart/tests
 
-// ${SIM_DIR_A}/../tb/wb_uart_env_pkg.sv
+// ${OC_WB_IP}/ve/wb_uart/tb/wb_uart_env_pkg.sv
 
-// ${SIM_DIR_A}/../tests/wb_uart_tests_pkg.sv
+// ${OC_WB_IP}/ve/wb_uart/tests/wb_uart_tests_pkg.sv
 
 -f ${STD_PROTOCOL_IF}/rtl/wb/wb.f
 -f ${OC_WB_IP}/rtl/wb_uart/rtl.f

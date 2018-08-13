@@ -13,6 +13,7 @@ package wb_uart_regs_pkg;
 	
 	`include "uart_rb_thr_reg.svh"
 	`include "uart_ie_reg.svh"
+	`include "uart_ii_reg.svh"
 	`include "uart_lc_reg.svh"
 
 	`include "wb_uart_reg_block.svh"

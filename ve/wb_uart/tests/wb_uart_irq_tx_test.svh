@@ -1,7 +1,7 @@
 
-class wb_uart_bfm_smoke_test extends wb_uart_test_base;
+class wb_uart_irq_tx_test extends wb_uart_test_base;
 	
-	`uvm_component_utils(wb_uart_bfm_smoke_test)
+	`uvm_component_utils(wb_uart_irq_tx_test)
 	
 	/****************************************************************
 	 * Data Fields
@@ -32,33 +32,14 @@ class wb_uart_bfm_smoke_test extends wb_uart_test_base;
 	 * run_phase()
 	 ****************************************************************/
 	task run_phase(uvm_phase phase);
-		sv_bfms_rw_api_if	api = m_env.m_master_agent.get_api();
-		bit[7:0] data;
-		
+
+		// Initialize everything
 		super.run_phase(phase);
 	
 		phase.raise_objection(this, "Main");
-		api.read32('h0000_000C, data); // Read LCR
-		data[7] = 1; // enable DLB
-		api.write32('h0000_000C, data);
-		
-		api.write32('h0000_0004, 0);
-		api.write32('h0000_0000, 14); // DL LSB 14=115200
-		
-		data[7] = 0;
-		api.write32('h0000_000C, data);
-
-		// Fill up the FIFO
-		for (int i=0; i<16; i++) begin
-			api.write32('h0000_0000, i+1);
-		end
-
-		for (int i=0; i<4; i++) begin
-			do begin
-				api.read32('h0000_0014, data); // read LSR
-			end while (data[6] == 0);
-			
-			api.write32('h0000_0000, i+1);
+	
+		for (int i=0; i<100; i++) begin
+			m_env.m_uart_dev.tx(i+1);
 		end
 		
 		phase.drop_objection(this, "Main");

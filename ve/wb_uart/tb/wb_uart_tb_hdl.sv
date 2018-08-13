@@ -47,6 +47,23 @@ module wb_uart_tb_hdl(input clk);
 		.rstn           (~rst             ), 
 		.master         (u_bfm2uart.master));
 
+	wire [1:0]		handshake;
+	event_bfm #(
+		.WIDTH  (2 )
+		) u_handshake_bfm (
+		.clk    (clk          ), 
+		.rst    (rst          ), 
+		.ev     (handshake    ));
+	
+	wire[0:0]			int_o;
+	event_bfm #(
+		.WIDTH  (1 )
+		) u_irq_bfm (
+		.clk    (clk   ), 
+		.rst    (rst   ), 
+		.ev     (int_o ));
+	
+
 	wire stx_pad_o, srx_pad_i;
 	wire rts_pad_o, cts_pad_i, dtr_pad_o, dsr_pad_i;
 	wire ri_pad_i, dcd_pad_i, tx_ready, rx_ready;
@@ -58,7 +75,7 @@ module wb_uart_tb_hdl(input clk);
 		.clk        (clk             ), 
 		.rstn       (~rst            ), 
 		.s          (u_bfm2uart.slave), 
-		.int_o      (int_o     ), 
+		.int_o      (int_o[0]  ), 
 		.stx_pad_o  (stx_pad_o ), 
 		.srx_pad_i  (srx_pad_i ), 
 		.rts_pad_o  (rts_pad_o ), 
@@ -70,11 +87,25 @@ module wb_uart_tb_hdl(input clk);
 		.tx_ready	(tx_ready),
 		.rx_ready	(rx_ready) );
 	
-	assign srx_pad_i = 1;
 	assign cts_pad_i = 1;
 	assign dsr_pad_i = 1;
 	assign ri_pad_i = 1;
 	assign dcd_pad_i = 1;
+	
+	assign handshake[0] = tx_ready;
+	assign handshake[1] = rx_ready;
+	
+	uart_serial_bfm u_uart_bfm (
+		.clk_i      (clk     ), 
+		.rst_i      (rst     ), 
+		.stx_pad_o  (srx_pad_i ), 
+		.srx_pad_i  (stx_pad_o ), 
+//		.rts_pad_o  ( ), 
+		.cts_pad_i  (1 ), 
+//		.dtr_pad_o  (dtr_pad_o ), 
+		.dsr_pad_i  (1 ), 
+		.ri_pad_i   (1  ), 
+		.dcd_pad_i  (1 ));
 
 endmodule
 

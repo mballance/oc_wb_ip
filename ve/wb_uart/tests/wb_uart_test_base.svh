@@ -38,5 +38,22 @@ class wb_uart_test_base extends uvm_test;
 		end
 	endfunction
 	
+
+	/**
+	 * Task: run_phase
+	 *
+	 * Override from class 
+	 */
+	virtual task run_phase(input uvm_phase phase);
+		// Initialize all devices
+		
+		phase.raise_objection(this, "Device Init");
+		uvmdev_mgr::init();
+		phase.drop_objection(this, "Device Init");
+
+	endtask
+
+	
+	
 endclass
 

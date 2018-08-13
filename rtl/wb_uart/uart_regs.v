@@ -617,7 +617,25 @@ always @(posedge clk or posedge wb_rst_i) begin
 	end
 end
 
-assign rx_ready = (rf_count==0 && rf_push_pulse);
+reg rx_ready_r1;
+reg rx_ready_r2;
+reg rx_ready_r3;
+reg rx_ready_r4;
+assign rx_ready = rx_ready_r4 && (rf_count > 1 || (rf_count == 1 && rf_pop == 0));
+
+always @(posedge clk or posedge wb_rst_i) 
+	if (wb_rst_i) begin
+		rx_ready_r1 <= 0;
+		rx_ready_r2 <= 0;
+		rx_ready_r3 <= 0;
+		rx_ready_r4 <= 0;
+	end else begin
+		rx_ready_r1 <= (rf_count != 0);
+		rx_ready_r2 <= rx_ready_r1;
+		rx_ready_r3 <= rx_ready_r2;
+		rx_ready_r4 <= rx_ready_r3;
+	end
+
 assign tx_ready = (tf_count < tf_full);
 
 // lsr bit0 (receiver data available)
