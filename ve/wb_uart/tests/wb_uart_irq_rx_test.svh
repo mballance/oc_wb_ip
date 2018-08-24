@@ -41,7 +41,7 @@ class wb_uart_irq_rx_test extends wb_uart_test_base;
 
 		fork
 			begin
-				m_env.m_uart_agent_dev.tx_rand_data(1, 10);
+				m_env.m_uart_agent_dev.tx(1, 10);
 			end
 			begin
 				for (int i=0; i<10; i++) begin

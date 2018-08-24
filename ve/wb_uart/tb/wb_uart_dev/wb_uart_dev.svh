@@ -21,6 +21,7 @@ class wb_uart_dev extends uvm_object
 	int unsigned				m_tx_pending;
 	uvmdev_mem_if				m_mem_if;
 	bit							m_hw_handshake_mode = 0;
+	int							m_stream;
 	
 	virtual task init(uvmdev_mgr mgr, int unsigned id);
 		uvm_status_e   	status;
@@ -28,6 +29,8 @@ class wb_uart_dev extends uvm_object
 		uvm_reg_data_t 	value;
 		uvm_object		dev_data;
 		uvm_reg_block  	regblk;
+		
+		m_stream = $create_transaction_stream($sformatf("wb_uart_dev(%0d)", id));
 		
 		m_mem_if = mgr.get_mem_if();
 		dev_data = mgr.get_dev_data(id);
@@ -45,7 +48,7 @@ class wb_uart_dev extends uvm_object
 		value = 0; // Write DLAB1
 		m_regs.ie.write(status, value);
 		
-		value = 14; // Write DLAB0
+		value = 27; // Write DLAB0
 		m_regs.rb_thr.write(status, value);
 		
 		lc[7] = 0; // disable access to DLAB
@@ -154,6 +157,33 @@ class wb_uart_dev extends uvm_object
 		$display("Tx: m_tx_pending=%0d", m_tx_pending);
 		
 	endtask
+	
+	virtual task mem2tx(int unsigned addr, int unsigned sz);
+		byte unsigned data;
+		int th;
+		
+		$display("--> mem2tx addr='h%08h sz=%0d", addr, sz);
+	
+		th = $begin_transaction(m_stream, "mem2tx");
+		$add_attribute(th, addr, "addr");
+		$add_attribute(th, sz, "sz");
+		
+		for (int i=0; i<sz; i++) begin
+			int byte_th = $begin_transaction(m_stream, $sformatf("tx byte %0d", i),,th);
+			m_mem_if.read8(data, addr+i);
+			
+			$display("read: 'h%08h = 'h%02h", addr+i, data);
+			$add_attribute(byte_th, data, "data");
+			tx(data);
+			$end_transaction(byte_th);
+			$free_transaction(byte_th);
+		end
+		
+		$end_transaction(th);
+		$free_transaction(th);
+		
+		$display("<-- mem2tx addr='h%08h sz=%0d", addr, sz);
+	endtask
 
 	/**
 	 * Task: tx_handshake
@@ -188,13 +218,23 @@ class wb_uart_dev extends uvm_object
 		m_rx_mb.get(data);
 	endtask
 
-	virtual task rx_to_mem(int unsigned addr, int unsigned sz);
+	virtual task rx2mem(int unsigned addr, int unsigned sz);
 		byte unsigned data;
+		int th = $begin_transaction(m_stream, "rx2mem");
+		$add_attribute(th, addr, "addr");
+		$add_attribute(th, sz, "sz");
 		
 		for (int i=0; i<sz; i++) begin
+			int th_b = $begin_transaction(m_stream, $sformatf("rx byte %0d", i),,th);
 			rx(data);
+			$add_attribute(th_b, data, "data");
 			m_mem_if.write8(data, addr+i);
+			$end_transaction(th_b);
+			$free_transaction(th_b);
 		end
+	
+		$end_transaction(th);
+		$free_transaction(th);
 	endtask
 
 	virtual task rx_handshake(output byte unsigned data);
@@ -221,5 +261,9 @@ class wb_uart_dev extends uvm_object
 	endtask
 
 endclass
+
+`uvmdev_task_decl_2(wb_uart_dev, rx2mem, uint32_t, uint32_t);
+
+`uvmdev_task_decl_2(wb_uart_dev, mem2tx, uint32_t, uint32_t);
 
 

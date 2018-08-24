@@ -7,24 +7,24 @@
 
 typedef struct wb_uart_regs_s {
 	union {
-		uint8_t		rbr;
-		uint8_t		thr;
-		uint8_t		dlb1;
+		uint32_t		rbr;
+		uint32_t		thr;
+		uint32_t		dlb1;
 	};
 
 	union {
-		uint8_t		ier;
-		uint8_t		dlb2;
+		uint32_t		ier;
+		uint32_t		dlb2;
 	};
 
 	union {
-		uint8_t			iir;
-		uint8_t			fcr;
+		uint32_t			iir;
+		uint32_t			fcr;
 	};
-	uint8_t			lcr;
-	uint8_t			mcr;
-	uint8_t			lsr;
-	uint8_t			msr;
+	uint32_t			lcr;
+	uint32_t			mcr;
+	uint32_t			lsr;
+	uint32_t			msr;
 } wb_uart_regs_t;
 
 

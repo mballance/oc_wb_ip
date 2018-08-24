@@ -14,6 +14,8 @@ module simple_pic_w #(parameter int NUM_IRQ=32) (
 		input [NUM_IRQ:1]	irq_i,
 		output				int_o
 		);
+	
+	assign s.ERR = 0;
 
 	simple_pic #(
 		.NUM_IRQ  (NUM_IRQ )

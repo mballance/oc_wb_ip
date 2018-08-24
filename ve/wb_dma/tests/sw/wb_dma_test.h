@@ -1,4 +1,4 @@
-#include "wb_dma_uex_drv.h"
+#include "../../../../rtl/wb_dma/fw/wb_dma_dev.h"
 
 #ifdef __cplusplus
 extern "C" {

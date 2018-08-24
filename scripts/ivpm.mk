@@ -21,15 +21,11 @@ endif
 include $(ROOT_DIR)/etc/ivpm.info
 
 # Include makefiles with dependencies
-# MK_INCLUDES += $(PACKAGES_DIR)/chiselscripts/mkfiles/chiselscripts.mk
-# MK_INCLUDES += $(PACKAGES_DIR)/chisellib/mkfiles/chisellib.mk
-# MK_INCLUDES += $(PACKAGES_DIR)/std_protocol_if/mkfiles/std_protocol_if.mk
-#MK_INCLUDES += $(PACKAGES_DIR)/sv_bfms/mkfiles/sv_bfms.mk
 MK_INCLUDES += $(wildcard $(ROOT_DIR)/mkfiles/*.mk)
 
 include $(MK_INCLUDES)
 
-SRC_DIRS += $(PROJECT)/wb_dma $(PROJECT)/wb_uart
+SRC_DIRS += $(PROJECT)/wb_dma $(PROJECT)/wb_uart $(PROJECT)/wb_periph_subsys
 
 SRC := $(foreach dir,$(SRC_DIRS),$(wildcard $(ROOT_DIR)/src/$(dir)/*.scala))
 

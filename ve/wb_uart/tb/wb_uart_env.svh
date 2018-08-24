@@ -5,15 +5,24 @@ class wb_uart_env extends uvm_env;
 	class handshake_subscriber extends uvm_subscriber #(event_seq_item);
 		`uvm_component_utils(handshake_subscriber)
 		
-		wb_uart_env			m_env;
+		wb_uart_env				m_env;
+		mailbox #(int unsigned)	m_mb = new();
 		
 		function new(string name, uvm_component parent);
 			super.new(name, parent);
 		endfunction
 		
 		virtual function void write(event_seq_item t);
-			m_env.m_uart_dev.set_hw_handshake(t.m_value);
+			void'(m_mb.try_put(t.m_value));
 		endfunction
+
+		virtual task run_phase(uvm_phase phase);
+			int unsigned value;
+			forever begin
+				m_mb.get(value);
+				m_env.m_uart_dev.set_hw_handshake(value);
+			end
+		endtask
 		
 	endclass
 	
