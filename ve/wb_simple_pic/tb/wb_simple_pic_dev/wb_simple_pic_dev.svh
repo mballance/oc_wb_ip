@@ -19,9 +19,16 @@ class wb_simple_pic_dev extends uvm_object implements uvmdev_if;
 	endfunction
 	
 
-	virtual task init();
+	virtual task init(uvmdev_mgr mgr, int unsigned id);
 		uvm_status_e status;
 		uvm_reg_data_t value;
+		uvm_object dev_data;
+		
+		dev_data = mgr.get_dev_data(id);
+		
+		if (!$cast(m_regs, dev_data)) begin
+			`uvm_fatal(get_name(), "Failed to cast to PIC regs");
+		end
 		
 		value = 'hFFFF_FFFF; // Mask all interrupts
 		m_regs.mask.write(status, value);

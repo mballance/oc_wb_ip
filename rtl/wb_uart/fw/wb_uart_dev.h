@@ -42,6 +42,10 @@ void wb_uart_dev_tx(uint32_t devid, int c);
 
 int wb_uart_dev_rx(uint32_t devid);
 
+void wb_uart_dev_mem2tx(uint32_t devid, void *addr, uint32_t sz);
+
+void wb_uart_dev_rx2mem(uint32_t devid, void *addr, uint32_t sz);
+
 #ifdef __cplusplus
 }
 #endif

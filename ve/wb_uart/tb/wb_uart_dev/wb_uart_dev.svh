@@ -125,6 +125,15 @@ class wb_uart_dev extends uvm_object
 			endcase
 		end
 	endtask
+	
+	virtual task cfg(
+		uint8_t bits, 
+		uint8_t stop_bits, 
+		uint8_t parity_en, 
+		uint8_t parity_even, 
+		uint8_t parity_stick);
+	endtask
+		
 
 	/**
 	 * Task: tx
@@ -204,6 +213,15 @@ class wb_uart_dev extends uvm_object
 		value = data;
 		m_regs.rb_thr.write(status, value);
 	endtask
+	
+	virtual task mem2tx_hs(int unsigned addr, int unsigned sz);
+		byte unsigned data;
+		
+		for (int i=0; i<sz; i++) begin
+			m_mem_if.read8(data, addr+i);
+			tx_handshake(data);
+		end
+	endtask
 
 	/**
 	 * Task: rx
@@ -251,7 +269,7 @@ class wb_uart_dev extends uvm_object
 		
 	endtask
 	
-	virtual task rx_handshake_to_mem(int unsigned addr, int unsigned sz);
+	virtual task rx2mem_hs(int unsigned addr, int unsigned sz);
 		byte unsigned data;
 		
 		for (int i=0; i<sz; i++) begin
@@ -262,8 +280,15 @@ class wb_uart_dev extends uvm_object
 
 endclass
 
+`uvmdev_task_decl_5(wb_uart_dev, cfg, uint8_t, uint8_t, uint8_t, uint8_t, uint8_t);
+
 `uvmdev_task_decl_2(wb_uart_dev, rx2mem, uint32_t, uint32_t);
 
 `uvmdev_task_decl_2(wb_uart_dev, mem2tx, uint32_t, uint32_t);
+
+`uvmdev_task_decl_2(wb_uart_dev, rx2mem_hs, uint32_t, uint32_t);
+
+`uvmdev_task_decl_2(wb_uart_dev, mem2tx_hs, uint32_t, uint32_t);
+
 
 

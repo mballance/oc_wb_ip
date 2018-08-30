@@ -14,8 +14,8 @@ class wb_dma_dev extends uvm_report_object
 	bit							m_active[];
 	semaphore					m_sem[];
 	
-	function new(wb_dma_reg_block regs=null);
-		m_regs = regs;
+	function new(string name="wb_dma_dev");
+		super.new(name);
 		
 		m_active = new[32];
 		m_sem = new[32];
@@ -25,9 +25,16 @@ class wb_dma_dev extends uvm_report_object
 		end
 	endfunction
 	
-	virtual task init();
+	virtual task init(uvmdev_mgr mgr, int unsigned id);
 		uvm_status_e status;
 		uvm_reg_data_t value;
+		uvm_object dev_data;
+		
+		dev_data = mgr.get_dev_data(id);
+		
+		if (!$cast(m_regs, dev_data)) begin
+			`uvm_fatal(get_name(), "Device data is not DMA registers");
+		end
 	
 		value = 'hffff_ffff;
 		m_regs.int_msk_a.write(status, value);
@@ -182,7 +189,7 @@ class wb_dma_dev extends uvm_report_object
 		wait_complete_irq(channel);
 	endtask
 	
-	task mem2mem_transfer(
+	task mem2mem(
 		int unsigned			channel,
 		int unsigned			src,
 		int unsigned			dst,
@@ -191,7 +198,7 @@ class wb_dma_dev extends uvm_report_object
 		wait_complete_irq(channel);
 	endtask
 	
-	task mem2dev_transfer(
+	task mem2dev(
 		int unsigned			channel,
 		int unsigned			src,
 		int unsigned			dst,
@@ -200,7 +207,7 @@ class wb_dma_dev extends uvm_report_object
 		wait_complete_irq(channel);
 	endtask
 	
-	task dev2mem_transfer(
+	task dev2mem(
 		int unsigned			channel,
 		int unsigned			src,
 		int unsigned			dst,
@@ -249,11 +256,7 @@ class wb_dma_dev extends uvm_report_object
 
 endclass
 
-`uvmdev_closure_decl_6(wb_dma_dev, single_transfer, uint32_t, uint32_t, uint32_t, uint32_t, uint32_t, uint32_t)
-`uvmdev_task_decl_4(wb_dma_dev, mem2mem_transfer, uint32_t, uint32_t, uint32_t, uint32_t)
-`uvmdev_closure_decl_4(wb_dma_dev, mem2mem_transfer, uint32_t, uint32_t, uint32_t, uint32_t)
-`uvmdev_task_decl_4(wb_dma_dev, mem2dev_transfer, uint32_t, uint32_t, uint32_t, uint32_t)
-`uvmdev_closure_decl_4(wb_dma_dev, mem2dev_transfer, uint32_t, uint32_t, uint32_t, uint32_t)
-`uvmdev_task_decl_4(wb_dma_dev, dev2mem_transfer, uint32_t, uint32_t, uint32_t, uint32_t)
-`uvmdev_closure_decl_4(wb_dma_dev, dev2mem_transfer, uint32_t, uint32_t, uint32_t, uint32_t)
+`uvmdev_task_decl_4(wb_dma_dev, mem2mem, uint32_t, uint32_t, uint32_t, uint32_t)
+`uvmdev_task_decl_4(wb_dma_dev, mem2dev, uint32_t, uint32_t, uint32_t, uint32_t)
+`uvmdev_task_decl_4(wb_dma_dev, dev2mem, uint32_t, uint32_t, uint32_t, uint32_t)
 
