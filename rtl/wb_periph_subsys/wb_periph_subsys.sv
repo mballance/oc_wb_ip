@@ -95,7 +95,7 @@ module wb_periph_subsys #(
 
 	parameter DMA_N_CHANNELS = 8;
 	wire[DMA_N_CHANNELS-1:0] dma_req_i = {
-			{6{0}},
+			{6{1'b0}},
 			uart0_tx_ready,
 			uart0_rx_ready
 		};

@@ -36,6 +36,9 @@ void wb_simple_pic_dev_en_irq(
 		mask |= (1 << irq);
 	}
 
+	uex_info_low(0, "pic_dev_en: irq=%d mask=0x%08x addr=%p",
+			irq, mask, &dev->regs->mask);
+
 	uex_iowrite32(mask, &dev->regs->mask);
 }
 
