@@ -2,7 +2,6 @@
  * wb_dma_dev.c
  ****************************************************************************/
 #include "wb_dma_dev.h"
-#include <stdio.h>
 
 static void wb_dma_dev_irq(struct uex_dev_s *devh) {
 	wb_dma_dev_t *dev = (wb_dma_dev_t *)devh;
@@ -40,7 +39,7 @@ void wb_dma_dev_init(struct uex_dev_s *devh) {
 		uint32_t sz_v = ((256/4) << 16);
 		uint32_t csr = uex_ioread32(&dev->regs->channels[i].csr);
 
-		fprintf(stdout, "csr[%d]=0x%08x addr=%p\n", i, csr,
+		uex_info_low(0, "csr[%d]=0x%08x addr=%p", i, csr,
 				&dev->regs->channels[i].csr);
 
 		csr |= (1 << 18); // enable completion interrupt

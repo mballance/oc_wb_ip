@@ -3,30 +3,23 @@
  ****************************************************************************/
 #include "uex.h"
 #include "wb_uart_dev.h"
-#include <stdio.h>
 
 static void wb_uart_dev_irq(struct uex_dev_s *devh) {
 	wb_uart_dev_t *dev = (wb_uart_dev_t *)devh;
 	uint32_t iir;
 
-	fprintf(stdout, "--> wb_uart_dev_irq\n");
-	fflush(stdout);
+	uex_info_low(0, "--> wb_uart_dev_irq");
 	iir = uex_ioread32(&dev->regs->iir);
-
-	fprintf(stdout, "iir=0x%08x\n", iir);
 
 	if ((iir & 0x1) == 0) {
 		uint32_t code = ((iir >> 1) & 7);
-		fprintf(stdout, "code=%02h\n", code);
 		// Active interrupt
 		switch (code) {
 		// THR empty
 		case 1:
-			fprintf(stdout, "--> Notify Tx\n");
 //			uex_mutex_lock(&dev->m_tx_mutex);
 			uex_cond_signal(&dev->m_tx_cond);
 //			uex_mutex_unlock(&dev->m_tx_mutex);
-			fprintf(stdout, "<-- Notify Tx\n");
 			break;
 
 		// Rx data available
@@ -39,8 +32,7 @@ static void wb_uart_dev_irq(struct uex_dev_s *devh) {
 		}
 	}
 
-	fprintf(stdout, "<-- wb_uart_dev_irq\n");
-	fflush(stdout);
+	uex_info_low(0, "<-- wb_uart_dev_irq");
 }
 
 void wb_uart_dev_tx(uint32_t devid, int c) {
@@ -54,16 +46,15 @@ void wb_uart_dev_tx(uint32_t devid, int c) {
 		// Read the LSR to see if the THR is empty
 		uint32_t lsr = uex_ioread8(&dev->regs->lsr);
 
-		fprintf(stdout, "lsr=%02x\n", lsr);
 		if ((lsr >> 5) & 1) {
-			fprintf(stdout, "Tx is available\n");
+			uex_info_low(0, "Tx is available");
 			dev->m_tx_pending = 0;
 		} else {
-			fprintf(stdout, "--> Waiting for Tx-empty interrupt\n");
+			uex_info_low(0, "--> Waiting for Tx-empty interrupt");
 			uex_mutex_lock(&dev->m_tx_mutex);
 			uex_cond_wait(&dev->m_tx_cond, &dev->m_tx_mutex);
 			uex_mutex_unlock(&dev->m_tx_mutex);
-			fprintf(stdout, "<-- Waiting for Tx-empty interrupt\n");
+			uex_info_low(0, "<-- Waiting for Tx-empty interrupt");
 		}
 	}
 
@@ -114,8 +105,6 @@ static void wb_uart_dev_set_div(wb_uart_dev_t *dev) {
 	val |= 0x80;
 	uex_iowrite8(val, &dev->regs->lcr);
 
-	fprintf(stdout, "UART: dlb1=%d dlb2=%d\n",
-			(clk_div & 0xFF), (clk_div >> 8));
 	uex_iowrite8((clk_div >> 8), &dev->regs->dlb2); // DL MSB
 	uex_iowrite8(clk_div, &dev->regs->dlb1); // DL LSB 14=115200
 
