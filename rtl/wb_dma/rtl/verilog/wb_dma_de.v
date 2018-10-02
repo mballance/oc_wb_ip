@@ -85,11 +85,11 @@
 module wb_dma_de(clk, rst,
 
 	// WISHBONE MASTER INTERFACE 0
-	mast0_go, mast0_we, mast0_adr, mast0_din,
+	mast0_go, mast0_we, mast0_adr, mast0_sel, mast0_din,
 	mast0_dout, mast0_err, mast0_drdy, mast0_wait, 
 
 	// WISHBONE MASTER INTERFACE 1
-	mast1_go, mast1_we, mast1_adr, mast1_din,
+	mast1_go, mast1_we, mast1_adr, mast1_sel, mast1_din,
 	mast1_dout, mast1_err, mast1_drdy, mast1_wait,
 
 	// DMA Engine Init & Setup
@@ -116,6 +116,7 @@ input		clk, rst;
 output		mast0_go;	// Perform a Master Cycle
 output		mast0_we;	// Read/Write
 output	[31:0]	mast0_adr;	// Address for the transfer
+output	[3:0]	mast0_sel;	// Byte select for transfers
 input	[31:0]	mast0_din;	// Internal Input Data
 output	[31:0]	mast0_dout;	// Internal Output Data
 input		mast0_err;	// Indicates an error has occurred
@@ -131,6 +132,7 @@ output		mast0_wait;	// Tells the master to insert wait cycles
 output		mast1_go;	// Perform a Master Cycle
 output		mast1_we;	// Read/Write
 output	[31:0]	mast1_adr;	// Address for the transfer
+output	[3:0]	mast1_sel;	// Address for the transfer
 input	[31:0]	mast1_din;	// Internal Input Data
 output	[31:0]	mast1_dout;	// Internal Output Data
 input		mast1_err;	// Indicates an error has occurred
@@ -199,14 +201,22 @@ reg	[10:0]	/* synopsys enum state */ state, next_state;
 // synopsys state_vector state
 
 reg	[31:0]	mast0_adr, mast1_adr;
+reg	[3:0]	mast0_sel, mast1_sel;
 
-reg	[29:0]	adr0_cnt, adr1_cnt;
-wire	[29:0]	adr0_cnt_next, adr1_cnt_next;
-wire	[29:0]	adr0_cnt_next1, adr1_cnt_next1;
+reg	[31:0]	adr0_cnt, adr1_cnt;
+wire	[31:0]	adr0_cnt_next, adr1_cnt_next;
+wire	[31:0]	adr0_cnt_next1, adr1_cnt_next1;
 reg		adr0_inc, adr1_inc;
 
 reg	[8:0]	chunk_cnt;
 reg		chunk_dec;
+
+// Size of each transfer
+// 00 - 32-bit
+// 01 - 8-bit
+// 10 - 16-bit
+// 11 - undefined
+reg [1:0]	tsz_sz;
 
 reg	[11:0]	tsz_cnt;
 reg		tsz_dec;
@@ -261,86 +271,100 @@ always @(posedge clk)
 
 // Address Counter 0 (Source Address)
 always @(posedge clk)
-	if(de_start | ptr_set)		adr0_cnt <= #1 adr0[31:2];
+	if(de_start | ptr_set)		adr0_cnt <= #1 adr0[31:0];
 	else
 	if(adr0_inc & a0_inc_en)	adr0_cnt <= #1 adr0_cnt_next;
 
 // 30 Bit Incrementor (registered)
-wb_dma_inc30r u0(	.clk(	clk		),
-			.in(	adr0_cnt	),
-			.out(	adr0_cnt_next1 	)	);
+//wb_dma_inc30r u0(	.clk(	clk		),
+//			.in(	adr0_cnt	),
+//			.out(	adr0_cnt_next1 	)	);
+assign adr0_cnt_next1 = 
+	(tsz_sz == 2'b00)?{adr0_cnt[31:2] + 1, 2'b0}:
+	(tsz_sz == 2'b01)?adr0_cnt + 1:
+	(tsz_sz == 2'b10)?{adr0_cnt[31:1] + 1, 1'b0}:
+	32'hdeadbeef // illegal
+	;
 
-assign adr0_cnt_next[1:0] = adr0_cnt_next1[1:0];
-assign adr0_cnt_next[2] = am0[4] ? adr0_cnt_next1[2] : adr0_cnt[2];
-assign adr0_cnt_next[3] = am0[5] ? adr0_cnt_next1[3] : adr0_cnt[3];
-assign adr0_cnt_next[4] = am0[6] ? adr0_cnt_next1[4] : adr0_cnt[4];
-assign adr0_cnt_next[5] = am0[7] ? adr0_cnt_next1[5] : adr0_cnt[5];
-assign adr0_cnt_next[6] = am0[8] ? adr0_cnt_next1[6] : adr0_cnt[6];
-assign adr0_cnt_next[7] = am0[9] ? adr0_cnt_next1[7] : adr0_cnt[7];
-assign adr0_cnt_next[8] = am0[10] ? adr0_cnt_next1[8] : adr0_cnt[8];
-assign adr0_cnt_next[9] = am0[11] ? adr0_cnt_next1[9] : adr0_cnt[9];
-assign adr0_cnt_next[10] = am0[12] ? adr0_cnt_next1[10] : adr0_cnt[10];
-assign adr0_cnt_next[11] = am0[13] ? adr0_cnt_next1[11] : adr0_cnt[11];
-assign adr0_cnt_next[12] = am0[14] ? adr0_cnt_next1[12] : adr0_cnt[12];
-assign adr0_cnt_next[13] = am0[15] ? adr0_cnt_next1[13] : adr0_cnt[13];
-assign adr0_cnt_next[14] = am0[16] ? adr0_cnt_next1[14] : adr0_cnt[14];
-assign adr0_cnt_next[15] = am0[17] ? adr0_cnt_next1[15] : adr0_cnt[15];
-assign adr0_cnt_next[16] = am0[18] ? adr0_cnt_next1[16] : adr0_cnt[16];
-assign adr0_cnt_next[17] = am0[19] ? adr0_cnt_next1[17] : adr0_cnt[17];
-assign adr0_cnt_next[18] = am0[20] ? adr0_cnt_next1[18] : adr0_cnt[18];
-assign adr0_cnt_next[19] = am0[21] ? adr0_cnt_next1[19] : adr0_cnt[19];
-assign adr0_cnt_next[20] = am0[22] ? adr0_cnt_next1[20] : adr0_cnt[20];
-assign adr0_cnt_next[21] = am0[23] ? adr0_cnt_next1[21] : adr0_cnt[21];
-assign adr0_cnt_next[22] = am0[24] ? adr0_cnt_next1[22] : adr0_cnt[22];
-assign adr0_cnt_next[23] = am0[25] ? adr0_cnt_next1[23] : adr0_cnt[23];
-assign adr0_cnt_next[24] = am0[26] ? adr0_cnt_next1[24] : adr0_cnt[24];
-assign adr0_cnt_next[25] = am0[27] ? adr0_cnt_next1[25] : adr0_cnt[25];
-assign adr0_cnt_next[26] = am0[28] ? adr0_cnt_next1[26] : adr0_cnt[26];
-assign adr0_cnt_next[27] = am0[29] ? adr0_cnt_next1[27] : adr0_cnt[27];
-assign adr0_cnt_next[28] = am0[30] ? adr0_cnt_next1[28] : adr0_cnt[28];
-assign adr0_cnt_next[29] = am0[31] ? adr0_cnt_next1[29] : adr0_cnt[29];
+assign adr0_cnt_next[3:0] = adr0_cnt_next1[3:0];
+assign adr0_cnt_next[4] = am0[4] ? adr0_cnt_next1[4] : adr0_cnt[4];
+assign adr0_cnt_next[5] = am0[5] ? adr0_cnt_next1[5] : adr0_cnt[5];
+assign adr0_cnt_next[6] = am0[6] ? adr0_cnt_next1[6] : adr0_cnt[6];
+assign adr0_cnt_next[7] = am0[7] ? adr0_cnt_next1[7] : adr0_cnt[7];
+assign adr0_cnt_next[8] = am0[8] ? adr0_cnt_next1[8] : adr0_cnt[8];
+assign adr0_cnt_next[9] = am0[9] ? adr0_cnt_next1[9] : adr0_cnt[9];
+assign adr0_cnt_next[10] = am0[10] ? adr0_cnt_next1[10] : adr0_cnt[10];
+assign adr0_cnt_next[11] = am0[11] ? adr0_cnt_next1[11] : adr0_cnt[11];
+assign adr0_cnt_next[12] = am0[12] ? adr0_cnt_next1[12] : adr0_cnt[12];
+assign adr0_cnt_next[13] = am0[13] ? adr0_cnt_next1[13] : adr0_cnt[13];
+assign adr0_cnt_next[14] = am0[14] ? adr0_cnt_next1[14] : adr0_cnt[14];
+assign adr0_cnt_next[15] = am0[15] ? adr0_cnt_next1[15] : adr0_cnt[15];
+assign adr0_cnt_next[16] = am0[16] ? adr0_cnt_next1[16] : adr0_cnt[16];
+assign adr0_cnt_next[17] = am0[17] ? adr0_cnt_next1[17] : adr0_cnt[17];
+assign adr0_cnt_next[18] = am0[18] ? adr0_cnt_next1[18] : adr0_cnt[18];
+assign adr0_cnt_next[19] = am0[19] ? adr0_cnt_next1[19] : adr0_cnt[19];
+assign adr0_cnt_next[20] = am0[20] ? adr0_cnt_next1[20] : adr0_cnt[20];
+assign adr0_cnt_next[21] = am0[21] ? adr0_cnt_next1[21] : adr0_cnt[21];
+assign adr0_cnt_next[22] = am0[22] ? adr0_cnt_next1[22] : adr0_cnt[22];
+assign adr0_cnt_next[23] = am0[23] ? adr0_cnt_next1[23] : adr0_cnt[23];
+assign adr0_cnt_next[24] = am0[24] ? adr0_cnt_next1[24] : adr0_cnt[24];
+assign adr0_cnt_next[25] = am0[25] ? adr0_cnt_next1[25] : adr0_cnt[25];
+assign adr0_cnt_next[26] = am0[26] ? adr0_cnt_next1[26] : adr0_cnt[26];
+assign adr0_cnt_next[27] = am0[27] ? adr0_cnt_next1[27] : adr0_cnt[27];
+assign adr0_cnt_next[28] = am0[28] ? adr0_cnt_next1[28] : adr0_cnt[28];
+assign adr0_cnt_next[29] = am0[29] ? adr0_cnt_next1[29] : adr0_cnt[29];
+assign adr0_cnt_next[30] = am0[30] ? adr0_cnt_next1[30] : adr0_cnt[30];
+assign adr0_cnt_next[31] = am0[31] ? adr0_cnt_next1[31] : adr0_cnt[31];
 
 
 // Address Counter 1 (Destination Address)
 always @(posedge clk)
-	if(de_start | ptr_set)		adr1_cnt <= #1 adr1[31:2];
+	if(de_start | ptr_set)		adr1_cnt <= #1 adr1[31:0];
 	else
 	if(adr1_inc & a1_inc_en)	adr1_cnt <= #1 adr1_cnt_next;
 
 // 30 Bit Incrementor (registered)
-wb_dma_inc30r u1(	.clk(	clk		),
-			.in(	adr1_cnt	),
-			.out(	adr1_cnt_next1 	)	);
 
-assign adr1_cnt_next[1:0] = adr1_cnt_next1[1:0];
-assign adr1_cnt_next[2] = am1[4] ? adr1_cnt_next1[2] : adr1_cnt[2];
-assign adr1_cnt_next[3] = am1[5] ? adr1_cnt_next1[3] : adr1_cnt[3];
-assign adr1_cnt_next[4] = am1[6] ? adr1_cnt_next1[4] : adr1_cnt[4];
-assign adr1_cnt_next[5] = am1[7] ? adr1_cnt_next1[5] : adr1_cnt[5];
-assign adr1_cnt_next[6] = am1[8] ? adr1_cnt_next1[6] : adr1_cnt[6];
-assign adr1_cnt_next[7] = am1[9] ? adr1_cnt_next1[7] : adr1_cnt[7];
-assign adr1_cnt_next[8] = am1[10] ? adr1_cnt_next1[8] : adr1_cnt[8];
-assign adr1_cnt_next[9] = am1[11] ? adr1_cnt_next1[9] : adr1_cnt[9];
-assign adr1_cnt_next[10] = am1[12] ? adr1_cnt_next1[10] : adr1_cnt[10];
-assign adr1_cnt_next[11] = am1[13] ? adr1_cnt_next1[11] : adr1_cnt[11];
-assign adr1_cnt_next[12] = am1[14] ? adr1_cnt_next1[12] : adr1_cnt[12];
-assign adr1_cnt_next[13] = am1[15] ? adr1_cnt_next1[13] : adr1_cnt[13];
-assign adr1_cnt_next[14] = am1[16] ? adr1_cnt_next1[14] : adr1_cnt[14];
-assign adr1_cnt_next[15] = am1[17] ? adr1_cnt_next1[15] : adr1_cnt[15];
-assign adr1_cnt_next[16] = am1[18] ? adr1_cnt_next1[16] : adr1_cnt[16];
-assign adr1_cnt_next[17] = am1[19] ? adr1_cnt_next1[17] : adr1_cnt[17];
-assign adr1_cnt_next[18] = am1[20] ? adr1_cnt_next1[18] : adr1_cnt[18];
-assign adr1_cnt_next[19] = am1[21] ? adr1_cnt_next1[19] : adr1_cnt[19];
-assign adr1_cnt_next[20] = am1[22] ? adr1_cnt_next1[20] : adr1_cnt[20];
-assign adr1_cnt_next[21] = am1[23] ? adr1_cnt_next1[21] : adr1_cnt[21];
-assign adr1_cnt_next[22] = am1[24] ? adr1_cnt_next1[22] : adr1_cnt[22];
-assign adr1_cnt_next[23] = am1[25] ? adr1_cnt_next1[23] : adr1_cnt[23];
-assign adr1_cnt_next[24] = am1[26] ? adr1_cnt_next1[24] : adr1_cnt[24];
-assign adr1_cnt_next[25] = am1[27] ? adr1_cnt_next1[25] : adr1_cnt[25];
-assign adr1_cnt_next[26] = am1[28] ? adr1_cnt_next1[26] : adr1_cnt[26];
-assign adr1_cnt_next[27] = am1[29] ? adr1_cnt_next1[27] : adr1_cnt[27];
-assign adr1_cnt_next[28] = am1[30] ? adr1_cnt_next1[28] : adr1_cnt[28];
-assign adr1_cnt_next[29] = am1[31] ? adr1_cnt_next1[29] : adr1_cnt[29];
+//wb_dma_inc30r u1(	.clk(	clk		),
+//			.in(	adr1_cnt	),
+//			.out(	adr1_cnt_next1 	)	);
+	
+assign adr1_cnt_next1 = 
+	(tsz_sz == 2'b00)?{adr1_cnt[31:2] + 1, 2'b0}:
+	(tsz_sz == 2'b01)?adr1_cnt + 1:
+	(tsz_sz == 2'b10)?{adr1_cnt[31:1] + 1, 1'b0}:
+	32'hdeadbeef // illegal
+	;
+
+assign adr1_cnt_next[3:0] = adr1_cnt_next1[3:0];
+assign adr1_cnt_next[4] = am1[4] ? adr1_cnt_next1[4] : adr1_cnt[4];
+assign adr1_cnt_next[5] = am1[5] ? adr1_cnt_next1[5] : adr1_cnt[5];
+assign adr1_cnt_next[6] = am1[6] ? adr1_cnt_next1[6] : adr1_cnt[6];
+assign adr1_cnt_next[7] = am1[7] ? adr1_cnt_next1[7] : adr1_cnt[7];
+assign adr1_cnt_next[8] = am1[8] ? adr1_cnt_next1[8] : adr1_cnt[8];
+assign adr1_cnt_next[9] = am1[9] ? adr1_cnt_next1[9] : adr1_cnt[9];
+assign adr1_cnt_next[10] = am1[10] ? adr1_cnt_next1[10] : adr1_cnt[10];
+assign adr1_cnt_next[11] = am1[11] ? adr1_cnt_next1[11] : adr1_cnt[11];
+assign adr1_cnt_next[12] = am1[12] ? adr1_cnt_next1[12] : adr1_cnt[12];
+assign adr1_cnt_next[13] = am1[13] ? adr1_cnt_next1[13] : adr1_cnt[13];
+assign adr1_cnt_next[14] = am1[14] ? adr1_cnt_next1[14] : adr1_cnt[14];
+assign adr1_cnt_next[15] = am1[15] ? adr1_cnt_next1[15] : adr1_cnt[15];
+assign adr1_cnt_next[16] = am1[16] ? adr1_cnt_next1[16] : adr1_cnt[16];
+assign adr1_cnt_next[17] = am1[17] ? adr1_cnt_next1[17] : adr1_cnt[17];
+assign adr1_cnt_next[18] = am1[18] ? adr1_cnt_next1[18] : adr1_cnt[18];
+assign adr1_cnt_next[19] = am1[19] ? adr1_cnt_next1[19] : adr1_cnt[19];
+assign adr1_cnt_next[20] = am1[20] ? adr1_cnt_next1[20] : adr1_cnt[20];
+assign adr1_cnt_next[21] = am1[21] ? adr1_cnt_next1[21] : adr1_cnt[21];
+assign adr1_cnt_next[22] = am1[22] ? adr1_cnt_next1[22] : adr1_cnt[22];
+assign adr1_cnt_next[23] = am1[23] ? adr1_cnt_next1[23] : adr1_cnt[23];
+assign adr1_cnt_next[24] = am1[24] ? adr1_cnt_next1[24] : adr1_cnt[24];
+assign adr1_cnt_next[25] = am1[25] ? adr1_cnt_next1[25] : adr1_cnt[25];
+assign adr1_cnt_next[26] = am1[26] ? adr1_cnt_next1[26] : adr1_cnt[26];
+assign adr1_cnt_next[27] = am1[27] ? adr1_cnt_next1[27] : adr1_cnt[27];
+assign adr1_cnt_next[28] = am1[28] ? adr1_cnt_next1[28] : adr1_cnt[28];
+assign adr1_cnt_next[29] = am1[29] ? adr1_cnt_next1[29] : adr1_cnt[29];
+assign adr1_cnt_next[30] = am1[30] ? adr1_cnt_next1[30] : adr1_cnt[30];
+assign adr1_cnt_next[31] = am1[31] ? adr1_cnt_next1[31] : adr1_cnt[31];
 
 // Chunk Counter
 always @(posedge clk)
@@ -363,6 +387,10 @@ assign tsz_cnt_is_0_d = (tsz_cnt == 12'h0) & !txsz[15];
 
 always @(posedge clk)
 	tsz_cnt_is_0_r <= #1 tsz_cnt_is_0_d;
+	
+// Transfer size 
+always @(posedge clk)
+	if (de_start) tsz_sz <= txsz[13:12];
 
 // Counter Control Logic
 always @(posedge clk)
@@ -392,8 +420,8 @@ always @(posedge clk)
 
 // Register Update Outputs
 assign de_txsz = ld_desc_sel ? mast0_din[11:0] : tsz_cnt;
-assign de_adr0 = ld_desc_sel ? mast0_din : {adr0_cnt, 2'b00};
-assign de_adr1 = ld_desc_sel ? mast0_din : {adr1_cnt, 2'b00};
+assign de_adr0 = ld_desc_sel ? mast0_din : adr0_cnt;
+assign de_adr1 = ld_desc_sel ? mast0_din : adr1_cnt;
 assign de_csr = mast0_din;
 
 // Abort logic
@@ -426,11 +454,34 @@ assign mast1_dout = csr[2] ? mast1_din : mast0_din;
 always @(posedge clk)
 	mast0_adr <= #1 m0_go ?
 		(m0_we ? pointer_s : {pointer[31:4], ptr_adr_low, 2'b00}) :
-		read ? {adr0_cnt, 2'b00} : {adr1_cnt, 2'b00};
+		read ? adr0_cnt : adr1_cnt;
 
 always @(posedge clk)
-	mast1_adr <= #1 read ? {adr0_cnt, 2'b00} : {adr1_cnt, 2'b00};
-
+	mast1_adr <= #1 read ? adr0_cnt : adr1_cnt;
+	
+// Select
+always @(posedge clk)
+	if (read) begin
+		case (tsz_sz)
+				2'b00: mast0_sel <= 'hf;
+				2'b01: 
+					mast0_sel <= (1 << adr0_cnt[1:0]);
+				2'b10:
+					mast0_sel <= (3 << adr0_cnt[1]);
+		endcase
+	end
+	
+always @(posedge clk)
+	if (read) begin
+		case (tsz_sz)
+				2'b00: mast1_sel <= 'hf;
+				2'b01: 
+					mast1_sel <= (1 << adr1_cnt[1:0]);
+				2'b10:
+					mast1_sel <= (3 << adr1_cnt[1]);
+		endcase
+	end
+	
 // CTRL
 assign write_hold = (read | write) & write_hold_r;
 

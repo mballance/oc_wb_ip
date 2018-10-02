@@ -76,7 +76,7 @@ module wb_dma_wb_mast(clk, rst,
 	wb_data_i, wb_data_o, wb_addr_o, wb_sel_o, wb_we_o, wb_cyc_o,
 	wb_stb_o, wb_ack_i, wb_err_i, wb_rty_i,
 
-	mast_go, mast_we, mast_adr, mast_din, mast_dout, mast_err,
+	mast_go, mast_we, mast_adr, mast_sel, mast_din, mast_dout, mast_err,
 	mast_drdy, mast_wait,
 
 	pt_sel, mast_pt_in, mast_pt_out
@@ -104,6 +104,7 @@ input		mast_go;	// Perform a Master Cycle (as long as this
 				// line is asserted)
 input		mast_we;	// Read/Write
 input	[31:0]	mast_adr;	// Address for the transfer
+input	[3:0]	mast_sel;	// Select lines for the transfer
 input	[31:0]	mast_din;	// Internal Input Data
 output	[31:0]	mast_dout;	// Internal Output Data
 output		mast_err;	// Indicates an error has occurred
@@ -149,7 +150,7 @@ always @(posedge clk)
 	if(wb_ack_i)	mast_dout <= #1 wb_data_i;
 
 always @(posedge clk)
-	mast_be <= #1 4'hf;
+	mast_be <= #1 mast_sel;
 
 always @(posedge clk)
 	mast_we_r <= #1 mast_we;

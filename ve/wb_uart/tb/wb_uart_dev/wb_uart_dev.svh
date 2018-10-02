@@ -90,7 +90,6 @@ class wb_uart_dev extends uvm_object
 	 * - bit hw_handshake 
 	 */
 	task set_hw_handshake(bit[1:0] hw_handshake);
-		$display("hw_handshake: 'h%02h => 'h%02h", m_hw_handshake, hw_handshake);
 		m_hw_handshake = hw_handshake;
 		->m_hw_handshake_ev;
 	endtask
@@ -238,21 +237,12 @@ class wb_uart_dev extends uvm_object
 
 	virtual task rx2mem(int unsigned addr, int unsigned sz);
 		byte unsigned data;
-		int th = $begin_transaction(m_stream, "rx2mem");
-		$add_attribute(th, addr, "addr");
-		$add_attribute(th, sz, "sz");
 		
 		for (int i=0; i<sz; i++) begin
-			int th_b = $begin_transaction(m_stream, $sformatf("rx byte %0d", i),,th);
 			rx(data);
-			$add_attribute(th_b, data, "data");
+			`uvm_info(get_name(), $sformatf("rx2mem: [%0d] data='h%02h", i, data), UVM_LOW);
 			m_mem_if.write8(data, addr+i);
-			$end_transaction(th_b);
-			$free_transaction(th_b);
 		end
-	
-		$end_transaction(th);
-		$free_transaction(th);
 	endtask
 
 	virtual task rx_handshake(output byte unsigned data);

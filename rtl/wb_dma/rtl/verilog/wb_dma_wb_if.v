@@ -84,7 +84,7 @@ module wb_dma_wb_if(clk, rst,
 	wb_stb_o, wb_ack_i, wb_err_i, wb_rty_i,
 
 	// Master
-	mast_go, mast_we, mast_adr, mast_din, mast_dout, mast_err,
+	mast_go, mast_we, mast_adr, mast_sel, mast_din, mast_dout, mast_err,
 	mast_drdy, mast_wait, pt_sel_i, mast_pt_in, mast_pt_out,
 
 	// Slave
@@ -130,6 +130,7 @@ input		mast_go;	// Perform a Master Cycle (as long as this
 				// line is asserted)
 input		mast_we;	// Read/Write
 input	[31:0]	mast_adr;	// Address for the transfer
+input	[3:0]	mast_sel;	// Byte select for DMA transfers
 input	[31:0]	mast_din;	// Internal Input Data
 output	[31:0]	mast_dout;	// Internal Output Data
 output		mast_err;	// Indicates an error has occurred
@@ -181,6 +182,7 @@ wb_dma_wb_mast	u0(
 		.mast_go(	mast_go		),
 		.mast_we(	mast_we		),
 		.mast_adr(	mast_adr	),
+		.mast_sel(	mast_sel	),
 		.mast_din(	mast_din	),
 		.mast_dout(	mast_dout	),
 		.mast_err(	mast_err	),

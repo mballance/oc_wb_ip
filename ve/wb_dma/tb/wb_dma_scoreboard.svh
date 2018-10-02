@@ -85,7 +85,7 @@ class wb_dma_scoreboard extends uvm_component;
 									i, src_dat, dst_dat));
 						for (int j=0; j<tot_sz; j++) begin
 							m_mem_mgr.direct_access(dst_addr+(4*j), 0, dst_dat);
-							$display("'h%08h: 'h%08h", dst_addr+(4*j), dst_dat);
+//							$display("'h%08h: 'h%08h", dst_addr+(4*j), dst_dat);
 						end
 					end
 				end				

@@ -175,15 +175,17 @@ reg		rest_en;
 
 reg	[10:0]	ch_chk_sz_r;
 reg	[11:0]	ch_tot_sz_r;
+// Transfer-size register
+reg	[1:0]	ch_tr_sz_r;
 reg	[22:0]	ch_txsz_s;
 reg		ch_sz_inf;
 
 wire	[31:0]	ch_adr0, ch_adr1;
-reg	[29:0]	ch_adr0_r, ch_adr1_r;
+reg	[31:0]	ch_adr0_r, ch_adr1_r;
 wire	[31:0]	ch_am0, ch_am1;
 reg	[27:0]	ch_am0_r, ch_am1_r;
 
-reg	[29:0]	ch_adr0_s, ch_adr1_s;
+reg	[31:0]	ch_adr0_s, ch_adr1_s;
 
 reg	[29:0]	sw_pointer_r;
 wire		sw_pointer_we;
@@ -209,8 +211,8 @@ wire		ptr_inv;
 // Aliases
 //
 
-assign ch_adr0		= CH_EN ? {ch_adr0_r, 2'h0}   : 32'h0;
-assign ch_adr1		= CH_EN ? {ch_adr1_r, 2'h0}   : 32'h0;
+assign ch_adr0		= CH_EN ? ch_adr0_r   : 32'h0;
+assign ch_adr1		= CH_EN ? ch_adr1_r   : 32'h0;
 assign ch_am0		= (CH_EN & HAVE_CBUF) ? {ch_am0_r, 4'h0}    : 32'hffff_fff0;
 assign ch_am1		= (CH_EN & HAVE_CBUF) ? {ch_am1_r, 4'h0}    : 32'hffff_fff0;
 assign sw_pointer	= (CH_EN & HAVE_CBUF) ? {sw_pointer_r,2'h0} : 32'h0;
@@ -219,7 +221,7 @@ assign pointer		= CH_EN ? {pointer_r, 3'h0, ptr_valid} : 32'h0;
 assign pointer_s	= CH_EN ? {pointer_sr, 4'h0}  : 32'h0;
 assign ch_csr		= CH_EN ? {9'h0, int_src_r, ch_csr_r3, rest_en, ch_csr_r2,
 					ch_err, ch_done, ch_busy, 1'b0, ch_csr_r[8:1], ch_enable} : 32'h0;
-assign ch_txsz		= CH_EN ? {5'h0, ch_chk_sz_r, ch_sz_inf, 3'h0, ch_tot_sz_r} : 32'h0;
+assign ch_txsz		= CH_EN ? {5'h0, ch_chk_sz_r, ch_sz_inf, 1'h0, ch_tr_sz_r, ch_tot_sz_r} : 32'h0;
 
 assign ch_enable	= CH_EN ? (ch_csr_r[`WDMA_CH_EN] & (HAVE_CBUF ? !ch_dis : 1'b1) ) : 1'b0;
 
@@ -404,13 +406,13 @@ always @(posedge clk)
 	if(CH_EN)
 	   begin
 		if(ch_txsz_we)		
-			{ch_chk_sz_r, ch_tot_sz_r} <= #1 {wb_rf_din[26:16], wb_rf_din[11:0]};
+			{ch_chk_sz_r, ch_tr_sz_r, ch_tot_sz_r} <= #1 {wb_rf_din[26:16], wb_rf_din[13:12], wb_rf_din[11:0]};
 		else
 		if(ch_txsz_dewe)
-			ch_tot_sz_r <= #1 de_txsz;
+			ch_tot_sz_r <= #1 de_txsz; // TODO:
 		else
-		if(ch_rl)
-			{ch_chk_sz_r, ch_tot_sz_r} <= #1 ch_txsz_s;
+		if(ch_rl) 
+			{ch_chk_sz_r, ch_tot_sz_r} <= #1 ch_txsz_s; // TODO:
 	   end
 
 // txsz shadow register
@@ -436,9 +438,9 @@ always @(posedge clk)
 always @(posedge clk)
 	if(CH_EN)
 	   begin
-		if(ch_adr0_we)		ch_adr0_r <= #1 wb_rf_din[31:2];
+		if(ch_adr0_we)		ch_adr0_r <= #1 wb_rf_din[31:0];
 		else
-		if(ch_adr0_dewe)	ch_adr0_r <= #1 de_adr0[31:2];
+		if(ch_adr0_dewe)	ch_adr0_r <= #1 de_adr0[31:0];
 		else
 		if(ch_rl)		ch_adr0_r <= #1 ch_adr0_s;
 	   end
@@ -447,10 +449,10 @@ always @(posedge clk)
 always @(posedge clk)
 	if(CH_EN & HAVE_ARS)
 	   begin
-		if(ch_adr0_we)	ch_adr0_s <= #1 wb_rf_din[31:2];
+		if(ch_adr0_we)	ch_adr0_s <= #1 wb_rf_din[31:0];
 		else
 		if(rest_en & ch_adr0_dewe & de_fetch_descr)
-				ch_adr0_s <= #1 de_adr0[31:2];
+				ch_adr0_s <= #1 de_adr0[31:0];
 	   end
 
 // ---------------------------------------------------
@@ -465,9 +467,9 @@ always @(posedge clk or negedge rst)
 always @(posedge clk)
 	if(CH_EN)
 	   begin
-		if(ch_adr1_we)		ch_adr1_r <= #1 wb_rf_din[31:2];
+		if(ch_adr1_we)		ch_adr1_r <= #1 wb_rf_din[31:0];
 		else
-		if(ch_adr1_dewe)	ch_adr1_r <= #1 de_adr1[31:2];
+		if(ch_adr1_dewe)	ch_adr1_r <= #1 de_adr1[31:0];
 		else
 		if(ch_rl)		ch_adr1_r <= #1 ch_adr1_s;
 	   end
@@ -476,10 +478,10 @@ always @(posedge clk)
 always @(posedge clk)
 	if(CH_EN & HAVE_ARS)
 	   begin
-		if(ch_adr1_we)	ch_adr1_s <= #1 wb_rf_din[31:2];
+		if(ch_adr1_we)	ch_adr1_s <= #1 wb_rf_din[31:0];
 		else
 		if(rest_en & ch_adr1_dewe & de_fetch_descr)
-				ch_adr1_s <= #1 de_adr1[31:2];
+				ch_adr1_s <= #1 de_adr1[31:0];
 	   end
 
 // ---------------------------------------------------

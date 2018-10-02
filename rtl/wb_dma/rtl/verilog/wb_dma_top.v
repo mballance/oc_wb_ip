@@ -284,6 +284,7 @@ wire		paused;
 wire		mast0_go;	// Perform a Master Cycle (as long as this
 wire		mast0_we;	// Read/Write
 wire	[31:0]	mast0_adr;	// Address for the transfer
+wire	[3:0]	mast0_sel;
 wire	[31:0]	mast0_din;	// Internal Input Data
 wire	[31:0]	mast0_dout;	// Internal Output Data
 wire		mast0_err;	// Indicates an error has occurred
@@ -307,6 +308,7 @@ wire	[34:0]	slv0_pt_in;	// Grouped WISHBONE in signals
 wire		mast1_go;	// Perform a Master Cycle (as long as this
 wire		mast1_we;	// Read/Write
 wire	[31:0]	mast1_adr;	// Address for the transfer
+wire	[3:0]	mast1_sel;	
 wire	[31:0]	mast1_din;	// Internal Input Data
 wire	[31:0]	mast1_dout;	// Internal Output Data
 wire		mast1_err;	// Indicates an error has occurred
@@ -984,6 +986,7 @@ wb_dma_de	u2(
 		.mast0_go(	mast0_go	),
 		.mast0_we(	mast0_we	),
 		.mast0_adr(	mast0_adr	),
+		.mast0_sel(	mast0_sel	),
 		.mast0_din(	mast0_dout	),
 		.mast0_dout(	mast0_din	),
 		.mast0_err(	mast0_err	),
@@ -992,6 +995,7 @@ wb_dma_de	u2(
 		.mast1_go(	mast1_go	),
 		.mast1_we(	mast1_we	),
 		.mast1_adr(	mast1_adr	),
+		.mast1_sel(	mast1_sel	),
 		.mast1_din(	mast1_dout	),
 		.mast1_dout(	mast1_din	),
 		.mast1_err(	mast1_err	),
@@ -1055,6 +1059,7 @@ wb_dma_wb_if	#(rf_addr)	u3(
 		.mast_go(	mast0_go	),
 		.mast_we(	mast0_we	),
 		.mast_adr(	mast0_adr	),
+		.mast_sel(	mast0_sel	),
 		.mast_din(	mast0_din	),
 		.mast_dout(	mast0_dout	),
 		.mast_err(	mast0_err	),
@@ -1100,6 +1105,7 @@ wb_dma_wb_if	#(rf_addr) u4(
 		.mast_go(	mast1_go	),
 		.mast_we(	mast1_we	),
 		.mast_adr(	mast1_adr	),
+		.mast_sel(	mast1_sel	),
 		.mast_din(	mast1_din	),
 		.mast_dout(	mast1_dout	),
 		.mast_err(	mast1_err	),

@@ -57,7 +57,6 @@ class wb_periph_subsys_isr extends uvmdev_isr_base #(event_seq_item);
 		
 		forever begin
 			isr_mb.get(ev);
-			$display("ev: 'h%08h", ev);
 			
 			if (ev[0]) begin
 				int unsigned pending;
@@ -81,9 +80,7 @@ class wb_periph_subsys_isr extends uvmdev_isr_base #(event_seq_item);
 	 * Override from class 
 	 */
 	virtual function void write(event_seq_item t);
-		$display("--> %0t ISR::write", $time);
 		void'(isr_mb.try_put(t.m_value));
-		$display("<-- %0t ISR::write", $time);
 	endfunction
 
 
