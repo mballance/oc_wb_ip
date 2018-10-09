@@ -129,6 +129,7 @@ reg		mast_cyc, mast_stb;
 reg		mast_we_r;
 reg	[3:0]	mast_be;
 reg	[31:0]	mast_dout;
+wire [31:0]	mast_din_sel;
 
 ////////////////////////////////////////////////////////////////////
 //
@@ -137,7 +138,13 @@ reg	[31:0]	mast_dout;
 
 assign {wb_data_o, wb_addr_o, wb_sel_o, wb_we_o, wb_cyc_o, wb_stb_o} =
 	pt_sel ? mast_pt_in :
-	{mast_din, mast_adr, mast_be, mast_we_r, mast_cyc, mast_stb};
+	{mast_din_sel, mast_adr, mast_be, mast_we_r, mast_cyc, mast_stb};
+
+assign mast_din_sel = 
+	(mast_sel=='b0001 || mast_sel=='b0010 || mast_sel=='b0100 || mast_sel=='b1000)?
+		{mast_din[7:0],mast_din[7:0],mast_din[7:0],mast_din[7:0]}:
+	(mast_sel=='b0011 || mast_sel=='b1100)?
+		{mast_din[15:0],mast_din[15:0]}:mast_din;
 
 assign mast_pt_out = {wb_data_i, wb_ack_i, wb_err_i, wb_rty_i};
 
@@ -147,7 +154,18 @@ assign mast_pt_out = {wb_data_i, wb_ack_i, wb_err_i, wb_rty_i};
 //
 
 always @(posedge clk)
-	if(wb_ack_i)	mast_dout <= #1 wb_data_i;
+	if (wb_ack_i) begin
+		// Capture read data according to the select mask
+		case (mast_sel)
+			'b0001: mast_dout <= wb_data_i[7:0];
+			'b0010: mast_dout <= wb_data_i[15:8];
+			'b0100: mast_dout <= wb_data_i[23:16];
+			'b1000: mast_dout <= wb_data_i[31:24];
+			'b0011: mast_dout <= wb_data_i[15:0];
+			'b1100: mast_dout <= wb_data_i[31:16];
+			'b1111: mast_dout <= wb_data_i;
+		endcase
+	end
 
 always @(posedge clk)
 	mast_be <= #1 mast_sel;
