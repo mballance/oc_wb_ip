@@ -1,3 +1,4 @@
 name=oc_wb_ip
 version=0.0.1
+rootvar=OC_WB_IP
 
