@@ -1,0 +1,8 @@
+{
+  "name": "oc_wb_ip",
+  "dependencies": {
+    "uex": "git-https://github.com/mballance/uex",
+    "std_protocol_if": "git-https://github.com/mballance/std_protocol_if"
+  }
+}
+
