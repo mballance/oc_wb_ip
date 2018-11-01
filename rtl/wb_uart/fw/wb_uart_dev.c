@@ -168,7 +168,7 @@ void wb_uart_dev_init(struct uex_dev_s *devh) {
 
 //	dev->baud = 115200;
 	dev->baud = 19200;
-	dev->clk_hz = 50000000;
+	dev->clk_hz = 100000000;
 
 	wb_uart_dev_set_div(dev);
 
